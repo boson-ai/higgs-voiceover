@@ -518,12 +518,16 @@ end
 --- A take's subtitles, in seconds from the start of the take.
 -- `take` = { text = the line as typed (tags and all), words = Boson's list
 -- or nil, seconds = the clip's length, pause = trailing silence added }.
+-- Subtitles are only made from Boson's word timings: without them (Boson
+-- returned none, or too few matched the text) there are none, rather than
+-- subtitles timed by guesswork (Alex, 2026-09-23).
 function M.for_take(take, mode)
+  if type(take.words) ~= "table" or #take.words == 0 then return {}, "none" end
   local tokens = M.tokenize(M.display_text(take.text))
   local speech = math.max(0.1, (tonumber(take.seconds) or 0) - (tonumber(take.pause) or 0))
   local method = M.align(tokens, take.words, speech)
-  local cues = M.split(tokens, mode)
-  return cues, method
+  if method ~= "words" then return {}, "none" end
+  return M.split(tokens, mode), method
 end
 
 ------------------------------------------------------------------ frames

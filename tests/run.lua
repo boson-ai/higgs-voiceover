@@ -599,6 +599,10 @@ do
   eq("a take with timings is timed from them", how, "words")
   eq("a short line is one subtitle", #tc, 1)
   eq("starting with its first word", tc[1].start, 0.1)
+  local none, why = S.for_take({ text = "Hello there, friend.", seconds = 2, pause = 0.4 }, "short")
+  check("no word timings, no subtitles — never guessed", #none == 0 and why == "none")
+  local off = S.for_take({ text = "Hello there, friend.", seconds = 2, words = { { word = "bonjour", start = 0, ["end"] = 1 } } }, "short")
+  eq("timings that do not match the text give none either", #off, 0)
 end
 
 describe("API client — retries and failures (curl faked)")

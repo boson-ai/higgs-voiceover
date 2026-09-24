@@ -178,12 +178,12 @@ do
   local en, how, share = timed("When we started this project, nobody believed a four-person studio could ship a feature film.", "English")
   local service = en and en.words ~= nil
   check("SERVICE: Boson returns word timestamps for English", service,
-        "timestamps were null — subtitles fall back to timing from the text")
+        "timestamps were null — no subtitles can be made")
   if service then
     check("English: subtitles timed from Boson's words", how == "words")
     check("English: nearly every typed word matched", share and share >= 0.9, share)
   else
-    check("without timestamps, subtitles are still made and timed from the text", how == "estimate")
+    check("without timestamps no subtitles are made (never guessed)", how == "none")
   end
   for _, t in ipairs({ { "我们今天要调色一段完全用手机拍摄的日落延时视频。效果真的让我大吃一惊！", "Chinese" },
                        { "Cuando empezamos este proyecto, nadie creía que podríamos terminar a tiempo.", "Spanish" },
@@ -192,7 +192,7 @@ do
     if r and r.words then
       check(t[2] .. ": subtitles timed from Boson's words", h == "words" and sh >= 0.8, sh)
     elseif r then
-      note(t[2] .. ": no timestamps from Boson; timed from the text")
+      note(t[2] .. ": no timestamps from Boson; no subtitles")
     end
   end
   timed("The total is $1,250.75, due on 3/17 at 5 PM.", "numbers")

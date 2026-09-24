@@ -72,8 +72,9 @@ future backend for another OS fails immediately and names what is missing.
    the timeline's frames, and the whole run is written as one `.srt` next to
    the audio, imported, and appended onto a subtitle track named like the VO
    track (a new one when the placement is earlier than that track's last
-   subtitle). A take without timings — another language, or generated before
-   the box was ticked — is timed from its text instead.
+   subtitle). A take without word timings — another language, Boson returning
+   none, or generated before the box was ticked — gets no subtitles; the
+   message says so. Timing is never guessed.
 
 ## Resolve behaviour the code relies on
 

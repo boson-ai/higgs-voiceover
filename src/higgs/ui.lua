@@ -734,17 +734,17 @@ end
 
 --- Subtitles for takes just placed at `starts`, ending at `ends` (absolute
 -- frames, as Resolve placed them), as one
--- .srt on a subtitle track named like the VO track. Returns the number
--- added (or nil and why) and whether any take's timing had to be estimated
--- because Boson returned no word timings for it.
+-- .srt on a subtitle track named like the VO track. Only takes Boson gave
+-- word timings for get subtitles. Returns the number added (or nil and
+-- why), how many takes had subtitles, and how many takes there were.
 local function place_subtitles(takes, starts, ends)
   local fps = R.fps()
   local origin = starts[1]
-  local all, estimated, timed = {}, 0, 0
+  local all, untimed, timed = {}, 0, 0
   for i, take in ipairs(takes) do
     if take.text then
       local cues, method = Subs.for_take(take, app.cfg.subtitle_split)
-      if method == "words" then timed = timed + 1 else estimated = estimated + 1 end
+      if method == "words" then timed = timed + 1 else untimed = untimed + 1 end
       local offset = (starts[i] - origin) / fps
       for _, cue in ipairs(cues) do
         cue.start, cue.finish = cue.start + offset, cue.finish + offset
@@ -758,10 +758,12 @@ local function place_subtitles(takes, starts, ends)
   end
   local function done(added, err)
     Log.metric("subtitles.place", { cues = #all, added = added or 0, ok = added and 1 or 0,
-      split = app.cfg.subtitle_split, timed = timed, estimated = estimated, error = err })
-    return added, err, estimated > 0
+      split = app.cfg.subtitle_split, timed = timed, untimed = untimed, error = err })
+    return added, err, timed
   end
-  if #all == 0 then return done(nil, "no text for these clips") end
+  if #all == 0 then
+    return done(nil, timed == 0 and "Boson didn't return word timings" or "no text for these clips")
+  end
   Subs.frames(all, fps)
   -- The gap rule across placements: subtitles already on the track cannot be
   -- lengthened through the API, so when this run starts less than
@@ -824,11 +826,13 @@ local function quick_place(takes, mode)
     quick_note(what .. ".", "ok")
     return true
   end
-  local added, serr, estimated = place_subtitles(takes, starts, ends)
+  local added, serr, timed = place_subtitles(takes, starts, ends)
   if not added then
-    quick_note(("%s, but not the subtitles: %s"):format(what, serr or "Resolve did not add them."), "error")
+    quick_note(("%s, but no subtitles: %s."):format(what, (serr or "Resolve did not add them"):gsub("%.$", "")), "error")
+  elseif timed < #takes then
+    quick_note(("%s, with subtitles for %d of %d clips — Boson didn't return word timings for the rest."):format(what, timed, #takes), "ok")
   else
-    quick_note(what .. (estimated and ", with subtitles — timing is approximate." or ", with subtitles."), "ok")
+    quick_note(what .. ", with subtitles.", "ok")
   end
   return true
 end

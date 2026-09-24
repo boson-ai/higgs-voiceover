@@ -113,8 +113,15 @@ check("reports a free range as free", R.range_is_free(idx, free_at, free_at + 10
 
 print("\nsubtitles")
 local Subs = require("higgs.subtitles")
-local sub_cues = Subs.frames(Subs.for_take({ text = "Welcome back to the channel! Today we're grading a sunset timelapse, shot entirely on the iPhone.",
-                                             seconds = 7, pause = 0.4 }, "short"), fps)
+-- Word timings as Boson gives them (one entry per word, seconds), made up
+-- here so the check needs no API call.
+local sub_text = "Welcome back to the channel! Today we're grading a sunset timelapse, shot entirely on the iPhone."
+local sub_words, t = {}, 0.1
+for w in sub_text:gmatch("%S+") do
+  sub_words[#sub_words + 1] = { word = (w:gsub("[%p]", "")), start = t, ["end"] = t + 0.3 }
+  t = t + (w:match("[!,.]$") and 0.6 or 0.36)
+end
+local sub_cues = Subs.frames(Subs.for_take({ text = sub_text, words = sub_words, seconds = 7, pause = 0.4 }, "short"), fps)
 local first = sub_cues[1].from
 local written = {}
 local function writer(lead)

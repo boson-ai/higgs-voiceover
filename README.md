@@ -31,8 +31,8 @@ never between "the" and its noun. In **Settings › Timeline › Subtitles** cho
 phrases** (one line, up to 42 characters; 16 in Chinese) or **Whole
 sentences** (one sentence per subtitle, up to two lines). They are ordinary
 Resolve subtitles: edit, style and export them like any others. Word timing
-is available for English, Chinese and Spanish; for other languages the timing
-is estimated from the text.
+is available for English, Chinese and Spanish; a line in another language is
+placed without subtitles.
 
 ### Voice cloning
 

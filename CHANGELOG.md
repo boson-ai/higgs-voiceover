@@ -7,8 +7,8 @@ All notable changes to Higgs VoiceOver. Versions follow `MAJOR.MINOR.PATCH`;
 
 - **Subtitles**: tick **Add subtitles** and placed clips come with native
   Resolve subtitles on a subtitle track, timed to the words using Boson's
-  word-level timestamps (English, Chinese and Spanish; other languages are
-  timed from the text). **Settings › Timeline › Subtitles** splits them into
+  word-level timestamps (English, Chinese and Spanish; a clip without word
+  timings gets no subtitles rather than guessed ones). **Settings › Timeline › Subtitles** splits them into
   **Short phrases** (one line, up to 42 characters, broken at natural points)
   or **Whole sentences** (up to two lines), with a preview of your first line.
 - Generate: **Place on timeline** (now on by default) and **Add subtitles**
