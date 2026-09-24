@@ -213,6 +213,24 @@ end
 
 ------------------------------------------------------------------ media pool
 
+--- The name of the bin clips go into in this project: "Higgs VoiceOver",
+-- or an earlier "Higgs VO" bin that import() keeps using. With neither yet,
+-- the one that will be made.
+function M.bin_name()
+  local mp = M.media_pool()
+  if not mp then return M.BIN_NAME end
+  local ok, folders = pcall(function() return mp:GetRootFolder():GetSubFolderList() end)
+  if not ok or not folders then return M.BIN_NAME end
+  local names = { M.BIN_NAME }
+  for _, n in ipairs(M.LEGACY_BIN_NAMES) do names[#names + 1] = n end
+  for _, want in ipairs(names) do
+    for _, folder in ipairs(folders) do
+      if folder:GetName() == want then return want end
+    end
+  end
+  return M.BIN_NAME
+end
+
 --- Import one audio file into the plugin's bin.
 function M.import(path, bin_name)
   local mp = M.media_pool()

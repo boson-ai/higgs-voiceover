@@ -1052,22 +1052,27 @@ local function output_dir()
   return Config.project_output_dir(app.cfg, project_name())
 end
 
---- Top right of the Audio preview card: the folder the clips are written
--- to and the media-pool bin they are imported into. The folder name is cut
--- short (a label's text sets the window's width); the tooltip has the path.
+--- Top right of the Audio preview card: the media-pool bin the clips of a
+-- run are imported into — the bin this project really uses, which is
+-- "Higgs VO" in projects that had it before the rename. Looked up at most
+-- every two seconds (the card refreshes on every keystroke).
+local bin_cache = { at = -10, name = nil }
 function refresh_preview_where()
-  local dir = output_dir()
-  local folder = P.basename(dir)
-  if U.utf8_len(folder) > 18 then
+  if now() - bin_cache.at > 2 or not bin_cache.name then
+    bin_cache.name = R.bin_name()
+    bin_cache.at = now()
+  end
+  local bin = bin_cache.name
+  if U.utf8_len(bin) > 24 then
     local chars = {}
-    for _, ch in U.utf8_chars(folder) do
-      if #chars == 17 then break end
+    for _, ch in U.utf8_chars(bin) do
+      if #chars == 23 then break end
       chars[#chars + 1] = ch
     end
-    folder = table.concat(chars) .. "…"
+    bin = table.concat(chars) .. "…"
   end
-  itm.PreviewWhere.Text = ("Saved in “%s” and the %s bin"):format(folder, R.BIN_NAME)
-  itm.PreviewWhere.ToolTip = dir .. "\nMedia pool › " .. R.BIN_NAME
+  itm.PreviewWhere.Text = ("Saved in the “%s” bin"):format(bin)
+  itm.PreviewWhere.ToolTip = "Media Pool › " .. bin_cache.name .. "\nFiles: " .. output_dir()
 end
 
 --- Where a take is written, named after its text the way Settings asks:
