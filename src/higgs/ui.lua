@@ -42,6 +42,7 @@ local quick = {
 }
 local reload_quick_voices   -- defined with the Generate tab's lists, used by the voice combos above them
 local refresh_quick_tag_foot, refresh_quick_delete   -- defined after the lists they read
+local refresh_preview_where   -- defined with the output folder it names
 local quick_note            -- defined with the status line, called by the player above it
 local paint = {}            -- per text box: which tags were last coloured (see repaint_box)
 local repaint_box, insert_tag   -- defined with the tag colouring, used by the editor above it
@@ -278,6 +279,7 @@ local LAYOUT_RULES = {
   { "AutoPlaceChk", "AutoSubsChk", "left_of" },
   { "AutoSubsChk", "QuickStopBtn", "left_of" },
   { "PlayerIndex", "PlayerName", "left_of" },
+  { "PreviewTitle", "PreviewWhere", "left_of" },
   { "PlayerName", "PlayerPrev", "left_of" },
   { "PlayerPrev", "PlayerNext", "left_of" },
   { "PlayerTimeTotal", "PlayerPlay", "left_of" },
@@ -434,12 +436,6 @@ local function quick_signature(lines)
   local parts = {}
   for i, l in ipairs(lines) do parts[i] = l.composed end
   return table.concat(parts, "\n") .. "\n" .. (quick.voice or app.cfg.default_voice)
-end
-
-local function quick_stale()
-  local last = quick.last
-  if not last then return false end
-  return quick_signature(quick_lines()) ~= last.signature
 end
 
 local function quick_total_seconds()
@@ -681,20 +677,21 @@ local function quick_refresh(keep_note)
   itm.QuickTagInsert.Enabled = not quick.busy
   -- One clip: a single "Place on timeline". Several: the clip on show, or
   -- all of them in order.
-  local stale = quick_stale()
+  -- The takes stay placeable while the text is edited: each carries its own
+  -- line. Only a new run (which clears them) or having none greys them out.
   local count = quick.last and #quick.last.takes or 0
-  local why = stale and "The text has changed since these takes — Generate again before placing them."
-           or (count == 0 and "Generate something first.") or nil
+  local why = (count == 0) and "Generate something first." or nil
   -- Built hidden, so it has no geometry until the window re-lays out.
   if quick.place_one_hidden ~= (count < 2) then
     quick.place_one_hidden = count < 2
     itm.QuickPlaceOneBtn.Hidden = quick.place_one_hidden
     relayout()
   end
-  itm.QuickPlaceOneBtn.Enabled = count > 1 and not stale
+  itm.QuickPlaceOneBtn.Enabled = count > 1
   itm.QuickPlaceOneBtn.ToolTip = why or "Put only the clip shown above on the timeline at the playhead."
   itm.QuickPlaceBtn.Text = count > 1 and ("Place all %d clips"):format(count) or "Place on timeline"
-  itm.QuickPlaceBtn.Enabled = count > 0 and not stale
+  itm.QuickPlaceBtn.Enabled = count > 0
+  refresh_preview_where()
   itm.QuickPlaceBtn.ToolTip = why or (count > 1 and "Put every clip from this run on the timeline, in order, starting at the playhead."
                                                  or "Put the clip on the timeline at the playhead.")
 
@@ -1053,6 +1050,24 @@ end
 
 local function output_dir()
   return Config.project_output_dir(app.cfg, project_name())
+end
+
+--- Top right of the Audio preview card: the folder the clips are written
+-- to and the media-pool bin they are imported into. The folder name is cut
+-- short (a label's text sets the window's width); the tooltip has the path.
+function refresh_preview_where()
+  local dir = output_dir()
+  local folder = P.basename(dir)
+  if U.utf8_len(folder) > 18 then
+    local chars = {}
+    for _, ch in U.utf8_chars(folder) do
+      if #chars == 17 then break end
+      chars[#chars + 1] = ch
+    end
+    folder = table.concat(chars) .. "…"
+  end
+  itm.PreviewWhere.Text = ("Saved in “%s” and the %s bin"):format(folder, R.BIN_NAME)
+  itm.PreviewWhere.ToolTip = dir .. "\nMedia pool › " .. R.BIN_NAME
 end
 
 --- Where a take is written, named after its text the way Settings asks:
@@ -2257,7 +2272,14 @@ local function build()
               -- Row 1 names the take and pages through them; row 2 is the
               -- transport. Both stay narrow: their hints set this column's width.
               card({
-                ui:Label{ Text = "Audio preview", Weight = 0, StyleSheet = T.label("section") },
+                -- The title, and where the clips of a run are kept.
+                ui:HGroup{
+                  Weight = 0, Spacing = S.gap,
+                  ui:Label{ ID = "PreviewTitle", Text = "Audio preview", Weight = 0, StyleSheet = T.label("section") },
+                  ui:Label{ Weight = 1 },
+                  ui:Label{ ID = "PreviewWhere", Text = "", Weight = 0, StyleSheet = T.label("meta"),
+                            Alignment = { AlignRight = true, AlignVCenter = true } },
+                },
                 -- The take's name reads first; its pager sits at the right end,
                 -- above play and stop, so both rows end at the same edge.
                 ui:HGroup{
@@ -2555,8 +2577,14 @@ local function check_for_updates(quiet)
       app.cfg.last_update_check = os.time()
       Config.save(app.cfg)
       if not res.ok or type(res.data) ~= "table" then
-        update.error = "could not reach GitHub" .. (res.error and (" (" .. tostring(res.error) .. ")") or "")
-        Log.warn("update check failed: " .. tostring(res.error))
+        -- In GitHub's words, short: the row has room for a few words, and the
+        -- API client's messages are written about Boson.
+        local code = tostring(res.code or "")
+        if code == "404" then update.error = "no release published yet"
+        elseif code == "403" or code == "429" then update.error = "GitHub is busy, try again later"
+        elseif code == "" then update.error = "couldn't reach GitHub"
+        else update.error = "couldn't check for updates" end
+        Log.warn("update check failed", { code = code ~= "" and code or "none", error = tostring(res.error) })
         if quiet then update.error = nil end
         refresh_update_ui()
         return
@@ -2602,20 +2630,22 @@ local function install_update()
     url = update.asset, out_path = tmp, label = "update download",
     on_done = function(res)
       if not res.ok then
-        update.error = "download failed: " .. tostring(res.error)
+        update.error = "download failed, try again"
+        Log.warn("update download failed", { code = tostring(res.code or ""), error = tostring(res.error) })
         refresh_update_ui()
         return
       end
       local body = U.read_file(tmp)
       local compiles = body and #body > 1000 and loadstring(body) ~= nil
       if not compiles then
-        update.error = "the downloaded file is not a valid Higgs VoiceOver script"
+        update.error = "the download was damaged, try again"
         Log.error("update: asset did not compile")
         refresh_update_ui()
         return
       end
       if not U.write_file(dest, body) then
-        update.error = "could not write to " .. dest
+        update.error = "couldn't replace the installed script"
+        Log.warn("update: could not write", { to = Log.path_safe(dest) })
         refresh_update_ui()
         return
       end
