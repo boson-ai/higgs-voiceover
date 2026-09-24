@@ -2392,13 +2392,15 @@ local function build()
               ui:Label{ ID = "OutDirProject", Text = "", Weight = 0, StyleSheet = T.label("secondary"),
                         Alignment = { AlignLeft = true, AlignVCenter = true } } },
             ui:Button{ ID = "BrowseOutBtn", Text = "Browse…", Weight = 0, StyleSheet = T.button("ghost") }),
+          -- The example sits on the same row: the page has to fit the
+          -- window's 780 px, and a row of its own pushed it past that.
           settings_row("Add to the name",
             ui:HGroup{ Weight = 1, Spacing = S.group,
               ui:CheckBox{ ID = "NameWordsChk", Text = "First words", Weight = 0, StyleSheet = T.checkbox() },
               ui:CheckBox{ ID = "NameDateChk", Text = "Date", Weight = 0, StyleSheet = T.checkbox() },
               ui:CheckBox{ ID = "NameTimeChk", Text = "Time", Weight = 0, StyleSheet = T.checkbox() },
-              ui:Label{ Weight = 1 } }),
-          settings_row("", ui:Label{ ID = "NamePreview", Text = "", Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") }),
+              ui:Label{ Weight = 0, MinimumSize = { 4, 0 }, MaximumSize = { 4, 4000 } },
+              ui:Label{ ID = "NamePreview", Text = "", Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") } }),
         },
         ui:VGroup{
           Weight = 0, Spacing = S.rows,
@@ -2436,16 +2438,21 @@ local function build()
             ui:Button{ ID = "OpenLogBtn", Text = "Open log folder", Weight = 0, StyleSheet = T.button("ghost"),
                        ToolTip = "One log per launch; the ten most recent are kept. Attach the latest when reporting a problem." }),
         },
-        ui:Label{ Weight = 1 },
         -- Nothing applies until Save. Reset fills in the defaults (the key is
-        -- left alone) for Save to keep or the user to change first.
-        ui:HGroup{
-          Weight = 0, Spacing = S.gap,
-          ui:Label{ ID = "SettingsStatus", Text = "", Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") },
-          ui:Button{ ID = "ResetSettingsBtn", Text = "Reset to default", Weight = 0, StyleSheet = T.button("ghost"),
-                     ToolTip = "Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save." },
-          ui:Button{ ID = "SaveSettingsBtn", Text = "Save", Weight = 0,
-                     StyleSheet = T.button("primary") .. "QPushButton { min-width: 88px; }" },
+        -- left alone) for Save to keep or the user to change first. The
+        -- spacer and the row are one item, so the page spends one section
+        -- gap here rather than two.
+        ui:VGroup{
+          Weight = 1, Spacing = 0,
+          ui:Label{ Weight = 1 },
+          ui:HGroup{
+            Weight = 0, Spacing = S.gap,
+            ui:Label{ ID = "SettingsStatus", Text = "", Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") },
+            ui:Button{ ID = "ResetSettingsBtn", Text = "Reset to default", Weight = 0, StyleSheet = T.button("ghost"),
+                       ToolTip = "Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save." },
+            ui:Button{ ID = "SaveSettingsBtn", Text = "Save", Weight = 0,
+                       StyleSheet = T.button("primary") .. "QPushButton { min-width: 88px; }" },
+          },
         },
       },
     },
@@ -2497,7 +2504,7 @@ local function refresh_name_preview()
   if o.time then parts[#parts + 1] = os.date("%H%M%S") end
   if o.take then parts[#parts + 1] = "v2" end
   if #parts == 0 then
-    itm.NamePreview.Text = "Nothing ticked: clips are numbered — 1.wav, 2.wav, 3.wav…"
+    itm.NamePreview.Text = "Nothing ticked: clips are numbered 1.wav, 2.wav…"
   else
     itm.NamePreview.Text = ("e.g. %s.wav"):format(table.concat(parts, "_"))
   end

@@ -204,9 +204,9 @@ elseif scenario == "settings-sentence" then
   ctx.demo_quick = { text = "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are." }
 elseif scenario == "update" then
   ctx.initial_tab = 1
-  ctx.demo_update = "0.2.0"
+  ctx.demo_update = "1.1.0"
 elseif scenario == "update-generate" then
-  ctx.demo_update = "0.2.0"
+  ctx.demo_update = "1.1.0"
 end
 
 if os.getenv("HIGGS_SHOT_PROBE") then
