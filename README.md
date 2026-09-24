@@ -25,18 +25,11 @@ at the playhead. Output formats: wav, mp3, aac, flac.
 
 ### Subtitles
 
-Tick **Add subtitles** — beside Generate for clips placed automatically, in
-the audio preview for the Place buttons — and placed clips come with
-subtitles on a subtitle track, timed to the words: the app asks Boson for
-[word-level timestamps](https://docs.boson.ai/models/higgs-tts/overview#word-level-timestamps)
-and splits the text the way subtitlers do — at punctuation and natural pauses,
-never between "the" and its noun. In **Settings › Timeline › Subtitles** choose **Short
-phrases** (sentences split into shorter one-line segments) or **Whole
-sentences** (a whole sentence at once, on up to two lines). Short gaps between
-subtitles are filled, so the text doesn't blink off between phrases. They are ordinary
-Resolve subtitles: edit, style and export them like any others. Splitting uses
-Boson's word timing, available in English, Chinese and Spanish; a line in
-another language becomes one subtitle for the length of its clip.
+Placed clips can come with subtitles, timed to each spoken word using Higgs
+TTS 3's word timestamps. They are split at natural breaks, as short phrases or
+whole sentences, and land as ordinary Resolve subtitles you can edit, style and
+export. Word timing covers English, Chinese and Spanish; other languages get
+one subtitle per line.
 
 ### Voice cloning
 
@@ -46,14 +39,9 @@ created on your Boson account and appears in the voice list.
 
 ### Emotion and delivery tags
 
-Higgs TTS 3 reads control tags written in the text, such as
-`<|emotion:enthusiasm|>`, speaking styles, sound effects, pauses, and speed,
-pitch and expressiveness. Insert them from the tag list or type them. Tags
-that set up the whole line — emotion, style, speed, pitch, expressiveness —
-go to the start of the line, replacing one of the same kind; pauses and sound
-effects go where the cursor is, and a sound effect brings its written sound
-(`<|sfx:laughter|>Haha`), as Boson advises. See
-[Boson's tag reference](https://docs.boson.ai/models/higgs-tts/tags).
+Higgs TTS 3 reads tags in the text that set emotion, speaking style, pace,
+pitch and pauses, or add sounds like laughter or a sigh. Pick them from the
+tag list and they go where Boson recommends.
 
 ### Bring your own key
 
@@ -115,8 +103,6 @@ generate). Then:
    tick **Place on timeline** (and **Add subtitles**) beside Generate to have
    it done when the run finishes.
 
-Tag reference: [docs.boson.ai — tags](https://docs.boson.ai/models/higgs-tts/tags).
-
 ## Your data and privacy
 
 - Settings, drafts and logs: `~/Library/Application Support/HiggsVO/`
@@ -154,6 +140,16 @@ Tag reference: [docs.boson.ai — tags](https://docs.boson.ai/models/higgs-tts/t
   break it into more lines.
 
 Found a bug? [Open an issue](../../issues/new/choose) and attach the latest log.
+
+## Boson documentation
+
+- [Higgs TTS 3 overview](https://docs.boson.ai/models/higgs-tts/overview)
+- [Tags](https://docs.boson.ai/models/higgs-tts/tags) — emotion, style, prosody and sound effects
+- [Voices and cloning](https://docs.boson.ai/models/higgs-tts/voices)
+- [Supported languages](https://docs.boson.ai/models/higgs-tts/languages)
+- [Word-level timestamps](https://docs.boson.ai/models/higgs-tts/overview#word-level-timestamps)
+- [API reference](https://docs.boson.ai/api-reference/audio/create-a-speech)
+- [Get an API key](https://www.boson.ai/workspace/api-key)
 
 ## Credits
 
