@@ -23,9 +23,28 @@ M.EMOTIONS = {
 
 M.STYLES = { "singing", "shouting", "whispering" }
 
---- Paired with matching onomatopoeia in the text, per Boson's guidance.
+--- Sound effects are voiced by the speaker, and Boson's guidance is to
+-- follow each with the written sound: "<|sfx:laughter|>Haha". The words are
+-- Boson's own examples, always in English whatever the line's language;
+-- crying has none (Boson's example has none either).
 M.SFX = { "cough", "laughter", "crying", "screaming", "burping", "humming",
           "sigh", "sniff", "sneeze" }
+M.SFX_WORDS = {
+  cough = "Ahem", laughter = "Haha", screaming = "Ah", burping = "Burp",
+  humming = "Hmm", sigh = "Ahh", sniff = "Sff...", sneeze = "Achoo",
+}
+
+--- What a tag sets for the whole line, so a new one replaces the old:
+-- emotion, style, speed, pitch or expressiveness. Pauses and sound effects
+-- are positional and return nil.
+function M.kind(value)
+  value = tostring(value or "")
+  if value:find("^emotion:") then return "emotion" end
+  if value:find("^style:") then return "style" end
+  local axis = value:match("^prosody:(%a+)_")
+  if axis == "speed" or axis == "pitch" or axis == "expressive" then return axis end
+  return nil
+end
 
 --- Prosody splits into four independent axes. Each is a leading tag except
 -- pauses, which are positional.
@@ -139,15 +158,39 @@ end
 function M.place_tag(before, after, value, line_start)
   local token = M.token(value)
   if not line_start then
+    local sfx = value:match("^sfx:(.+)$")
+    if sfx then
+      -- The tag sits right on its sound, as in Boson's examples; a sound
+      -- already typed after the caret is not added twice.
+      local word = M.SFX_WORDS[sfx]
+      if not word then return before .. token .. after, #before + #token end
+      local rest = after:gsub("^%s+", "")
+      if rest:sub(1, #word):lower() == word:lower() then
+        return before .. token .. rest, #before + #token + #word
+      end
+      return before .. token .. word .. " " .. after, #before + #token + #word + 1
+    end
     return before .. token .. " " .. after, #before + #token + 1
   end
   local nl = before:match(".*()\n")
   local head, line = "", before
   if nl then head, line = before:sub(1, nl), before:sub(nl + 1) end
-  local axis = value:match("^prosody:(%a+)_")
+  -- The tags leading the line set it up; one of the same kind is replaced.
+  local kind = M.kind(value)
   local rest = line .. after
-  if axis then rest = rest:gsub("^%s*<|prosody:" .. axis .. "_[%w_]+|>%s*", "") end
-  local out = head .. token .. " " .. rest
+  local kept, leading = {}, {}
+  local pos = 1
+  while true do
+    local a, b, v = rest:find("^%s*<|([^|>]-)|>", pos)
+    if not a then break end
+    leading[#leading + 1] = v
+    pos = b + 1
+  end
+  for _, v in ipairs(leading) do
+    if M.kind(v) ~= kind then kept[#kept + 1] = M.token(v) end
+  end
+  local text = rest:sub(pos):gsub("^%s+", "")
+  local out = head .. token .. " " .. (#kept > 0 and (table.concat(kept, " ") .. " ") or "") .. text
   return out, math.max(#out - #after, #head + #token + 1)
 end
 

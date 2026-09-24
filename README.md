@@ -45,7 +45,11 @@ created on your Boson account and appears in the voice list.
 
 Higgs TTS 3 reads control tags written in the text, such as
 `<|emotion:enthusiasm|>`, speaking styles, sound effects, pauses, and speed,
-pitch and expressiveness. Insert them from the tag list or type them. See
+pitch and expressiveness. Insert them from the tag list or type them. Tags
+that set up the whole line — emotion, style, speed, pitch, expressiveness —
+go to the start of the line, replacing one of the same kind; pauses and sound
+effects go where the cursor is, and a sound effect brings its written sound
+(`<|sfx:laughter|>Haha`), as Boson advises. See
 [Boson's tag reference](https://docs.boson.ai/models/higgs-tts/tags).
 
 ### Bring your own key

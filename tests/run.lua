@@ -403,8 +403,26 @@ eq("the first line has no newline to find",
    Tags.place_tag("two three", "", "prosody:pitch_high", true),
    "<|prosody:pitch_high|> two three")
 do
-  local out, caret = Tags.place_tag("Hello ", "world", "sfx:cough", false)
-  eq("the caret goes right after an inserted tag and its space", out:sub(1, caret), "Hello <|sfx:cough|> ")
+  local out, caret = Tags.place_tag("Hello ", "world", "prosody:pause", false)
+  eq("the caret goes right after an inserted tag and its space", out:sub(1, caret), "Hello <|prosody:pause|> ")
+  out, caret = Tags.place_tag("That's funny. ", "Anyway.", "sfx:laughter", false)
+  eq("a sound effect brings its sound, as Boson advises", out, "That's funny. <|sfx:laughter|>Haha Anyway.")
+  eq("and the caret goes after the sound", out:sub(1, caret), "That's funny. <|sfx:laughter|>Haha ")
+  out = Tags.place_tag("", " haha, sure.", "sfx:laughter", false)
+  eq("a sound already typed is not added twice", out, "<|sfx:laughter|>haha, sure.")
+  eq("crying has no sound word", (Tags.place_tag("", "I... I'm sorry.", "sfx:crying", false)), "<|sfx:crying|>I... I'm sorry.")
+  for _, s in ipairs(Tags.SFX) do
+    check("sfx " .. s .. " has Boson's word or is crying", Tags.SFX_WORDS[s] ~= nil or s == "crying")
+  end
+  eq("emotion leads the line", (Tags.place_tag("one\ntwo ", "three", "emotion:elation", true)), "one\n<|emotion:elation|> two three")
+  eq("a new emotion replaces the old one", (Tags.place_tag("<|emotion:sadness|> two ", "three", "emotion:elation", true)), "<|emotion:elation|> two three")
+  eq("and leaves other leading tags", (Tags.place_tag("<|prosody:speed_fast|> <|emotion:sadness|> go", "", "emotion:elation", true)),
+     "<|emotion:elation|> <|prosody:speed_fast|> go")
+  eq("style replaces style, not emotion", (Tags.place_tag("<|emotion:awe|> <|style:shouting|> hey", "", "style:whispering", true)),
+     "<|style:whispering|> <|emotion:awe|> hey")
+  eq("a tag mid-line is left where it is", (Tags.place_tag("go <|sfx:cough|>Ahem on", "", "emotion:awe", true)),
+     "<|emotion:awe|> go <|sfx:cough|>Ahem on")
+  out, caret = Tags.place_tag("Hello ", "world", "sfx:cough", false)
   out, caret = Tags.place_tag("one\ntwo th", "ree", "prosody:speed_fast", true)
   eq("a line-start tag leaves the caret where it was in the text", out:sub(caret + 1), "ree")
   out, caret = Tags.place_tag("one\n", "<|prosody:speed_slow|> two", "prosody:speed_fast", true)

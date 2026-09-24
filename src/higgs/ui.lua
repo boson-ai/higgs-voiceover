@@ -1132,10 +1132,12 @@ local function tag_rows()
   local function add(cat, value, label, line_start)
     rows[#rows + 1] = { cat = cat, value = value, label = title_case(label), line_start = line_start }
   end
-  for _, e in ipairs(Tags.EMOTIONS) do add("Emotion", "emotion:" .. e, e, false) end
-  for _, st in ipairs(Tags.STYLES) do add("Style", "style:" .. st, st, false) end
-  -- Speed, pitch and expressiveness only count at the start of a line; the
-  -- inserter moves them there.
+  -- Emotion, style, speed, pitch and expressiveness set up the whole line,
+  -- so Boson's guidance is to lead the line with them; the inserter moves
+  -- them there and replaces one of the same kind. Pauses and sound effects
+  -- go where the caret is.
+  for _, e in ipairs(Tags.EMOTIONS) do add("Emotion", "emotion:" .. e, e, true) end
+  for _, st in ipairs(Tags.STYLES) do add("Style", "style:" .. st, st, true) end
   for _, v in ipairs(Tags.SPEEDS) do if v.value ~= "" then add("Speed", "prosody:" .. v.value, v.label, true) end end
   for _, v in ipairs(Tags.PITCHES) do if v.value ~= "" then add("Pitch", "prosody:" .. v.value, v.label, true) end end
   for _, v in ipairs(Tags.EXPRESSIVENESS) do if v.value ~= "" then add("Expressiveness", "prosody:" .. v.value, v.label, true) end end
