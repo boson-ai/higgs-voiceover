@@ -576,16 +576,22 @@ do
     { start = 4.0, finish = 5.0, text = "Three", bound = 5.2 },
   }, 24)
   eq("in on the first frame of the voice", cues[1].from, 1)
-  eq("a short gap closes to two frames", cues[1].to, cues[2].from - 2)
+  eq("a gap under 0.8 s is filled up to the next subtitle", cues[1].to, cues[2].from)
   check("a subtitle stays up at least 20 frames", cues[2].to - cues[2].from >= 20, cues[2].to - cues[2].from)
-  check("a long gap is kept", cues[3].from - cues[2].to >= 12)
+  check("a gap of 0.8 s or more is kept", cues[3].from - cues[2].to >= math.floor(0.8 * 24 + 0.5))
   eq("the last one stays up past the voice, to the end of its clip", cues[3].to, math.floor(5.2 * 24))
   local srt, origin = S.srt(cues, 24)
   eq("the file starts at its first subtitle", origin, 1)
-  eq("SubRip timing", srt:match("^1\n([^\n]+)"), "00:00:00,000 --> 00:00:01,208")
+  eq("SubRip timing", srt:match("^1\n([^\n]+)"), "00:00:00,000 --> 00:00:01,292")
   eq("numbered in order", select(2, srt:gsub("\n%d+\n%d%d:", "")), 2)
   local tight = S.frames({ { start = 1.0, finish = 1.1, text = "a" }, { start = 1.05, finish = 2, text = "b" } }, 25)
-  check("subtitles never overlap", tight[2].from >= tight[1].to + 2)
+  check("subtitles never overlap", tight[2].from >= tight[1].to)
+  local near = S.frames({ { start = 0, finish = 1.0, text = "a" }, { start = 2.2, finish = 3, text = "b" } }, 24)
+  eq("with the half-second lag, a 1.2 s pause leaves 0.7 s — filled", near[1].to, near[2].from)
+  local far = S.frames({ { start = 0, finish = 1.0, text = "a" }, { start = 2.4, finish = 3, text = "b" } }, 24)
+  eq("a 1.4 s pause leaves 0.9 s after the lag — kept", far[2].from - far[1].to, math.floor(2.4 * 24) - (24 + 12))
+  local last = S.frames({ { start = 0, finish = 2.0, text = "a", bound = 2.2 } }, 24)
+  eq("the last subtitle never runs past its clip", last[1].to, math.floor(2.2 * 24))
   local take = { text = "Hello there, friend.", seconds = 2.4, pause = 0.4,
                  words = { { word = "Hello", start = 0.1, ["end"] = 0.4 }, { word = "there", start = 0.45, ["end"] = 0.8 },
                            { word = "friend", start = 1.0, ["end"] = 1.6 } } }

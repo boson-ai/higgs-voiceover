@@ -342,6 +342,20 @@ function M.subtitle_track_end(index)
   return last
 end
 
+--- Where the subtitles already on the track a placement at `at` would use
+-- end, or nil when it would get a new track (see subtitle_track).
+function M.subtitle_track_end_for(name, at)
+  local tl = M.timeline()
+  if not tl then return nil end
+  for i = 1, (tl:GetTrackCount("subtitle") or 0) do
+    if tostring(tl:GetTrackName("subtitle", i)) == name then
+      local e = M.subtitle_track_end(i)
+      if e <= at then return (#M.subtitle_items(i) > 0) and e or nil end
+    end
+  end
+  return nil
+end
+
 --- A subtitle track with this name that ends at or before `at` (so an
 -- append can reach `at`), or a new one. Returns its index.
 function M.subtitle_track(name, at)

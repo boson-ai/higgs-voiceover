@@ -763,6 +763,15 @@ local function place_subtitles(takes, starts, ends)
   end
   if #all == 0 then return done(nil, "no text for these clips") end
   Subs.frames(all, fps)
+  -- The gap rule across placements: subtitles already on the track cannot be
+  -- lengthened through the API, so when this run starts less than
+  -- FILL_SECONDS after them, its first subtitle starts where they end.
+  local prev_end = R.subtitle_track_end_for(app.cfg.vo_track_name, origin + all[1].from)
+  if prev_end then
+    local rel = prev_end - origin
+    local gap = all[1].from - rel
+    if gap > 0 and gap < math.floor(Subs.FILL_SECONDS * fps + 0.5) then all[1].from = rel end
+  end
   local first = all[1].from
   local function write(lead)
     local text = Subs.srt(all, fps, lead)

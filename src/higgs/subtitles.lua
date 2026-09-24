@@ -17,11 +17,12 @@
 --     between an article and its noun, a preposition and its object, a
 --     subject pronoun and its verb, an auxiliary and its verb;
 --   * a subtitle stays up at least 20 frames at 24 fps (0.83 s);
---   * consecutive subtitles are at least 2 frames apart, and a gap too short
---     to read as a pause (under half a second) is closed to those 2 frames so
---     the text does not flicker;
 --   * the last subtitle before a silence stays up about half a second after
---     the voice stops.
+--     the voice stops;
+--   * a gap between two subtitles shorter than 0.8 s is filled by extending
+--     the first to where the second starts, so the text does not blink off
+--     and on between phrases (Alex, 2026-09-23 — in place of the 2-frame gap
+--     broadcast guides use).
 --
 -- Two ways to split, chosen in Settings:
 --   "short"    — short phrases that fit one line, broken at the most natural
@@ -40,8 +41,7 @@ M.LIMIT_JA = 13       -- Japanese (kana) characters per line
 M.LIMIT_TH = 35       -- Thai characters per line
 M.MIN_SECONDS = 20 / 24
 M.MAX_SECONDS = 7
-M.GAP_FRAMES = 2
-M.CLOSE_SECONDS = 0.5 -- gaps shorter than this (after the lag) close to GAP_FRAMES
+M.FILL_SECONDS = 0.8  -- a gap shorter than this is filled by the subtitle before it
 M.LAG_SECONDS = 0.5   -- how long a subtitle stays after the voice stops
 
 ------------------------------------------------------------------ tokens
@@ -534,10 +534,9 @@ end
 -- the same cues with `from` and `to` in frames (to is exclusive).
 function M.frames(cues, fps)
   fps = tonumber(fps) or 24
-  local gap = M.GAP_FRAMES
   local min_len = math.ceil(M.MIN_SECONDS * fps - 1e-6)
   local lag = math.floor(M.LAG_SECONDS * fps + 0.5)
-  local close = math.floor(M.CLOSE_SECONDS * fps + 0.5)
+  local fill = math.floor(M.FILL_SECONDS * fps + 0.5)
 
   for _, c in ipairs(cues) do
     -- In on the first frame of the voice, out on the frame after it stops.
@@ -547,21 +546,24 @@ function M.frames(cues, fps)
   end
   for k, c in ipairs(cues) do
     local nx, prev = cues[k + 1], cues[k - 1]
-    -- Words of neighbouring clips can sit closer than the gap allows.
-    if prev and c.from < prev.to + gap then
-      c.from = prev.to + gap
+    -- Words of neighbouring clips can sit closer than that; never overlap.
+    if prev and c.from < prev.to then
+      c.from = prev.to
       c.to = math.max(c.to, c.from + 1)
     end
-    local ceiling = nx and (nx.from - gap) or c.limit or math.huge
-    if c.limit then ceiling = math.min(ceiling, math.max(c.limit, c.to)) end
-    local out = c.to + lag
-    -- Too short a gap to read as a pause: close it.
-    if nx and nx.from - out < close then out = nx.from - gap end
-    if out - c.from < min_len then out = c.from + min_len end
-    c.to = math.max(c.from + 1, math.min(out, ceiling))
+    -- Stay up a little after the voice, but not past the clip (the last
+    -- subtitle would drag the playhead beyond it) nor into the next one.
+    local ceiling = c.limit and math.max(c.limit, c.to) or math.huge
+    if nx then ceiling = math.min(ceiling, nx.from) end
+    local out = math.min(c.to + lag, ceiling)
+    if out - c.from < min_len then out = math.min(c.from + min_len, nx and nx.from or math.max(ceiling, c.from + min_len)) end
+    c.to = math.max(c.from + 1, out)
+    -- A gap shorter than FILL_SECONDS is filled: the subtitle stays up until
+    -- the next one starts, so the text does not blink off and on.
+    if nx and nx.from > c.to and nx.from - c.to < fill then c.to = nx.from end
     -- Still too short to read: start a little earlier if there is room.
     if c.to - c.from < min_len then
-      local floor = prev and (prev.to + gap) or 0
+      local floor = prev and prev.to or 0
       c.from = math.max(floor, math.min(c.from, c.to - min_len))
     end
   end
