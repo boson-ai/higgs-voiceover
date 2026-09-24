@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+  <title>Higgs VoiceOver</title>
+  <welcome file="welcome.html" mime-type="text/html"/>
+  <conclusion file="conclusion.html" mime-type="text/html"/>
+  <options customize="never" require-scripts="false" hostArchitectures="arm64,x86_64"/>
+  <domains enable_localSystem="true" enable_anywhere="false" enable_currentUserHome="false"/>
+  <installation-check script="resolve_present()"/>
+  <script><![CDATA[
+    function resolve_present() {
+      // Resolve creates this folder when it is installed; without it there is
+      // no menu for the script to appear in.
+      if (system.files.fileExistsAtPath('/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts')) return true;
+      my.result.title = 'DaVinci Resolve is not installed';
+      my.result.message = 'Install DaVinci Resolve from blackmagicdesign.com first, then run this installer again.';
+      my.result.type = 'Fatal';
+      return false;
+    }
+  ]]></script>
+  <choices-outline><line choice="default"/></choices-outline>
+  <choice id="default" title="Higgs VoiceOver"><pkg-ref id="ai.boson.higgs-voiceover"/></choice>
+  <pkg-ref id="ai.boson.higgs-voiceover" version="__VERSION__" onConclusion="none">component.pkg</pkg-ref>
+</installer-gui-script>

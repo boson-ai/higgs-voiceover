@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+
+# Editor noise
+*.swp
+*~
+.vscode/
+.idea/
+
+# Never commit credentials or local state. Higgs VoiceOver keeps its config, API key,
+# voice library and generated takes outside the repo (see config.lua), but
+# guard against a stray copy landing here.
+config.json
+config.json.bad
+*.key
+.env
+
+# Scratch output from local runs
+tmp/
+takes/
+*.log
+
+# Built installers
+dist/
+
+# The built script is a release asset, not source (build.lua writes it)
+/Higgs VoiceOver.lua
+
+# Local tooling: coding-assistant and agent files stay out of the repository
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+AGENTS.md
+.cursor/
+.cursorrules
+.windsurfrules
+.aider*
+.github/copilot-instructions.md

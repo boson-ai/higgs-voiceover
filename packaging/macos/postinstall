@@ -1,0 +1,17 @@
+#!/bin/bash
+# Runs as root after the script lands in Resolve's system-wide Utility folder.
+# Resolve lists every script it finds in both the system folder and the
+# user's own, so a copy left in the user's folder (from install.sh or an
+# earlier manual install), or under the product's old name, would put it in
+# the menu twice. Remove those; leave the user's settings and voices alone.
+set -u
+SYS="/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility"
+rm -f "$SYS/Higgs VO.lua"
+
+USER_NAME=$(stat -f%Su /dev/console 2>/dev/null || true)
+if [ -n "$USER_NAME" ] && [ "$USER_NAME" != "root" ]; then
+  HOME_DIR=$(dscl . -read "/Users/$USER_NAME" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
+  UDIR="$HOME_DIR/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility"
+  rm -f "$UDIR/Higgs VoiceOver.lua" "$UDIR/Higgs VO.lua"
+fi
+exit 0
