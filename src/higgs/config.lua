@@ -31,7 +31,8 @@ local DEFAULTS = {
   auto_place    = true,        -- put every clip of a finished run on the timeline (0.2.0: on)
   -- Subtitles go on the timeline with the clips, timed to Boson's word
   -- timings: "short" phrases of one line, or one "sentence" per subtitle.
-  auto_subtitles = false,
+  auto_subtitles = false,     -- with automatic placing (box beside Generate)
+  manual_subtitles = false,   -- with the Place buttons (box in the audio preview)
   subtitle_split = "short",
   pause_enabled = true,
   pause_ms      = 400,

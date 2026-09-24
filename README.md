@@ -23,8 +23,9 @@ at the playhead. Output formats: wav, mp3, aac, flac.
 
 ### Subtitles
 
-Tick **Add subtitles** and placed clips come with subtitles on a subtitle
-track, timed to the words: the app asks Boson for
+Tick **Add subtitles** — beside Generate for clips placed automatically, in
+the audio preview for the Place buttons — and placed clips come with
+subtitles on a subtitle track, timed to the words: the app asks Boson for
 [word-level timestamps](https://docs.boson.ai/models/higgs-tts/overview#word-level-timestamps)
 and splits the text the way subtitlers do — at punctuation and natural pauses,
 never between "the" and its noun. In **Settings › Timeline › Subtitles** choose **Short

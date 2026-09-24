@@ -12,8 +12,9 @@ All notable changes to Higgs VoiceOver. Versions follow `MAJOR.MINOR.PATCH`;
   **Short phrases** (one line, up to 42 characters, broken at natural points)
   or **Whole sentences** (up to two lines), with a preview of your first line.
 - Generate: **Place on timeline** (now on by default) and **Add subtitles**
-  sit beside Generate; **Play audio when done** and a second **Add subtitles**
-  box sit in the Audio preview card.
+  sit beside Generate (for automatic placing); **Play audio when done** and
+  its own **Add subtitles** box (for the Place buttons) sit in the Audio
+  preview card.
 - Settings apply when you press **Save** (no more saving as you type);
   **Reset to default** puts everything but your API key back to its default.
 - The usage-data checkbox is gone from first run and Settings: nothing was

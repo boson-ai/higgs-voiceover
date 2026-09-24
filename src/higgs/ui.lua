@@ -796,7 +796,11 @@ end
 -- on, their subtitles follow.
 local function quick_place(takes, mode)
   local placed, pushed_first, starts, ends = 0, false, {}, {}
-  local subtitles = app.cfg.auto_subtitles == true
+  -- Automatic placing follows the box beside Generate; the Place buttons
+  -- follow the one in the audio preview.
+  local subtitles
+  if mode == "auto" then subtitles = app.cfg.auto_subtitles == true
+  else subtitles = app.cfg.manual_subtitles == true end
   local function done(ok, err)
     Log.metric("place.quick", { mode = mode or "all", clips = #takes, placed = placed, ok = ok and 1 or 0,
                                 subtitles = subtitles and 1 or 0, error = err })
@@ -2188,7 +2192,7 @@ local function build()
                              ToolTip = "Put every clip from the run on the timeline at the playhead as soon as generation finishes." },
                 ui:Label{ Weight = 0, MinimumSize = { S.group - S.gap, 0 } },
                 ui:CheckBox{ ID = "AutoSubsChk", Text = "Add subtitles", Weight = 0, StyleSheet = T.checkbox(),
-                             ToolTip = "Put subtitles on the timeline with the clips, timed to the words. Set how they are split in Settings." },
+                             ToolTip = "When clips go on the timeline automatically, add their subtitles too. Set how they are split in Settings." },
                 ui:Label{ Weight = 1 },
                 ui:Button{ ID = "QuickStopBtn", Text = "Stop", Weight = 0, StyleSheet = T.button("ghost") },
                 ui:Button{ ID = "QuickGenerateBtn", Text = "Generate", Weight = 0,
@@ -2235,10 +2239,10 @@ local function build()
                   ui:CheckBox{ ID = "AutoPreviewChk", Text = "Play audio when done", Weight = 0, StyleSheet = T.checkbox(),
                                ToolTip = "Start the audio preview as soon as generation finishes." },
                   ui:Label{ Weight = 0, MinimumSize = { S.group - S.gap, 0 } },
-                  -- The same setting as the box beside Generate, here where
-                  -- the place buttons are; the two always agree.
+                  -- Its own setting: subtitles with the place buttons beside it.
+                  -- The box by Generate is for automatic placing.
                   ui:CheckBox{ ID = "PreviewSubsChk", Text = "Add subtitles", Weight = 0, StyleSheet = T.checkbox(),
-                               ToolTip = "Put subtitles on the timeline with the clips, timed to the words. Set how they are split in Settings." },
+                               ToolTip = "When you place clips with these buttons, add their subtitles too. Set how they are split in Settings." },
                   ui:Label{ Weight = 1 },
                   ui:Button{ ID = "QuickPlaceOneBtn", Text = "Place this clip", Weight = 0, StyleSheet = T.button("ghost"), Hidden = true },
                   ui:Button{ ID = "QuickPlaceBtn", Text = "Place all clips", Weight = 0, StyleSheet = T.button("secondary") },
@@ -2671,7 +2675,7 @@ local function push_settings_to_ui()
   itm.AutoPreviewChk.Checked = app.cfg.auto_preview ~= false
   itm.AutoPlaceChk.Checked = app.cfg.auto_place == true
   itm.AutoSubsChk.Checked = app.cfg.auto_subtitles == true
-  itm.PreviewSubsChk.Checked = app.cfg.auto_subtitles == true
+  itm.PreviewSubsChk.Checked = app.cfg.manual_subtitles == true
   itm.SubtitleSplitCombo:Clear()
   for i, e in ipairs(SUBTITLE_SPLITS) do
     itm.SubtitleSplitCombo:AddItem(e.label)
@@ -3016,9 +3020,9 @@ local function wire_generate()
     end
     local voice = quick.voice or app.cfg.default_voice
     local signature = quick_signature(lines)
-    -- Word timings only when subtitles are wanted: asking for them changes
-    -- the request (see Api.speech).
-    local timed = app.cfg.auto_subtitles == true
+    -- Word timings only when subtitles may be wanted, placed automatically
+    -- or by hand later: asking for them changes the request (see Api.speech).
+    local timed = app.cfg.auto_subtitles == true or app.cfg.manual_subtitles == true
     local dir = output_dir()
     if not P.exists(dir) then P.mkdirs(dir) end
     local takes = {}
@@ -3125,14 +3129,16 @@ local function wire_generate()
     app.cfg.auto_place = itm.AutoPlaceChk.Checked and true or false
     Config.save(app.cfg)
   end
-  local function set_subtitles(on, where)
-    app.cfg.auto_subtitles = on and true or false
-    itm.AutoSubsChk.Checked, itm.PreviewSubsChk.Checked = app.cfg.auto_subtitles, app.cfg.auto_subtitles
-    Log.ui("add subtitles " .. (app.cfg.auto_subtitles and "on" or "off"), { where = where })
+  win.On.AutoSubsChk.Clicked = function()
+    app.cfg.auto_subtitles = itm.AutoSubsChk.Checked and true or false
+    Log.ui("add subtitles when placed automatically " .. (app.cfg.auto_subtitles and "on" or "off"))
     Config.save(app.cfg)
   end
-  win.On.AutoSubsChk.Clicked = function() set_subtitles(itm.AutoSubsChk.Checked, "generate") end
-  win.On.PreviewSubsChk.Clicked = function() set_subtitles(itm.PreviewSubsChk.Checked, "preview") end
+  win.On.PreviewSubsChk.Clicked = function()
+    app.cfg.manual_subtitles = itm.PreviewSubsChk.Checked and true or false
+    Log.ui("add subtitles when placed by hand " .. (app.cfg.manual_subtitles and "on" or "off"))
+    Config.save(app.cfg)
+  end
 end
 
 local function wire()
