@@ -2555,7 +2555,8 @@ local function refresh_update_ui()
     update_status((update.error:gsub("^%l", string.upper)), c.error_text)
   elseif found then
     update_status(("Version %s is available"):format(update.latest), c.ok)
-  elseif update.checked_at then
+  elseif update.checked_at or app.cfg.update_state == "current" then
+    -- The default once any check has found nothing newer.
     update_status("Up to date")
   else
     update_status("")
@@ -2580,7 +2581,14 @@ local function check_for_updates(quiet)
         -- In GitHub's words, short: the row has room for a few words, and the
         -- API client's messages are written about Boson.
         local code = tostring(res.code or "")
-        if code == "404" then update.error = "no release published yet"
+        if code == "404" then
+          -- Nothing published under this name: nothing newer to install.
+          update.checked_at = os.time()
+          app.cfg.update_state = "current"
+          Config.save(app.cfg)
+          Log.info("update check: no release published; up to date", { running = VERSION })
+          refresh_update_ui()
+          return
         elseif code == "403" or code == "429" then update.error = "GitHub is busy, try again later"
         elseif code == "" then update.error = "couldn't reach GitHub"
         else update.error = "couldn't check for updates" end
@@ -2608,6 +2616,10 @@ local function check_for_updates(quiet)
         end
       end
       update.latest = is_newer(latest, VERSION) and latest or nil
+      -- Remembered, so the row can say "Up to date" at the next launch
+      -- without asking GitHub again that day.
+      app.cfg.update_state = update.latest and "available" or "current"
+      Config.save(app.cfg)
       Log.info(("update check: latest %s, running %s%s"):format(latest, VERSION, update.latest and " → update available" or ""))
       refresh_update_ui()
       -- Announced once in the Generate tab's status line — never a
@@ -3410,8 +3422,10 @@ function M.run(context)
   shown = true
   shown_at = _G.bmd.gettime()
   layout_check_at = shown_at + 0.5
+  -- Once a day; and at every launch while a newer release is known, so
+  -- Update now is there without pressing Check first.
   if app.cfg.check_updates ~= false and not app.skip_sync
-     and os.time() - (app.cfg.last_update_check or 0) > 86400 then
+     and (os.time() - (app.cfg.last_update_check or 0) > 86400 or app.cfg.update_state == "available") then
     check_for_updates(true)
   end
   -- If the window came up smaller than asked (small screen), lay the content

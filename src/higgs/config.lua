@@ -47,6 +47,7 @@ local DEFAULTS = {
   gap_seconds   = 0.35,        -- silence inserted between sequential segments
   check_updates = true,        -- look at GitHub releases once a day at launch
   last_update_check = 0,
+  update_state  = "",          -- "current" / "available" after the last successful check
   voices        = {},          -- cloned voice library: { {id=, name=, created=} }
   recent_files  = {},
 }
