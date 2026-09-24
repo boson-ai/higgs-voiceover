@@ -29,8 +29,9 @@ subtitles on a subtitle track, timed to the words: the app asks Boson for
 [word-level timestamps](https://docs.boson.ai/models/higgs-tts/overview#word-level-timestamps)
 and splits the text the way subtitlers do — at punctuation and natural pauses,
 never between "the" and its noun. In **Settings › Timeline › Subtitles** choose **Short
-phrases** (one line, up to 42 characters; 16 in Chinese) or **Whole
-sentences** (one sentence per subtitle, up to two lines). They are ordinary
+phrases** (sentences split into shorter one-line segments) or **Whole
+sentences** (a whole sentence at once, on up to two lines). Short gaps between
+subtitles are filled, so the text doesn't blink off between phrases. They are ordinary
 Resolve subtitles: edit, style and export them like any others. Splitting uses
 Boson's word timing, available in English, Chinese and Spanish; a line in
 another language becomes one subtitle for the length of its clip.
@@ -117,11 +118,10 @@ Tag reference: [docs.boson.ai — tags](https://docs.boson.ai/models/higgs-tts/t
 - Settings, drafts and logs: `~/Library/Application Support/HiggsVO/`
 - Generated clips: `~/Movies/Higgs VoiceOver/<project>/` (changeable in Settings)
 
-
 - Your text is sent only to Boson's API, to generate the audio you ask for.
-- Your API key is stored in `config.json`, base64-encoded. That is
-  obfuscation, not encryption: anyone with access to your user account can read
-  it. It is passed to `curl` through a temporary config file, never on the
+- Your API key is stored in `config.json`, base64-encoded, in a folder only
+  your macOS account can open. Base64 is obfuscation, not encryption: anyone
+  with access to your account can read it. It is passed to `curl` through a temporary config file, never on the
   command line, and is never written to the log.
 - One log file is kept per launch (the ten most recent). Logs record what the
   app did — never your API key and never the text you voiced. Settings →
@@ -143,6 +143,9 @@ Tag reference: [docs.boson.ai — tags](https://docs.boson.ai/models/higgs-tts/t
 - **Numbers or dates sound wrong with subtitles on** — Boson skips its text
   normalisation when word timings are requested, so "$1,250" is read as
   written. Write it out ("twelve hundred and fifty dollars") for that line.
+- **Subtitles are one per line, not split** — splitting needs Boson's word
+  timings, which cover English, Chinese and Spanish. Lines in other languages
+  get one subtitle each, the length of the clip.
 - **A line is refused as too long** — the limit is 5,000 characters per line;
   break it into more lines.
 

@@ -4,10 +4,10 @@
 -- as a Resolve panel: one accent for the primary action, three greys for
 -- everything else, state expressed as glyph + colour + word.
 --
--- The Script tab is a stack of three pages that mirror the first-time journey:
--- connect an account → add a script → work the segments. The segment list is
--- the hero; the editor beneath it is where one line is written, directed,
--- auditioned and placed. Voices and Settings are tabs.
+-- Two tabs. Generate: the first-run key screen until a key is saved, then
+-- the voice and tag lists on the left, the text, the run and the audio
+-- preview on the right. Settings: everything that is saved, applied with
+-- Save. Add a voice is a dialog of its own.
 
 local P      = require("higgs.platform")
 local U      = require("higgs.util")
@@ -415,9 +415,7 @@ local function quick_status(text, kind)
   itm.QuickStatus.Text = kind and span(color, text) or tostring(text or "")
 end
 
---- The last take is only worth placing while it still matches what is in
--- the box; the Script tab calls the same condition "Edited".
---- The box splits on line breaks like the Script tab: every line is its own
+--- The box splits on line breaks: every line is its own
 -- take and its own clip, in order. Returns the composed lines and the count
 -- of characters the service will see.
 local function quick_lines()
@@ -534,7 +532,7 @@ local function player_refresh()
   -- The line being played stays lit while it plays, editing or not: the
   -- index still points at the line the take was made from.
   local hl = (player.state ~= "stopped" and quick.last) and player.index or false
-  repaint_box("QuickText", false, hl)
+  repaint_box("QuickText", false, hl, true)   -- highlighting must not move the caret
 end
 
 local function player_stop(silent)
@@ -981,9 +979,16 @@ function repaint_box(id, force, highlight, keep_caret, caret)
     box:InsertPlainText(SENTINEL)
     local marked = box.PlainText
     local at = marked:find(SENTINEL, 1, true)
-    if at then
+    if at and #marked == #text + #SENTINEL then
       text = marked:sub(1, at - 1) .. marked:sub(at + #SENTINEL)
       caret = at - 1
+    else
+      -- Something was selected (an undo can leave text selected) and the
+      -- marker replaced it. Take it back; the caret goes to the start rather
+      -- than the user losing text.
+      pcall(function() box:Undo() end)
+      if box.PlainText ~= text then box.PlainText = text end
+      Log.warn("repaint: caret not kept (a selection was present)")
     end
   end
   box.HTML = tagged_html(text, highlight)
@@ -1216,9 +1221,8 @@ local function selected_quick_tag()
   return nil
 end
 
---- The voice list on the Generate tab: the same voices as the Voices tab,
--- built for picking rather than managing. The selected row is the voice
--- the next take uses.
+--- The voice list on the Generate tab: the built-in voices and the ones
+-- added on this Mac. The starred row is the voice the next take uses.
 function reload_quick_voices()
   local tree = itm.QuickVoiceTree
   suppress = true
@@ -3085,10 +3089,13 @@ local function wire_generate()
     local text = U.read_file(tostring(path), "r")
     if not text then quick_note("Could not read that file.", "error") return end
     if text:find("%z") then quick_note("That does not look like a text file.", "error") return end
+    -- A byte-order mark (Windows editors add one) would be spoken and named.
+    text = text:gsub("^\239\187\191", ""):gsub("\r\n?", "\n")
     suppress = true
     itm.QuickText.PlainText = text
     suppress = false
     quick.text = text
+    quick.dirty_at = now()   -- the draft keeps what was imported
     quick_refresh()
     repaint_box("QuickText", true)
     quick_note(("Imported %s."):format(P.basename(tostring(path))), "ok")
@@ -3167,6 +3174,13 @@ local function wire_generate()
           if quick.stopped then return end
           if not res.ok then
             quick.busy, quick.progress = false, nil
+            -- Lines already made are kept, as Stop keeps them: they are on
+            -- disk and in the bin, and should stay playable and placeable.
+            if #takes > 0 then
+              quick.last = { takes = takes, signature = signature }
+              player.index = 1
+              player_refresh()
+            end
             run_metric("failed", #takes)
             quick_note((#lines > 1 and ("Line %d — %s"):format(i, tostring(res.error)) or tostring(res.error)), "error")
             return

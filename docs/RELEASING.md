@@ -48,7 +48,8 @@ GitHub's automatic "Source code" archives are added by GitHub.
    git push origin main vX.Y.Z
    ```
 5. Create the GitHub release from the tag, paste the changelog entry, attach
-   both assets, and mark it pre-release while in beta.
+   both assets. Publish it as a **normal** release: the in-app updater reads
+   GitHub's "latest release", which skips pre-releases.
 
 ## The Mac installer
 

@@ -95,7 +95,8 @@ only enabled one for the moment of the append.
 
 ## Settings on disk
 
-`config.json` in the settings folder, schema 4. A migration only ever moves a
+`config.json` in the settings folder, schema 5. The folder is made private to
+the user at launch (Resolve runs scripts with a umask of 0). A migration only ever moves a
 value that still equals an old default; a value the user chose is kept.
 Also in that folder: `logs/`, `projects/<project>/generate.json` (the draft),
 `icons/`, `tmp/` (request scratch files).

@@ -409,13 +409,13 @@ end
 function M:speech(spec)
   local text = tostring(spec.text or "")
   if U.trim(text) == "" then
-    spec.on_done({ ok = false, code = "", error = "Nothing to generate — this segment is empty." })
+    spec.on_done({ ok = false, code = "", error = "Nothing to generate — this line is empty." })
     return nil
   end
   local chars = U.utf8_len(text)
   if chars > M.MAX_INPUT_CHARS then
     spec.on_done({ ok = false, code = "",
-      error = string.format("This segment is %d characters; the limit is %d. Break it into shorter lines.",
+      error = string.format("This line is %d characters; the limit is %d. Break it into shorter lines.",
                             chars, M.MAX_INPUT_CHARS) })
     return nil
   end
