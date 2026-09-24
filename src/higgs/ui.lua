@@ -2321,7 +2321,7 @@ local function build()
               ui:ComboBox{ ID = "SubtitleSplitCombo", Weight = 0, MinimumSize = { 150, 0 }, StyleSheet = T.combo() },
               ui:Label{ ID = "SubtitleSplitHint", Text = "", Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") } }),
           -- Splitting needs Boson's word timings, which cover three languages.
-          settings_row("", ui:Label{ Text = "Works in English, Chinese and Spanish. Other languages get one subtitle per line.",
+          settings_row("", ui:Label{ Text = "Only English, Chinese and Spanish subtitles are split. Other languages show one subtitle per line.",
                                      Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") }),
         },
         ui:VGroup{
@@ -2416,8 +2416,8 @@ end
 --- The two ways to split subtitles (Settings › Timeline › Subtitles).
 -- Short phrases is the default (Config).
 local SUBTITLE_SPLITS = {
-  { value = "short",    label = "Short phrases",   hint = "Breaks each line into pieces of up to 42 characters." },
-  { value = "sentence", label = "Whole sentences", hint = "Breaks each line into sentences, one subtitle each." },
+  { value = "short",    label = "Short phrases",   hint = "Split sentences into shorter segments." },
+  { value = "sentence", label = "Whole sentences", hint = "Display a whole sentence at once." },
 }
 
 local function subtitle_split_value()
