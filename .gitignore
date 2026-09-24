@@ -25,14 +25,3 @@ dist/
 
 # The built script is a release asset, not source (build.lua writes it)
 /Higgs VoiceOver.lua
-
-# Local tooling: coding-assistant and agent files stay out of the repository
-CLAUDE.md
-CLAUDE.local.md
-.claude/
-AGENTS.md
-.cursor/
-.cursorrules
-.windsurfrules
-.aider*
-.github/copilot-instructions.md
