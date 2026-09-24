@@ -530,6 +530,24 @@ function M.for_take(take, mode)
   return M.split(tokens, mode), method
 end
 
+--- A whole line as one subtitle, for a clip Boson gave no word timings
+-- for: it runs the length of the clip — known exactly from where the clip
+-- was placed — so nothing is guessed. Long lines wrap onto balanced lines.
+function M.whole(text, seconds)
+  local tokens = M.tokenize(M.display_text(text))
+  if #tokens == 0 then return {} end
+  local limit = M.LIMIT + 1e-6
+  local total = width(tokens, 1, #tokens)
+  local target = total / math.max(1, math.ceil(total / limit))
+  local lines = {}
+  for _, piece in ipairs(best_breaks(tokens, 1, #tokens, limit, function(x, y, w)
+    return 10 + ((w - target) / limit) ^ 2 * 6 + ((y < #tokens and w > target) and 0.5 or 0)
+  end)) do
+    lines[#lines + 1] = join(tokens, piece[1], piece[2])
+  end
+  return { { text = table.concat(lines, "\n"), lines = lines, start = 0, finish = math.max(0.1, tonumber(seconds) or 0) } }
+end
+
 ------------------------------------------------------------------ frames
 
 --- Snap subtitles to the timeline's frames and apply the timing rules.

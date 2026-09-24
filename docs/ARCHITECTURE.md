@@ -73,8 +73,8 @@ future backend for another OS fails immediately and names what is missing.
    the audio, imported, and appended onto a subtitle track named like the VO
    track (a new one when the placement is earlier than that track's last
    subtitle). A take without word timings — another language, Boson returning
-   none, or generated before the box was ticked — gets no subtitles; the
-   message says so. Timing is never guessed.
+   none, or generated before the box was ticked — becomes one subtitle for
+   the length of its clip as placed; timing is never guessed.
 
 ## Resolve behaviour the code relies on
 

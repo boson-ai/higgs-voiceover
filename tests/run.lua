@@ -601,6 +601,9 @@ do
   eq("starting with its first word", tc[1].start, 0.1)
   local none, why = S.for_take({ text = "Hello there, friend.", seconds = 2, pause = 0.4 }, "short")
   check("no word timings, no subtitles — never guessed", #none == 0 and why == "none")
+  local w = S.whole("A line in a language Boson cannot time, long enough to need two lines here.", 4.2)
+  check("without timings the whole line is one subtitle over the clip", #w == 1 and w[1].start == 0 and w[1].finish == 4.2)
+  check("wrapped onto lines that fit", #w[1].lines == 2 and S.text_width(w[1].lines[1]) <= S.LIMIT, w[1].text)
   local off = S.for_take({ text = "Hello there, friend.", seconds = 2, words = { { word = "bonjour", start = 0, ["end"] = 1 } } }, "short")
   eq("timings that do not match the text give none either", #off, 0)
 end

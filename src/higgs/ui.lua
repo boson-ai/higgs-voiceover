@@ -734,9 +734,10 @@ end
 
 --- Subtitles for takes just placed at `starts`, ending at `ends` (absolute
 -- frames, as Resolve placed them), as one
--- .srt on a subtitle track named like the VO track. Only takes Boson gave
--- word timings for get subtitles. Returns the number added (or nil and
--- why), how many takes had subtitles, and how many takes there were.
+-- .srt on a subtitle track named like the VO track. A take Boson gave word
+-- timings for is split (Settings); one without gets its whole line as one
+-- subtitle over the clip. Returns the number added (or nil and why), and
+-- how many takes went whole.
 local function place_subtitles(takes, starts, ends)
   local fps = R.fps()
   local origin = starts[1]
@@ -744,7 +745,13 @@ local function place_subtitles(takes, starts, ends)
   for i, take in ipairs(takes) do
     if take.text then
       local cues, method = Subs.for_take(take, app.cfg.subtitle_split)
-      if method == "words" then timed = timed + 1 else untimed = untimed + 1 end
+      if method == "words" then
+        timed = timed + 1
+      else
+        untimed = untimed + 1
+        local length = (ends[i] and starts[i]) and (ends[i] - starts[i]) / fps or tonumber(take.seconds) or 0
+        cues = Subs.whole(take.text, length)
+      end
       local offset = (starts[i] - origin) / fps
       for _, cue in ipairs(cues) do
         cue.start, cue.finish = cue.start + offset, cue.finish + offset
@@ -759,11 +766,9 @@ local function place_subtitles(takes, starts, ends)
   local function done(added, err)
     Log.metric("subtitles.place", { cues = #all, added = added or 0, ok = added and 1 or 0,
       split = app.cfg.subtitle_split, timed = timed, untimed = untimed, error = err })
-    return added, err, timed
+    return added, err, untimed
   end
-  if #all == 0 then
-    return done(nil, timed == 0 and "Boson didn't return word timings" or "no text for these clips")
-  end
+  if #all == 0 then return done(nil, "these lines have no text to show") end
   Subs.frames(all, fps)
   -- The gap rule across placements: subtitles already on the track cannot be
   -- lengthened through the API, so when this run starts less than
@@ -826,11 +831,12 @@ local function quick_place(takes, mode)
     quick_note(what .. ".", "ok")
     return true
   end
-  local added, serr, timed = place_subtitles(takes, starts, ends)
+  local added, serr, whole = place_subtitles(takes, starts, ends)
   if not added then
     quick_note(("%s, but no subtitles: %s."):format(what, (serr or "Resolve did not add them"):gsub("%.$", "")), "error")
-  elseif timed < #takes then
-    quick_note(("%s, with subtitles for %d of %d clips — Boson didn't return word timings for the rest."):format(what, timed, #takes), "ok")
+  elseif whole > 0 then
+    quick_note(("%s, with subtitles — %s without word timing, shown whole."):format(what,
+      whole == 1 and "1 line" or (whole .. " lines")), "ok")
   else
     quick_note(what .. ", with subtitles.", "ok")
   end
@@ -2310,6 +2316,9 @@ local function build()
             ui:HGroup{ Weight = 1, Spacing = S.group,
               ui:ComboBox{ ID = "SubtitleSplitCombo", Weight = 0, MinimumSize = { 150, 0 }, StyleSheet = T.combo() },
               ui:Label{ ID = "SubtitleSplitHint", Text = "", Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") } }),
+          -- Splitting needs Boson's word timings, which cover three languages.
+          settings_row("", ui:Label{ Text = "Works in English, Chinese and Spanish. Other languages get one subtitle per line.",
+                                     Weight = 1, MinimumSize = { 40, 0 }, StyleSheet = T.label("meta") }),
         },
         ui:VGroup{
           Weight = 0, Spacing = S.rows,
