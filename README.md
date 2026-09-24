@@ -1,14 +1,16 @@
 # Higgs VoiceOver
 
-AI voice-over for DaVinci Resolve, powered by [Higgs TTS 3](https://docs.boson.ai/models/higgs-tts/overview) from Boson AI.
+AI voice-over and word-timed subtitles inside your video editor, powered by
+[Higgs TTS 3](https://docs.boson.ai/models/higgs-tts/overview) from Boson AI.
 
 Type or paste what you want said, direct the delivery with tags, and put the
-voice-over on your timeline — without leaving Resolve. Once installed, open it
-from Resolve's menu bar: **Workspace → Scripts → Higgs VoiceOver** (a project
-must be open).
+voice-over — with its subtitles — on your timeline without leaving your editor.
 
-> 1.0.0 is the first public release, for DaVinci Resolve Studio 20 or later
-> on **macOS**.
+> **1.0.0 is the first release: DaVinci Resolve Studio on macOS.** More
+> editing apps and a Windows version are on the way.
+>
+> In Resolve, open it from the menu bar: **Workspace → Scripts → Higgs
+> VoiceOver** (a project must be open).
 
 ## What it does
 
@@ -61,6 +63,8 @@ Boson account. Get a key from your
 
 ## Requirements
 
+This release:
+
 - **macOS.** A Windows version is on the way.
 - **DaVinci Resolve Studio 20 or later.** The Studio version is required: the
   free version of Resolve does not run script windows. Download it from
@@ -71,15 +75,15 @@ Boson account. Get a key from your
 
 ## Install
 
-1. Download `Higgs-VoiceOver-<version>.pkg` from the
+1. Download `Higgs-VoiceOver-<version>-DaVinci-Resolve-macOS.pkg` from the
    [latest release](../../releases/latest).
 2. Open it and follow the installer. It asks for your password because it
    installs for every user on the Mac.
 3. Quit and reopen DaVinci Resolve, open a project, and choose
    **Workspace → Scripts → Higgs VoiceOver**.
 
-**By hand instead:** download `Higgs-VoiceOver.lua` from the
-[latest release](../../releases/latest), rename it to **`Higgs VoiceOver.lua`**
+**By hand instead:** download `Higgs-VoiceOver-<version>-DaVinci-Resolve-macOS.lua`
+from the [latest release](../../releases/latest), rename it to **`Higgs VoiceOver.lua`**
 (Resolve shows the file name as the menu entry), copy it into
 `~/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility/`,
 and restart Resolve.
@@ -151,11 +155,7 @@ Tag reference: [docs.boson.ai — tags](https://docs.boson.ai/models/higgs-tts/t
 
 Found a bug? [Open an issue](../../issues/new/choose) and attach the latest log.
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) to build from source and run the tests,
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how the code is organised, and
-[docs/RELEASING.md](docs/RELEASING.md) for how releases and the installer are made.
+## Credits
 
 Higgs VoiceOver runs on Boson AI's Higgs TTS 3 API. DaVinci Resolve is a
 trademark of Blackmagic Design.

@@ -21,6 +21,20 @@ M.APP_NAME = "Higgs VoiceOver"
 M.SCRIPT_FILE = "Higgs VoiceOver.lua"
 M.LEGACY_SCRIPT_FILES = { "Higgs VO.lua" }   -- earlier names, removed on install/update
 
+--- Is this GitHub release asset the script for this app — Resolve on a Mac?
+-- Release files are named for the app and OS
+-- ("Higgs-VoiceOver-1.0.0-DaVinci-Resolve-macOS.lua"), and GitHub rewrites
+-- spaces, so names are compared by letters and digits only. The plain names
+-- of earlier releases still count.
+function M.is_script_asset(name)
+  local key = tostring(name or ""):lower():gsub("[^%w]", "")
+  local function k(s) return (s:lower():gsub("[^%w]", "")) end
+  if key == k(M.SCRIPT_FILE) then return true end
+  for _, old in ipairs(M.LEGACY_SCRIPT_FILES) do if key == k(old) then return true end end
+  return key:find("^higgsvoiceover") ~= nil and key:find("lua$") ~= nil
+     and key:find("resolve", 1, true) ~= nil and key:find("windows", 1, true) == nil
+end
+
 local DEFAULTS = {
   schema        = M.SCHEMA,
   api_key_b64   = "",

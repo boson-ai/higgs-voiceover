@@ -170,6 +170,17 @@ eq("a name that sanitises away means the base folder",
 eq("an empty setting falls back to the default",
   Config.project_output_dir({ output_dir = "" }, ""), Config.default_output_dir())
 
+describe("update: which release file is the script")
+do
+  check("the release name with app and OS", Config.is_script_asset("Higgs-VoiceOver-1.0.0-DaVinci-Resolve-macOS.lua"))
+  check("as GitHub may rewrite it", Config.is_script_asset("Higgs.VoiceOver.1.0.0.DaVinci.Resolve.macOS.lua"))
+  check("the plain name of 0.1.0", Config.is_script_asset("Higgs-VoiceOver.lua"))
+  check("the old short name", Config.is_script_asset("Higgs VO.lua"))
+  check("not the installer", not Config.is_script_asset("Higgs-VoiceOver-1.0.0-DaVinci-Resolve-macOS.pkg"))
+  check("not a Windows build", not Config.is_script_asset("Higgs-VoiceOver-1.1.0-DaVinci-Resolve-Windows.lua"))
+  check("not another editor's", not Config.is_script_asset("Higgs-VoiceOver-1.1.0-Premiere-Pro-macOS.lua"))
+end
+
 describe("config — migration")
 local moved = Config.migrate({ schema = 2, output_dir = Config.takes_dir() })
 eq("a config still on the old default folder is moved", moved.output_dir, Config.default_output_dir())
