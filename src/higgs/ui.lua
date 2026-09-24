@@ -1058,6 +1058,11 @@ end
 -- every two seconds (the card refreshes on every keystroke).
 local bin_cache = { at = -10, name = nil }
 function refresh_preview_where()
+  -- Nothing generated, nothing saved: the line says nothing.
+  if not (quick.last and #quick.last.takes > 0) then
+    itm.PreviewWhere.Text, itm.PreviewWhere.ToolTip = "", ""
+    return
+  end
   if now() - bin_cache.at > 2 or not bin_cache.name then
     bin_cache.name = R.bin_name()
     bin_cache.at = now()
