@@ -133,16 +133,22 @@ end
 -- before and after it. `line_start` tags (speed, pitch, expressiveness)
 -- only take effect at the start of a turn, so they move to the front of
 -- that line and replace any tag already there on the same axis.
+-- Also returns where the caret belongs afterwards, as a byte offset into
+-- the result: right after an inserted positional tag; for a line-start tag,
+-- where it was in the user's text (never inside the new tag).
 function M.place_tag(before, after, value, line_start)
   local token = M.token(value)
-  if not line_start then return before .. token .. " " .. after end
+  if not line_start then
+    return before .. token .. " " .. after, #before + #token + 1
+  end
   local nl = before:match(".*()\n")
   local head, line = "", before
   if nl then head, line = before:sub(1, nl), before:sub(nl + 1) end
   local axis = value:match("^prosody:(%a+)_")
   local rest = line .. after
   if axis then rest = rest:gsub("^%s*<|prosody:" .. axis .. "_[%w_]+|>%s*", "") end
-  return head .. token .. " " .. rest
+  local out = head .. token .. " " .. rest
+  return out, math.max(#out - #after, #head + #token + 1)
 end
 
 --- Render one tag token.

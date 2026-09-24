@@ -402,6 +402,14 @@ eq("leaves a different axis alone",
 eq("the first line has no newline to find",
    Tags.place_tag("two three", "", "prosody:pitch_high", true),
    "<|prosody:pitch_high|> two three")
+do
+  local out, caret = Tags.place_tag("Hello ", "world", "sfx:cough", false)
+  eq("the caret goes right after an inserted tag and its space", out:sub(1, caret), "Hello <|sfx:cough|> ")
+  out, caret = Tags.place_tag("one\ntwo th", "ree", "prosody:speed_fast", true)
+  eq("a line-start tag leaves the caret where it was in the text", out:sub(caret + 1), "ree")
+  out, caret = Tags.place_tag("one\n", "<|prosody:speed_slow|> two", "prosody:speed_fast", true)
+  eq("and never inside the new tag when the old one was after the caret", out:sub(1, caret), "one\n<|prosody:speed_fast|> ")
+end
 
 
 describe("voice names from the list endpoint")

@@ -904,22 +904,66 @@ local function tagged_html(text, highlight)
   -- Each line is its own paragraph with a little space under it, so a
   -- paragraph break reads differently from a wrapped line. New paragraphs
   -- typed later inherit the block format.
+  -- pre-wrap keeps every space as typed: HTML would collapse two spaces to
+  -- one, and the box would no longer match the text the caret is placed in.
+  -- An empty line needs Qt's own empty-paragraph marker: a bare
+  -- <p><br></p> reads back as two line breaks, so blank lines doubled on
+  -- every repaint, and an empty <p></p> is dropped altogether.
   for i, html in ipairs(rows) do
-    rows[i] = ("<p style='margin:0 0 5px 0; color:%s'>%s</p>"):format(c.text, html ~= "" and html or "<br>")
+    if html == "" then
+      rows[i] = ("<p style='-qt-paragraph-type:empty; margin:0 0 5px 0; white-space:pre-wrap; color:%s'><br /></p>"):format(c.text)
+    else
+      rows[i] = ("<p style='margin:0 0 5px 0; white-space:pre-wrap; color:%s'>%s</p>"):format(c.text, html)
+    end
   end
   return table.concat(rows)
 end
 
+--- U+E000, a private-use character that never appears in real text.
+local SENTINEL = "\238\128\128"
+
+--- Which tags the text holds, in order — not where. With positions in it,
+-- every keystroke before a tag changed the signature and rebuilt the box,
+-- which throws the caret to the start.
 local function tag_signature(text)
   local parts = {}
-  for a, value in text:gmatch("()<|([^|>]-)|>") do parts[#parts + 1] = a .. ":" .. value end
+  for value in text:gmatch("<|([^|>]-)|>") do parts[#parts + 1] = value end
   return table.concat(parts, ";")
+end
+
+--- Put the caret at a byte offset of `text` (what the box now holds) and
+-- scroll it into view. Rewriting a box's text or HTML leaves the caret at
+-- the start; there is no call to read or set its position, only to move it
+-- a step at a time, so it walks there: by lines, then by characters from
+-- whichever end of the line is nearer.
+local function place_caret(box, text, offset)
+  offset = math.max(0, math.min(offset or 0, #text))
+  local before = text:sub(1, offset)
+  local line = select(2, before:gsub("\n", ""))
+  local line_start = (before:match(".*()\n") or 0)
+  local col = U.utf8_len(before:sub(line_start + 1))
+  local line_end = text:find("\n", offset + 1, true) or (#text + 1)
+  local len = U.utf8_len(text:sub(line_start + 1, line_end - 1))
+  pcall(function()
+    box:MoveCursor("Start", "MoveAnchor")
+    for _ = 1, line do box:MoveCursor("NextBlock", "MoveAnchor") end
+    if col <= len - col then
+      for _ = 1, col do box:MoveCursor("NextCharacter", "MoveAnchor") end
+    else
+      box:MoveCursor("EndOfBlock", "MoveAnchor")
+      for _ = 1, len - col do box:MoveCursor("PreviousCharacter", "MoveAnchor") end
+    end
+    box:EnsureCursorVisible()
+  end)
 end
 
 -- Re-rendering moves the caret to the end, so it happens only when the set
 -- of tags changed (one typed or deleted by hand) or once after typing past
 -- a tag at the very end, where the colour would otherwise carry on.
-function repaint_box(id, force, highlight)
+-- `keep_caret`: the user is typing, so the caret must end up where it was
+-- (found by dropping a marker at it; typing never leaves a selection).
+-- `caret`: a byte offset to put it at instead (after an inserted tag).
+function repaint_box(id, force, highlight, keep_caret, caret)
   local box = itm[id]
   local text = box.PlainText
   local st = paint[id] or {}
@@ -936,12 +980,20 @@ function repaint_box(id, force, highlight)
   st.highlight = highlight
   local was = suppress
   suppress = true
+  if keep_caret and not caret then
+    box:InsertPlainText(SENTINEL)
+    local marked = box.PlainText
+    local at = marked:find(SENTINEL, 1, true)
+    if at then
+      text = marked:sub(1, at - 1) .. marked:sub(at + #SENTINEL)
+      caret = at - 1
+    end
+  end
   box.HTML = tagged_html(text, highlight)
+  if caret then place_caret(box, text, caret) end
   suppress = was
 end
 
---- U+E000, a private-use character that never appears in real text.
-local SENTINEL = "\238\128\128"
 
 --- Insert a tag into a text box exactly once, replacing whatever is
 -- selected. The edit is worked out here rather than left to the widget:
@@ -958,10 +1010,10 @@ function insert_tag(id, value, line_start)
   local pos = text:find(SENTINEL, 1, true)
   if not pos then suppress = was return nil end
 
-  local out = Tags.place_tag(text:sub(1, pos - 1), text:sub(pos + #SENTINEL), value, line_start)
+  local out, caret = Tags.place_tag(text:sub(1, pos - 1), text:sub(pos + #SENTINEL), value, line_start)
   box.PlainText = out
   suppress = was
-  return out
+  return out, caret
 end
 
 --- Every new take passes through here: the trailing pause is appended (wav
@@ -2913,18 +2965,20 @@ local function wire_generate()
     quick.text = itm.QuickText.PlainText
     quick.dirty_at = now()
     quick_refresh()
-    repaint_box("QuickText")
+    repaint_box("QuickText", false, nil, true)
   end
   local function insert_quick_tag()
     local r = selected_quick_tag()
     if not r then quick_note("Pick a tag in the list first.") return end
-    local out = insert_tag("QuickText", r.value, r.line_start)
+    local out, caret = insert_tag("QuickText", r.value, r.line_start)
     if not out then return end
     Log.metric("tag.insert", { type = r.cat, tag = r.value, moved_to_line_start = r.line_start and 1 or 0 })
     quick.text = out
     quick.dirty_at = now()
     quick_refresh()
-    repaint_box("QuickText", true)
+    -- Colour it, and leave the caret after the tag so the next insert or
+    -- keystroke carries on from there (it used to go back to the start).
+    repaint_box("QuickText", true, nil, false, caret)
   end
   win.On.QuickTagInsert.Clicked = insert_quick_tag
   win.On.QuickTagTree.ItemDoubleClicked = insert_quick_tag

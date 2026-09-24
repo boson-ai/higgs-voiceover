@@ -297,10 +297,23 @@ than its size hint.
 `CursorPosition`, `SelectionStart`, `HasSelection` are all nil. `InsertPlainText`
 reliably replaces a selection; `InsertHTML` does not. To edit around a
 selection, insert a private-use sentinel with `InsertPlainText` and rebuild the
-text in Lua. Setting `HTML`/`PlainText` moves the caret to the end; inserting
-preserves it. `PlainText` reads back clean even when HTML was set. Rich text
+text in Lua. **Setting `HTML`/`PlainText` moves the caret to the start**
+(measured; an older note here said "the end", and that belief put every tag
+after the first at the top of the text); inserting preserves it. The caret
+cannot be read, but it can be moved: `MoveCursor("Start", "MoveAnchor")`, then
+`"NextBlock"` / `"NextCharacter"` / `"EndOfBlock"` / `"PreviousCharacter"`
+— always pass `"MoveAnchor"`, because without it the moves **select** as they
+go and the next insert replaces the selection. About 0.4 ms per step;
+`EnsureCursorVisible()` scrolls to it. To keep the caret across a rewrite,
+insert a sentinel at it, rewrite without the sentinel, then walk back to it.
+`PlainText` reads back clean even when HTML was set. Rich text
 supports `<p style='margin:0 0 5px 0'>` for paragraph spacing and
-`background-color` on spans. It takes no `line-height` from anywhere.
+`background-color` on spans. It takes no `line-height` from anywhere. Two
+round-trip traps in HTML you set: an empty line written `<p><br></p>` reads
+back as **two** line breaks (blank lines double on every rewrite) and an empty
+`<p></p>` is dropped — use Qt's own `<p style='-qt-paragraph-type:empty'><br /></p>`;
+and runs of spaces collapse unless the paragraph has `white-space:pre-wrap`,
+after which the box no longer matches the text you think it holds.
 
 **`ui:Slider`** — **delivers no events whatsoever.** `ValueChanged`,
 `SliderPressed`, `SliderMoved` and `ActionTriggered` were all driven with a real
