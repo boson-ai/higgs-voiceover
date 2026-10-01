@@ -199,10 +199,11 @@ body.theme-light {
 }
 
 /*
- * Buttons. Every style has the same box (26 px, 6 px radius, 12 px type)
- * and spells out its three states — rest, hover, disabled — so a disabled
- * button never lights up under the pointer and no style borrows another's
- * hover. One filled (primary) button per screen.
+ * Buttons: two kinds. Primary (green, filled) for the one main action on a
+ * screen; secondary (grey border) for everything else. Same box for both
+ * (26 px, 6 px radius, 12 px type), each with its rest, hover and disabled
+ * state spelled out so a disabled button never lights up under the pointer.
+ * Links and transport glyphs are not buttons in this sense.
  */
 button {
   height: 26px;
@@ -225,16 +226,6 @@ button.primary { background-color: var(--accent); border-color: var(--accent); c
 button.primary:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
 button.primary:disabled, button.primary:disabled:hover { background-color: var(--accent-dim); border-color: var(--accent-dim); color: var(--accent-dim-text); }
 button.wide-primary { min-width: 120px; }
-
-/* Ghost: no box at rest; the hover fill shows it is a button. */
-button.ghost { border-color: transparent; color: var(--text-2); padding: 0 8px; }
-button.ghost:hover { background-color: var(--hover); border-color: transparent; color: var(--text); }
-button.ghost:disabled, button.ghost:disabled:hover { background-color: transparent; border-color: transparent; color: var(--text-3); }
-
-/* Danger keeps its red under the pointer; grey like the rest when it cannot act. */
-button.ghost.danger { color: var(--error); }
-button.ghost.danger:hover { color: var(--error); background-color: var(--error-tint); }
-button.ghost.danger:disabled, button.ghost.danger:disabled:hover { color: var(--text-3); background-color: transparent; }
 
 /* Link: green text, no box. */
 button.link { height: 20px; padding: 0; border-width: 0; border-color: transparent; color: var(--accent-text); }
@@ -343,7 +334,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .left {
   display: flex;
   flex-direction: column;
-  width: 340px;
+  width: 400px;
   flex-shrink: 0;
   margin-right: 24px;
 }
@@ -361,6 +352,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   margin-bottom: 8px;
 }
 .head .title { flex: 1 1 0; }
+.head > button { margin-left: 8px; }
 .block { margin-bottom: 8px; }
 .section-gap { margin-top: 16px; }
 
@@ -376,10 +368,10 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   border: 1px solid var(--border);
   border-radius: 8px;
   background-color: var(--surface);
-  padding: 12px 14px;
-  margin-top: 12px;
+  padding: 16px 18px;
+  margin-top: 24px;
 }
-.card .row { margin-top: 8px; }
+.card .row { margin-top: 14px; }
 .card .row:first-child { margin-top: 0; }
 .card.empty .dim { opacity: 0.4; }
 
@@ -427,7 +419,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .split > .group { margin-top: 6px; flex-shrink: 0; }
 /* The buttons keep to the right edge, also on a line of their own. */
 .split > .group:last-child { flex: 1 0 auto; justify-content: flex-end; }
-.card .row.split { margin-top: 2px; }
+.card .row.split { margin-top: 8px; }
 
 /* A docked panel is often narrow: one column that scrolls, the text first. */
 @media (max-width: 720px) {

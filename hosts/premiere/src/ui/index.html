@@ -42,9 +42,9 @@
       <div class="right">
         <div class="head">
           <div class="title">Text</div>
-          <button class="ghost" id="text-clear" title="Empty the text box.">Clear</button>
-          <button class="ghost" id="text-import">Import from file…</button>
-          <button class="ghost" id="text-export">Save as .txt…</button>
+          <button id="text-clear" title="Empty the text box.">Clear</button>
+          <button id="text-import">Import from file…</button>
+          <button id="text-export">Save as .txt…</button>
         </div>
         <textarea id="text" placeholder="Type or paste what you want said. Each line becomes its own clip."></textarea>
         <div class="row split">
@@ -54,7 +54,7 @@
           </div>
           <div class="spacer"></div>
           <div class="row group">
-          <button class="ghost" id="stop">Stop</button>
+          <button id="stop">Stop</button>
           <button class="primary wide-primary" id="generate">Generate</button>
           </div>
         </div>
@@ -85,7 +85,7 @@
             </div>
             <div class="spacer"></div>
             <div class="row group">
-            <button class="ghost" id="place-one" hidden>Place this clip</button>
+            <button id="place-one" hidden>Place this clip</button>
             <button id="place-all">Place on timeline</button>
             </div>
           </div>
@@ -96,9 +96,9 @@
         <div class="list" id="voice-list" title="Double-click a voice to use it."></div>
         <div class="row split block" style="margin-top: 2px">
           <div class="row group">
-          <button class="ghost" id="voice-add">Add voice…</button>
-          <button class="ghost" id="voice-preview">Preview</button>
-          <button class="ghost danger" id="voice-delete">Delete</button>
+          <button id="voice-add">Add voice…</button>
+          <button id="voice-preview">Preview</button>
+          <button id="voice-delete">Delete</button>
           </div>
           <div class="spacer"></div>
           <div class="row group">
@@ -156,7 +156,7 @@
       <div class="srow"><div class="label">Save clips in</div><div class="field">
         <input type="text" id="set-out-dir" class="grow">
         <span class="secondary ellipsis" id="set-out-project" style="max-width: 160px"></span>
-        <button class="ghost" id="set-browse">Browse…</button>
+        <button id="set-browse">Browse…</button>
       </div></div>
       <div class="srow"><div class="label">Add to the name</div><div class="field">
         <label class="check wide"><input type="checkbox" id="set-name-words">First words</label>
@@ -184,7 +184,7 @@
       <div class="title">Support</div>
       <div class="srow"><div class="label">Version</div><div class="field">
         <span id="set-version"></span>
-        <button class="ghost" id="set-check">Check for updates</button>
+        <button id="set-check">Check for updates</button>
         <button class="primary" id="set-download" hidden>Download</button>
         <span class="secondary ellipsis" id="set-update-status"></span>
         <button class="link" id="set-notes" hidden>Release notes</button>
@@ -194,13 +194,13 @@
       </div></div>
       <div class="srow"><div class="label">Logs</div><div class="field">
         <span class="grow ellipsis" id="set-log"></span>
-        <button class="ghost" id="set-open-log" title="One log per session; the ten most recent are kept. Attach the latest when reporting a problem.">Open log folder</button>
+        <button id="set-open-log" title="One log per session; the ten most recent are kept. Attach the latest when reporting a problem.">Open log folder</button>
       </div></div>
     </div>
   </div>
   <div class="settings-foot" id="settings-foot" hidden>
     <span class="meta spacer" id="set-status"></span>
-    <button class="ghost" id="set-reset" title="Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save.">Reset to default</button>
+    <button id="set-reset" title="Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save.">Reset to default</button>
     <button class="primary" id="set-save">Save</button>
   </div>
 
