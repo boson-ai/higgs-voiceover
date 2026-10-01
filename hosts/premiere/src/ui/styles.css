@@ -1,9 +1,9 @@
 /*
  * Higgs VoiceOver panel for Premiere Pro.
  *
- * Premiere's own greys and accent, so the panel reads as part of the app;
- * quiet, flat surfaces with hairline borders and one filled button per
- * screen. Every colour is a token, set per Premiere theme (body.theme-*).
+ * Premiere's own greys with the product's green (the same values as the
+ * Resolve build), quiet, flat surfaces with hairline borders and one filled
+ * button per screen. Every colour is a token, set per Premiere theme (body.theme-*).
  *
  * UXP supports a subset of CSS (scripts/lint-css.mjs enforces it): no grid,
  * no gap, no transitions, no box-shadow, no line-height, no text-transform.
@@ -20,12 +20,16 @@ body {
   --text: #e6e6e6;
   --text-2: #a3a3a3;
   --text-3: #6b6b6b;
-  --accent: #4f7cff;
-  --accent-hover: #6a90ff;
-  --accent-text: #8aa8ff;
+  /* Green as in Resolve: a mark or fill takes the saturated value, running
+     text the lighter one; the disabled primary keeps a dim green. */
+  --accent: #1d7028;
+  --accent-hover: #23862f;
+  --accent-text: #22ad2e;
+  --accent-dim: #1a3d20;
+  --accent-dim-text: #82b48a;
   --on-accent: #ffffff;
-  --selected: #1f2a4a;
-  --ok: #4cc37f;
+  --selected: #1d3322;
+  --ok: #5cb46f;
   --warn: #e8a33d;
   --error: #f0645c;
   --error-tint: #3a2121;
@@ -55,7 +59,6 @@ body.theme-dark {
   --hover: #353535;
   --border: #3c3c3c;
   --border-strong: #545454;
-  --selected: #24304f;
 }
 
 body.theme-light {
@@ -68,11 +71,13 @@ body.theme-light {
   --text: #1e1e1e;
   --text-2: #5a5a5a;
   --text-3: #8e8e8e;
-  --accent: #3b63fb;
-  --accent-hover: #2f54e0;
-  --accent-text: #2a4fd6;
-  --selected: #dfe6ff;
-  --ok: #1d8a4c;
+  --accent: #1d7028;
+  --accent-hover: #175a20;
+  --accent-text: #1a7424;
+  --accent-dim: #d3e6d5;
+  --accent-dim-text: #4f7a56;
+  --selected: #dcecdd;
+  --ok: #1d7a35;
   --warn: #a8640f;
   --error: #d1373f;
   --error-tint: #fbe4e4;
@@ -215,7 +220,7 @@ button.primary {
   min-width: 96px;
 }
 button.primary:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); }
-button.primary:disabled { background-color: var(--hover); border-color: var(--hover); color: var(--text-3); }
+button.primary:disabled { background-color: var(--accent-dim); border-color: var(--accent-dim); color: var(--accent-dim-text); }
 
 button.ghost { border-color: transparent; color: var(--text-2); padding: 0 7px; }
 button.ghost:hover { color: var(--text); background-color: var(--hover); }
