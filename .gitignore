@@ -30,3 +30,4 @@ dist/
 node_modules/
 /hosts/premiere/build/
 /hosts/premiere/build-preview/
+/hosts/premiere/build-cep/

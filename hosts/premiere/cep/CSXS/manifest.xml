@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Higgs VoiceOver, CEP build (Premiere Pro 22 and later). Version is stamped from package.json at build. -->
+<ExtensionManifest Version="7.0" ExtensionBundleId="ai.boson.higgs-voiceover.cep" ExtensionBundleVersion="__VERSION__"
+  ExtensionBundleName="Higgs VoiceOver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ExtensionList>
+    <Extension Id="ai.boson.higgs-voiceover.cep.panel" Version="__VERSION__" />
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList>
+      <Host Name="PPRO" Version="[22.0,99.9]" />
+    </HostList>
+    <LocaleList>
+      <Locale Code="All" />
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="11.0" />
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    <Extension Id="ai.boson.higgs-voiceover.cep.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./index.html</MainPath>
+          <ScriptPath>./jsx/host.jsx</ScriptPath>
+          <CEFCommandLine>
+            <!-- Node for files and HTTPS; the microphone for Add a voice. -->
+            <Parameter>--enable-nodejs</Parameter>
+            <Parameter>--mixed-context</Parameter>
+            <Parameter>--enable-media-stream</Parameter>
+            <Parameter>--allow-file-access-from-files</Parameter>
+          </CEFCommandLine>
+        </Resources>
+        <Lifecycle>
+          <AutoVisible>true</AutoVisible>
+        </Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>Higgs VoiceOver</Menu>
+          <Geometry>
+            <Size><Height>620</Height><Width>880</Width></Size>
+            <MinSize><Height>420</Height><Width>360</Width></MinSize>
+          </Geometry>
+          <Icons>
+            <Icon Type="Normal">./icons/panel-dark.png</Icon>
+            <Icon Type="DarkNormal">./icons/panel-dark.png</Icon>
+          </Icons>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>
