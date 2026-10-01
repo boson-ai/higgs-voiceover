@@ -560,7 +560,10 @@ dialog {
 
 .dialog .card { margin-top: 12px; }
 /* Both source cards fill the same box, so switching tabs moves nothing. */
-.av-source .src-card { flex: 1 0 auto; }
+.av-source .src-card { flex: 1 0 auto; display: flex; flex-direction: column; }
+.av-source .src-card[hidden] { display: none; }
+/* The last row sits on the card's bottom edge in both cards. */
+.av-source .src-card > .row:last-child { margin-top: auto; padding-top: 14px; }
 
 /* Two-way switch (Record | Use a file). */
 .seg {
@@ -582,8 +585,9 @@ dialog {
 .seg-item:hover { color: var(--text); }
 .seg-item.active { background-color: var(--hover); color: var(--text); }
 .bar-fill.live { background-color: var(--error); }
-/* Nothing to play yet: the transport steps back; the hint stays readable. */
-.card.empty .dim { opacity: 0.4; }
+/* Nothing to play yet: timecodes take the disabled colour, like the disabled
+   transport buttons beside them; no extra fading on top. */
+.card.empty .mono { color: var(--text-3); }
 
 /* Add a voice keeps one size whatever is chosen (as in Resolve): the source
    area holds the taller page's height, the transcript keeps its room when
