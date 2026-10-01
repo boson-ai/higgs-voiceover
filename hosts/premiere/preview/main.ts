@@ -2,6 +2,7 @@
 //
 //   npm run preview, then open http://localhost:5178/?state=<state>&theme=<theme>
 //   state: setup | empty | text | done | placed | settings | addvoice   theme: darkest | dark | light
+//   host:  cep (microphone, native captions — the default) | uxp (file-only voices, subtitles to the bin)
 
 import { createMockHost } from "./mock-host.ts";
 import { startLog } from "../src/app/log.ts";
@@ -25,6 +26,7 @@ async function main() {
     key: state === "setup" ? "" : "bai-preview",
     theme: q.get("theme") ?? "darkest",
     sequence: q.get("sequence") !== "none",
+    cep: q.get("host") !== "uxp",
   });
   const log = await startLog(host.files, "0.1.0-preview");
   const store = await openStore(host.files, host.secrets);

@@ -204,19 +204,48 @@
     <button class="primary" id="set-save" style="min-width: 88px">Save</button>
   </div>
 
-  <!-- Add a voice. Premiere gives panels no microphone, so a voice is made from a file. -->
+  <!-- Add a voice: record (where the host has a microphone) or use a file. -->
   <dialog id="add-voice">
     <div class="dialog">
       <div class="hero">Add a voice</div>
-      <div class="secondary gap-s">Use a clear recording of one person speaking, 3 to 30 seconds long.</div>
-      <div class="row gap-m">
-        <button id="av-pick">Choose a file…</button>
-        <span class="meta ellipsis spacer" id="av-file">3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span>
+      <div class="seg gap-m" id="av-tabs">
+        <div class="seg-item active" id="av-tab-record">Record</div>
+        <div class="seg-item" id="av-tab-file">Use a file</div>
       </div>
+
+      <div class="col" id="av-page-record">
+        <div class="card">
+          <div class="row">
+            <button id="av-rec" style="min-width: 128px">Record</button>
+            <div class="spacer"></div>
+          </div>
+          <div class="row">
+            <button class="icon" id="av-play" title="Play">▶</button>
+            <button class="icon" id="av-stop" title="Stop">■</button>
+            <span class="mono" id="av-t-now" style="width: 34px; margin-left: 4px">0:00</span>
+            <div class="bar"><div class="bar-fill" id="av-bar-fill"></div></div>
+            <span class="mono secondary" id="av-t-total" style="width: 40px; text-align: right">0:30</span>
+          </div>
+          <div class="row"><span class="meta spacer" id="av-hint">Speak normally, in the language you want this voice to generate.</span></div>
+        </div>
+        <div class="row gap-s">
+          <span class="secondary">Microphone</span>
+          <span class="ellipsis spacer" id="av-mic">the system default input</span>
+        </div>
+      </div>
+
+      <div class="col" id="av-page-file" hidden>
+        <div class="secondary gap-m">Use a clear recording of one person speaking, 3 to 30 seconds long.</div>
+        <div class="row gap-s">
+          <button id="av-pick">Choose a file…</button>
+          <span class="meta ellipsis spacer" id="av-file">3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span>
+        </div>
+      </div>
+
       <div class="secondary gap-m">Voice name</div>
       <input type="text" id="av-name" class="gap-s" placeholder="e.g. Alex — narration">
       <label class="check gap-m"><input type="checkbox" id="av-has-text">Include transcript (optional)</label>
-      <textarea id="av-text" class="gap-s" placeholder="What is said, word for word." hidden></textarea>
+      <textarea id="av-text" class="gap-s" placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate." hidden></textarea>
       <label class="check wrap gap-m"><input type="checkbox" id="av-consent">This is my own voice, or I have the speaker's permission to make a synthetic copy of it.</label>
       <div class="meta gap-s" id="av-result"></div>
       <div class="actions">

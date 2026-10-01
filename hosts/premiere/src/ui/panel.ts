@@ -5,7 +5,8 @@
 // says so here:
 //   * the text box is a plain text field — UXP cannot colour part of an
 //     editable field, so tags are not coloured while typing;
-//   * Add a voice takes a file only — UXP gives panels no microphone;
+//   * Add a voice records only where the host has a microphone (CEP);
+//     UXP gives panels none, so it takes a file;
 //   * subtitles land in the bin as an .srt to drag in (app/placing.ts);
 //   * an update is downloaded in the browser and installed by opening it.
 
@@ -17,6 +18,7 @@ import * as Text from "../core/text.ts";
 import * as Tags from "../core/tags.ts";
 import * as Boson from "../core/boson.ts";
 import * as Wav from "../core/wav.ts";
+import * as Rec from "../core/recorder.ts";
 import * as Settings from "../core/settings.ts";
 import { Client } from "../app/client.ts";
 import { placeTakes } from "../app/placing.ts";
@@ -781,25 +783,200 @@ export function startPanel({ host, log, store, client }: Deps): void {
   });
 
   // ------------------------------------------------------------- add a voice
+  //
+  // As in the Resolve dialog: Record | Use a file; a 3-2-1 count-in that is
+  // not in the take; two take slots so "Record again" never loses the last
+  // one; one line under the transport for guidance, the level while
+  // recording, and the verdict on the take (core/recorder). Record is there
+  // only when the host has a microphone (the CEP build); UXP shows the file
+  // page alone.
 
   const dlg = $("add-voice") as HTMLDialogElement;
-  const av = { path: "" };
+  const REC_LIMIT = Rec.GOOD_MAX;
+  const COUNT_IN = 3;
+  interface RecTake { wav: Uint8Array; path: string; seconds: number; transcript: string }
+  const av = {
+    source: "record" as "record" | "file",
+    path: "",
+    state: "idle" as "idle" | "counting" | "recording",
+    countLeft: 0,
+    take: null as RecTake | null,
+    previous: null as RecTake | null,
+    slot: 1,
+    verdict: null as Rec.Verdict | null,
+    peak: 0,
+    timer: undefined as ReturnType<typeof setInterval> | undefined,
+    creating: false,
+    playing: false,
+  };
+  const recorder = host.recorder;
+  const transcript = () => (input("av-has-text").checked ? Text.trim(area("av-text").value) : "");
+  const noMic = () => host.info.os === "windows"
+    ? "Nothing reached the microphone. Allow desktop apps to use it in Windows Settings › Privacy & security › Microphone — or use a file on the other tab."
+    : "Nothing reached the microphone. Allow Premiere Pro in System Settings › Privacy & Security › Microphone and restart it — or use a file on the other tab.";
+  // A take recorded from given words is sent with them; changed words would
+  // make a worse voice from a button that looked safe.
+  const takeStale = () => !!av.take && av.take.transcript !== "" && av.take.transcript !== transcript();
 
   function openAddVoice() {
-    av.path = "";
+    host.player.stop();
+    Object.assign(av, { source: recorder ? "record" : "file", path: "", state: "idle", take: null, previous: null, verdict: null, creating: false, playing: false });
     input("av-name").value = "";
     input("av-has-text").checked = false;
     area("av-text").value = "";
-    show("av-text", false);
     input("av-consent").checked = false;
     say("av-file", "3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB");
     say("av-result", "");
+    show("av-tabs", !!recorder);
+    if (recorder) void recorder.device().then((name) => say("av-mic", name || "the system default input"));
     refreshAddVoice();
     dlg.showModal();
   }
+
   function refreshAddVoice() {
-    enable("av-create", !!av.path && input("av-name").value.trim() !== "" && input("av-consent").checked);
+    const recording = av.state !== "idle";
+    $("av-tab-record").classList.toggle("active", av.source === "record");
+    $("av-tab-file").classList.toggle("active", av.source === "file");
+    show("av-page-record", av.source === "record");
+    show("av-page-file", av.source === "file");
+    show("av-text", input("av-has-text").checked);
+    area("av-text").readOnly = recording;
+
+    say("av-rec", av.state === "counting" ? `Starting in ${av.countLeft}…` : av.state === "recording" ? "Stop" : av.take ? "Record again" : "Record");
+    $("av-rec").title = av.state === "counting" ? "Cancel" : "";
+    enable("av-play", !!av.take && !recording);
+    enable("av-stop", !!av.take && av.playing);
+    say("av-play", av.playing && host.player.state === "playing" ? "❚❚" : "▶");
+
+    // One bar: how far a recording has run, then where playback is in the take.
+    const fill = $("av-bar-fill");
+    fill.classList.toggle("live", av.state === "recording");
+    const barW = fill.parentElement?.clientWidth ?? 0;
+    if (av.state === "recording") {
+      const s = recorder?.seconds() ?? 0;
+      fill.style.width = `${Math.round(Math.min(1, s / REC_LIMIT) * barW)}px`;
+      say("av-t-now", Text.formatClock(s));
+      say("av-t-total", "−" + Text.formatClock(Math.max(0, REC_LIMIT - s)));
+    } else {
+      const total = av.take?.seconds ?? REC_LIMIT;
+      const at = av.playing ? host.player.position : 0;
+      fill.style.width = `${av.take ? Math.round(Math.min(1, at / Math.max(0.01, total)) * barW) : 0}px`;
+      say("av-t-now", Text.formatClock(at));
+      say("av-t-total", Text.formatClock(total));
+    }
+
+    // Guidance before a take, the level while recording, the verdict after.
+    let hint = "Speak normally, in the language you want this voice to generate.", role: string | undefined;
+    if (av.state === "recording") {
+      const n = Rec.levelNote(av.peak);
+      hint = n ? n.message : Rec.coach(recorder?.seconds() ?? 0, REC_LIMIT);
+      role = n ? n.kind : undefined;
+    } else if (av.state === "counting") hint = "Get ready…";
+    else if (takeStale()) { hint = "This take was recorded from different words."; role = "warn"; }
+    else if (av.verdict?.kind === "error") { hint = av.verdict.message; role = "error"; }
+    else if (av.verdict?.clipped) { hint = av.verdict.message; role = "warn"; }
+    else if (av.verdict?.good) { hint = av.verdict.message; role = "ok"; }
+    say("av-hint", hint, role);
+
+    // Create is live only when it can succeed; the tooltip says what's missing.
+    const missing: string[] = [];
+    if (!input("av-name").value.trim()) missing.push("a name");
+    if (av.source === "record") {
+      if (!av.take) missing.push("a recording");
+      else if (takeStale() || (av.verdict && !av.verdict.ok)) missing.push("a usable recording");
+    } else if (!av.path) missing.push("a file");
+    if (input("av-has-text").checked && !transcript()) missing.push("the transcript");
+    if (!input("av-consent").checked) missing.push("the permission box");
+    enable("av-create", missing.length === 0 && !recording && !av.creating);
+    $("av-create").title = missing.length ? "Still needed: " + missing.join(", ") : "";
+    enable("av-cancel", !av.creating);
   }
+
+  function stopTimer() { if (av.timer) { clearInterval(av.timer); av.timer = undefined; } }
+
+  async function recStart() {
+    if (!recorder) return;
+    host.player.stop(); av.playing = false;
+    const opened = await recorder.open();
+    if (!opened.ok) {
+      log.warn("record failed to open", { error: opened.error });
+      av.verdict = { ok: false, kind: "error", message: noMic() } as Rec.Verdict;
+      refreshAddVoice();
+      return;
+    }
+    log.info("record start");
+    av.state = "counting"; av.countLeft = COUNT_IN; av.verdict = null;
+    // The take that exists becomes the fallback; the new one goes to the other slot.
+    if (av.take) { av.previous = av.take; av.slot = av.slot === 1 ? 2 : 1; }
+    av.take = null;
+    const t0 = Date.now();
+    stopTimer();
+    av.timer = setInterval(() => {
+      if (av.state === "counting") {
+        const left = COUNT_IN - Math.floor((Date.now() - t0) / 1000);
+        if (left <= 0) { av.state = "recording"; recorder.begin(); }
+        else av.countLeft = left;
+      } else if (av.state === "recording") {
+        av.peak = recorder.level();
+        if (recorder.seconds() >= REC_LIMIT) { void recStop(); return; }
+      }
+      refreshAddVoice();
+    }, 100);
+    refreshAddVoice();
+  }
+
+  async function recStop() {
+    if (!recorder) return;
+    stopTimer();
+    if (av.state === "counting") {
+      // Cancelled before it began: the previous take comes back.
+      recorder.cancel(); av.state = "idle"; av.take = av.previous; refreshAddVoice();
+      return;
+    }
+    av.state = "idle";
+    const pcm = await recorder.stop();
+    const stats = pcm ? Wav.pcmStats(pcm) : null;
+    const made = pcm ? Wav.pcmToWav(pcm) : null;
+    if (!pcm || !stats || !made || stats.seconds <= 0) {
+      av.verdict = { ok: false, kind: "error", message: noMic() } as Rec.Verdict;
+      av.take = av.previous;
+      refreshAddVoice();
+      return;
+    }
+    const path = files.join(files.dataDir, "tmp", `take_${av.slot}.wav`);
+    await files.write(path, made.wav);
+    av.verdict = Rec.judge(stats, transcript());
+    av.take = av.verdict.silent ? null : { wav: made.wav, path, seconds: stats.seconds, transcript: transcript() };
+    if (av.verdict.silent) av.verdict = { ok: false, kind: "error", message: noMic() } as Rec.Verdict;
+    log.metric("record.take", { seconds: stats.seconds, peak: stats.peak, rms: stats.rms, hot_pct: stats.hot_ratio * 100, verdict: av.verdict.kind });
+    refreshAddVoice();
+  }
+
+  on("av-rec", "click", () => { if (av.state === "idle") void recStart(); else void recStop(); });
+  on("av-play", "click", () => {
+    if (!av.take) return;
+    if (av.playing && host.player.state === "playing") { host.player.pause(); refreshAddVoice(); return; }
+    if (!av.playing) host.player.load(av.take.path, av.take.seconds);
+    av.playing = true;
+    host.player.play();
+    refreshAddVoice();
+  });
+  on("av-stop", "click", () => { host.player.stop(); av.playing = false; refreshAddVoice(); });
+  host.player.onChange(() => {
+    if (!dlg.open || !av.playing) return;
+    if (host.player.state === "stopped") av.playing = false;
+    refreshAddVoice();
+  });
+  // Switching tabs mid-take stops and keeps; nothing carries over between tabs.
+  const switchTo = (source: "record" | "file") => () => {
+    if (av.state !== "idle") void recStop();
+    host.player.stop(); av.playing = false;
+    av.source = source;
+    refreshAddVoice();
+  };
+  on("av-tab-record", "click", switchTo("record"));
+  on("av-tab-file", "click", switchTo("file"));
+
   on("av-pick", "click", async () => {
     const path = await files.pickOpen(["wav", "mp3", "flac", "aac", "opus", "m4a"]);
     if (!path) return;
@@ -810,22 +987,32 @@ export function startPanel({ host, log, store, client }: Deps): void {
     say("av-result", "");
     refreshAddVoice();
   });
-  on("av-name", "input", refreshAddVoice);
-  on("av-consent", "change", refreshAddVoice);
-  on("av-has-text", "change", () => show("av-text", input("av-has-text").checked));
-  on("av-cancel", "click", () => dlg.close());
+  for (const id of ["av-name", "av-text"]) on(id, "input", refreshAddVoice);
+  for (const id of ["av-consent", "av-has-text"]) on(id, "change", refreshAddVoice);
+  on("av-cancel", "click", () => {
+    stopTimer();
+    if (av.state !== "idle") recorder?.cancel();
+    av.state = "idle";
+    host.player.stop();
+    dlg.close();
+    loadTake();
+  });
   on("av-create", "click", async () => {
     const name = input("av-name").value.trim();
-    const audio = await files.read(av.path);
+    const audio = av.source === "record" ? av.take?.wav ?? null : await files.read(av.path);
     if (!audio) { say("av-result", "Could not read that file.", "error"); return; }
-    enable("av-create", false);
+    av.creating = true;
+    refreshAddVoice();
     say("av-result", "Creating the voice…");
-    const res = await client.createVoice(name, audio, input("av-has-text").checked ? area("av-text").value : "");
-    log.metric("voice.create", { ok: res.ok ? 1 : 0, source: "file", code: res.code ?? "" });
+    const res = await client.createVoice(name, audio, transcript());
+    av.creating = false;
+    log.metric("voice.create", { ok: res.ok ? 1 : 0, source: av.source, code: res.code ?? "" });
     if (!res.ok || !res.id) { say("av-result", res.error ?? "Couldn't create the voice.", "error"); refreshAddVoice(); return; }
     cfg().voices = [...(cfg().voices ?? []).filter((v) => v.id !== res.id), { id: res.id, name, created: Math.floor(Date.now() / 1000) }];
     await store.save();
+    host.player.stop();
     dlg.close();
+    loadTake();
     st.pickedVoice = res.id;
     renderVoices();
     note(`Created “${name}”. It's in your voice list.`, "ok");

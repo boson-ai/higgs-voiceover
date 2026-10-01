@@ -1,10 +1,10 @@
 // Putting a run's clips on the timeline, and their subtitles in the bin.
 //
-// Premiere's UXP API has no way yet to make a caption track or write a
-// caption (Adobe: "working on it", 2025-09; still missing in 26.5 and the 27
-// beta). So subtitles are written as an .srt timed from the first clip's
-// start and imported into the bin; the user drags it onto the timeline at
-// that clip. When Adobe adds captions, only the end of this file changes.
+// Subtitles are written as one .srt timed from the first clip's start. The
+// CEP build turns it into native captions there (ExtendScript's
+// createCaptionTrack). Premiere's UXP API cannot make captions yet (Adobe:
+// "working on it"; still missing in 26.5 and the 27 beta), so the UXP build
+// imports the file into the bin for the user to drag in.
 
 import type { Host, Take } from "../host/host.ts";
 import type { Log } from "./log.ts";
@@ -102,6 +102,17 @@ export async function placeTakes(host: Host, log: Log, takes: Take[], o: PlaceOp
   if (!(await host.files.write(path, subs.text))) {
     done(0, "write");
     return { ok: true, kind: "error", message: `${what}, but no subtitles: couldn't write ${host.files.basename(path)}.` };
+  }
+  // Native captions where the host can make them (CEP: ExtendScript), the
+  // file's time zero at the first clip's start; else the bin.
+  if (host.timeline.addCaptions) {
+    const made = await host.timeline.addCaptions(path, res.starts[0]);
+    if (made.ok) {
+      done(subs.cues);
+      const whole = subs.whole > 0 ? ` — ${subs.whole === 1 ? "1 line" : subs.whole + " lines"} without word timing, shown whole` : "";
+      return { ok: true, kind: "ok", message: `${what}, with subtitles${whole}.` };
+    }
+    log.warn("captions failed, subtitles go to the bin", { error: made.error });
   }
   const imported = await host.timeline.importToBin([path]);
   if (!imported.ok) {

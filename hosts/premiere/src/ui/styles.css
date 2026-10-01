@@ -522,4 +522,27 @@ dialog {
   border-left: 2px solid var(--error);
 }
 
+.dialog .card { margin-top: 12px; }
+
+/* Two-way switch (Record | Use a file). */
+.seg {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+}
+.seg-item {
+  height: 22px;
+  padding: 0 14px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  color: var(--text-2);
+}
+.seg-item:hover { color: var(--text); }
+.seg-item.active { background-color: var(--hover); color: var(--text); }
+.bar-fill.live { background-color: var(--error); }
+
 [hidden] { display: none; }

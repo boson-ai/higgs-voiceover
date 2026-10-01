@@ -106,6 +106,33 @@ export interface Timeline {
   importToBin(paths: string[]): Promise<{ ok: boolean; error?: string }>;
   /** Place the takes back to back on the named audio track at the playhead, or after what is there. */
   place(paths: { path: string; seconds: number }[], trackName: string): Promise<PlaceResult>;
+  /**
+   * Native captions from an .srt, its time zero at `atSeconds` in the
+   * sequence. Only where the host can (CEP: ExtendScript createCaptionTrack);
+   * without it subtitles go to the bin for the user to drag in.
+   */
+  addCaptions?(srtPath: string, atSeconds: number): Promise<{ ok: boolean; error?: string }>;
+}
+
+/**
+ * The microphone, where the host gives a panel one (CEP's Chromium; not
+ * UXP). Captures the system's default input as 24 kHz mono 16-bit PCM, the
+ * format core/wav.ts and core/recorder.ts work in.
+ */
+export interface Recorder {
+  /** The input that will be used, by name ("" if unknown). */
+  device(): Promise<string>;
+  /** Open the input; capture starts at `begin()`, so a count-in records nothing. */
+  open(): Promise<{ ok: boolean; error?: string }>;
+  begin(): void;
+  /** Loudest sample since the last call, 0–1. */
+  level(): number;
+  /** Seconds captured so far. */
+  seconds(): number;
+  /** Stop and hand back the PCM (null if nothing was captured). Closes the input. */
+  stop(): Promise<Uint8Array | null>;
+  /** Stop and drop everything. */
+  cancel(): void;
 }
 
 export interface HostInfo {
@@ -125,4 +152,5 @@ export interface Host {
   player: Player;
   timeline: Timeline;
   info: HostInfo;
+  recorder?: Recorder;
 }

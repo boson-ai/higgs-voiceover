@@ -6,7 +6,7 @@
 // the browser's, fonts are the browser's, and UXP's CSS limits are enforced
 // by scripts/lint-css.mjs rather than by rendering here.
 
-import type { Host, HttpRequest, HttpResponse, PlaceResult, Take } from "../src/host/host.ts";
+import type { Host, HttpRequest, HttpResponse, PlaceResult, Recorder, Take } from "../src/host/host.ts";
 import { createMediaPlayer } from "../src/host/player.ts";
 
 const enc = (s: string) => new TextEncoder().encode(s);
@@ -39,6 +39,28 @@ export interface MockOptions {
   sequence?: boolean;
   latest?: string;
   failSpeech?: number;
+  /** Act as the CEP build: a microphone and native captions. */
+  cep?: boolean;
+}
+
+/** A stand-in microphone: a voice-like tone, so the dialog can be tried without a real input. */
+function mockRecorder(): Recorder {
+  let started = 0, capturing = false;
+  const seconds = () => (capturing ? (Date.now() - started) / 1000 : 0);
+  return {
+    device: async () => "MacBook Pro Microphone (preview)",
+    open: async () => ({ ok: true }),
+    begin() { started = Date.now(); capturing = true; },
+    level: () => (capturing ? 0.35 + 0.3 * Math.abs(Math.sin(Date.now() / 180)) : 0.02),
+    seconds,
+    async stop() {
+      const s = seconds();
+      capturing = false;
+      const wav = toneWav(s);
+      return wav.slice(44);
+    },
+    cancel() { capturing = false; },
+  };
 }
 
 export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Host & { placed: PlaceResult[]; fs: Map<string, Uint8Array> } {
@@ -138,9 +160,11 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
         placed.push(r);
         return r;
       },
+      ...(o.cep ? { addCaptions: async (path: string) => { bin.add(path); return { ok: true }; } } : {}),
     },
+    ...(o.cep ? { recorder: mockRecorder() } : {}),
     info: {
-      appName: "Premiere Pro (preview)",
+      appName: o.cep ? "Premiere Pro (preview, CEP)" : "Premiere Pro (preview, UXP)",
       appVersion: "26.5",
       pluginVersion: "0.1.0",
       os: "macos",
