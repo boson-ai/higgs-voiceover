@@ -73,7 +73,6 @@ export function startPanel({ host, log, store, client }: Deps): void {
     show("page-setup", setup);
     show("page-generate", !setup && st.page === "generate");
     show("page-settings", !setup && st.page === "settings");
-    show("settings-foot", !setup && st.page === "settings");
     // First run is one screen: no tabs, no chip, no header.
     show("topbar", !setup);
     $("tab-generate").classList.toggle("active", st.page === "generate");
@@ -542,7 +541,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     enable("pause-stop", !!t || !!st.previewing);
     const p = host.player;
     const playing = p.state === "playing";
-    say("play", playing ? "❚❚" : "▶");
+    $("play-glyph").className = playing ? "g g-pause" : "g g-play";
     $("play").title = playing ? "Pause" : "Play";
     const dur = p.duration || (t?.seconds ?? 0);
     say("time-now", mmss(p.position));
@@ -844,7 +843,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     $("av-rec").title = av.state === "counting" ? "Cancel" : "";
     enable("av-play", !!av.take && !recording);
     enable("av-stop", !!av.take && av.playing);
-    say("av-play", av.playing && host.player.state === "playing" ? "❚❚" : "▶");
+    $("av-play-glyph").className = av.playing && host.player.state === "playing" ? "g g-pause" : "g g-play";
 
     // One bar: how far a recording has run, then where playback is in the take.
     const fill = $("av-bar-fill");

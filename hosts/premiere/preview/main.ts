@@ -45,6 +45,7 @@ async function main() {
     await wait(200);
     while (!(document.getElementById("stop") as HTMLButtonElement).disabled) await wait(100);
   }
+  if (q.get("play")) click("play");
   if (state === "settings") click("tab-settings");
   if (q.get("dirty")) {
     const track = document.getElementById("set-track") as HTMLInputElement;

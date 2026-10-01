@@ -233,12 +233,18 @@ button.link:hover { background-color: transparent; border-color: transparent; co
 button.link:disabled, button.link:disabled:hover { background-color: transparent; border-color: transparent; color: var(--text-3); }
 
 /* Transport glyphs. */
-button.icon { width: 26px; padding: 0; border-color: transparent; color: var(--text-2); font-size: 13px; }
-button.icon.chevron { font-size: 22px; padding-bottom: 3px; }
-/* The square reads smaller than the triangle at one size; this evens them out. */
-button.icon.square { font-size: 16px; }
-button.icon:hover { background-color: var(--hover); border-color: transparent; color: var(--text); }
-button.icon:disabled, button.icon:disabled:hover { background-color: transparent; border-color: transparent; color: var(--text-3); }
+button.icon { width: 26px; padding: 0; border-color: transparent; --g: var(--text-2); display: flex; align-items: center; justify-content: center; }
+button.icon:hover { background-color: var(--hover); border-color: transparent; --g: var(--text); }
+button.icon:disabled, button.icon:disabled:hover { background-color: transparent; border-color: transparent; --g: var(--text-3); }
+
+/* Transport glyphs, drawn with borders so play, pause and stop are the same
+   size whatever the font (text glyphs differed wildly). 10 × 12 box. */
+.g { width: 0; height: 0; }
+.g-play { border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 10px solid var(--g); margin-left: 2px; }
+.g-pause { width: 3px; height: 12px; border-left: 3px solid var(--g); border-right: 3px solid var(--g); }
+.g-stop { width: 10px; height: 10px; background-color: var(--g); border-radius: 1px; }
+.g-prev { border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 7px solid var(--g); }
+.g-next { border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid var(--g); }
 
 /* Two buttons offered as a pair (Connect / Skip for now) share a width. */
 button.pair { min-width: 96px; }
@@ -330,6 +336,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   flex-direction: row-reverse;
   flex: 1 1 0;
   min-height: 0;
+  padding-bottom: 16px;
 }
 .left {
   display: flex;
@@ -454,9 +461,16 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 
 /* ------------------------------------------------------------- settings */
 
-.settings { overflow-y: auto; padding-right: 12px; }
-.section { margin-bottom: 24px; max-width: 760px; }
-.section .title { margin-bottom: 10px; }
+.settings { overflow-y: auto; }
+/* The settings column keeps its width and sits in the middle of the panel. */
+.settings-center { display: flex; flex-direction: row; justify-content: center; }
+.settings-body { flex: 0 1 760px; min-width: 0; padding-bottom: 24px; }
+.section { margin-bottom: 24px; }
+/* Titles sit in a 26 px row, as on the Generate tab, so both tabs start on the same line. */
+.section .title { display: flex; align-items: center; height: 26px; margin-bottom: 8px; }
+/* Save and Reset follow the last section, one section gap below it, on the column's right edge. */
+.settings-actions { display: flex; flex-direction: row; align-items: center; }
+.settings-actions > button { margin-left: 8px; }
 .srow {
   display: flex;
   flex-direction: row;
@@ -479,18 +493,6 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .field > * { margin-right: 8px; }
 .field > *:last-child { margin-right: 0; }
 .field .grow { flex: 1 1 0; min-width: 0; }
-.settings-foot {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-shrink: 0;
-  height: 44px;
-  margin: 0 -16px;
-  padding: 0 16px;
-  border-top: 1px solid var(--border);
-}
-.settings-foot > button { margin-left: 8px; }
-
 /* ------------------------------------------------------------- dialog */
 
 dialog {
