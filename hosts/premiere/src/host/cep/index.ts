@@ -16,5 +16,6 @@ export function createCepHost(pluginVersion: string, media: HTMLVideoElement): H
     timeline,
     info: hostInfo(pluginVersion),
     recorder: createWebAudioRecorder(),
+    richText: true,
   };
 }

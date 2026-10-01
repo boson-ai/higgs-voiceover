@@ -15,3 +15,25 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; border: 2px solid transparent; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }
 ::-webkit-scrollbar-corner { background: transparent; }
+
+/* Coloured tags in the text box (src/ui/editor.ts): the mirror draws the text,
+   the textarea above it keeps the caret and selection with its own text
+   transparent. Both must lay text out identically. */
+.editor.highlight { position: relative; background-color: var(--field); border-radius: 6px; }
+.editor.highlight .editor-mirror, .editor.highlight #text {
+  font-family: var(--ui); font-size: 13px; line-height: 1.5; letter-spacing: normal;
+  padding: 10px 12px; border: 1px solid transparent; margin: 0; box-sizing: border-box;
+  white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4;
+}
+.editor.highlight .editor-mirror {
+  display: block; position: absolute; inset: 0; overflow: hidden;
+  color: var(--text); pointer-events: none;
+}
+.editor.highlight #text {
+  position: relative; background: transparent; color: transparent; caret-color: var(--text);
+  border-color: var(--border); resize: none;
+}
+.editor.highlight #text:focus { border-color: var(--border-strong); }
+.editor.highlight #text::placeholder { color: var(--text-3); }
+.editor.highlight #text::selection { background: rgba(120, 160, 255, 0.35); color: transparent; }
+.k-other { color: var(--text-2); }

@@ -153,4 +153,6 @@ export interface Host {
   timeline: Timeline;
   info: HostInfo;
   recorder?: Recorder;
+  /** The panel is Chromium: tags can be coloured inside the text box. */
+  richText?: boolean;
 }

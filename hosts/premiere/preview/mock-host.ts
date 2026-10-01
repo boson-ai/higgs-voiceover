@@ -162,7 +162,7 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
       },
       ...(o.cep ? { addCaptions: async (path: string) => { bin.add(path); return { ok: true }; } } : {}),
     },
-    ...(o.cep ? { recorder: mockRecorder() } : {}),
+    ...(o.cep ? { recorder: mockRecorder(), richText: true } : {}),
     info: {
       appName: o.cep ? "Premiere Pro (preview, CEP)" : "Premiere Pro (preview, UXP)",
       appVersion: "26.5",

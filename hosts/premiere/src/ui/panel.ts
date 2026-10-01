@@ -3,8 +3,8 @@
 // The same product as the Resolve window (hosts/resolve/src/higgs/ui.lua):
 // same layout, words and rules, in Premiere's look. Where Premiere differs it
 // says so here:
-//   * the text box is a plain text field — UXP cannot colour part of an
-//     editable field, so tags are not coloured while typing;
+//   * tags are coloured in the text box where the panel is Chromium (CEP);
+//     UXP cannot colour part of an editable field, so there it is plain;
 //   * Add a voice records only where the host has a microphone (CEP);
 //     UXP gives panels none, so it takes a file;
 //   * subtitles land in the bin as an .srt to drag in (app/placing.ts);
@@ -23,6 +23,7 @@ import * as Settings from "../core/settings.ts";
 import { Client } from "../app/client.ts";
 import { placeTakes } from "../app/placing.ts";
 import { checkForUpdate } from "../app/updates.ts";
+import { attachHighlighter } from "./editor.ts";
 
 const KEY_URL = "https://www.boson.ai/workspace/api-key";
 
@@ -266,6 +267,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
   // The caret is remembered when the box loses focus to a list or button.
   let caret = { start: 0, end: 0 };
   const box = area("text");
+  const highlighter = host.richText ? attachHighlighter(box, $("text-mirror"), $("editor")) : null;
   const keepCaret = () => { caret = { start: box.selectionStart ?? 0, end: box.selectionEnd ?? 0 }; };
   for (const ev of ["keyup", "mouseup", "blur", "input"]) box.addEventListener(ev, keepCaret);
 
@@ -347,6 +349,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
    */
   function refresh(keepNote = false) {
     if (!keepNote) st.note = null;
+    highlighter?.paint();
     const { lines: ls, chars, over } = lines();
     const n = ls.length;
     enable("generate", n > 0 && !over && !st.busy);
@@ -828,6 +831,18 @@ export function startPanel({ host, log, store, client }: Deps): void {
     if (recorder) void recorder.device().then((name) => say("av-mic", name || "the system default input"));
     refreshAddVoice();
     dlg.showModal();
+    // One size for both tabs: the source area holds the taller page.
+    const source = $("av-source");
+    source.style.minHeight = "";
+    let tallest = 0;
+    for (const page of recorder ? ["av-page-record", "av-page-file"] : ["av-page-file"]) {
+      const was = $(page).hidden;
+      $(page).hidden = false;
+      tallest = Math.max(tallest, $(page).offsetHeight);
+      $(page).hidden = was;
+    }
+    if (recorder) { show("av-page-record", av.source === "record"); show("av-page-file", av.source === "file"); }
+    source.style.minHeight = `${tallest}px`;
   }
 
   function refreshAddVoice() {
@@ -836,7 +851,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     $("av-tab-file").classList.toggle("active", av.source === "file");
     show("av-page-record", av.source === "record");
     show("av-page-file", av.source === "file");
-    show("av-text", input("av-has-text").checked);
+    $("av-text").classList.toggle("reserve", !input("av-has-text").checked);
     area("av-text").readOnly = recording;
 
     say("av-rec", av.state === "counting" ? `Starting in ${av.countLeft}…` : av.state === "recording" ? "Stop" : av.take ? "Record again" : "Record");

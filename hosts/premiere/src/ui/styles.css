@@ -363,13 +363,21 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .block { margin-bottom: 8px; }
 .section-gap { margin-top: 16px; }
 
+.editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 140px;
+  margin-bottom: 10px;
+}
 #text {
   flex: 1 1 0;
   min-height: 140px;
   padding: 10px 12px;
-  margin-bottom: 10px;
   font-size: 13px;
 }
+/* Only Chromium builds draw it (chromium.css); UXP leaves the box plain. */
+.editor-mirror { display: none; }
 
 .card {
   border: 1px solid var(--border);
@@ -432,7 +440,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 @media (max-width: 720px) {
   .cols { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
   .right { flex: 0 0 auto; }
-  #text { flex: 0 0 auto; height: 170px; }
+  .editor { flex: 0 0 auto; height: 170px; }
   .left { width: auto; margin-right: 0; margin-top: 20px; flex: 0 0 auto; }
   #voice-list { flex: 0 0 auto; height: 150px; }
   #tag-box { flex: 0 0 auto; height: 220px; }
@@ -548,5 +556,12 @@ dialog {
 .seg-item:hover { color: var(--text); }
 .seg-item.active { background-color: var(--hover); color: var(--text); }
 .bar-fill.live { background-color: var(--error); }
+
+/* Add a voice keeps one size whatever is chosen (as in Resolve): the source
+   area holds the taller page's height, the transcript keeps its room when
+   folded away, and the result line is always reserved. */
+.av-source { display: flex; flex-direction: column; }
+.reserve { visibility: hidden; }
+#av-result { height: 32px; overflow: hidden; }
 
 [hidden] { display: none; }

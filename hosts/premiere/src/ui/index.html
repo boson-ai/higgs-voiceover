@@ -46,7 +46,10 @@
           <button id="text-import">Import from file…</button>
           <button id="text-export">Save as .txt…</button>
         </div>
-        <textarea id="text" placeholder="Type or paste what you want said. Each line becomes its own clip."></textarea>
+        <div class="editor" id="editor">
+          <div class="editor-mirror" id="text-mirror" aria-hidden="true"></div>
+          <textarea id="text" placeholder="Type or paste what you want said. Each line becomes its own clip."></textarea>
+        </div>
         <div class="row split">
           <div class="row group">
           <label class="check wide" title="Put every clip from the run on the timeline at the playhead as soon as generation finishes."><input type="checkbox" id="auto-place">Place on timeline</label>
@@ -217,6 +220,7 @@
         <div class="seg-item" id="av-tab-file">Use a file</div>
       </div>
 
+      <div class="av-source" id="av-source">
       <div class="col" id="av-page-record">
         <div class="card">
           <div class="row">
@@ -245,11 +249,12 @@
           <span class="meta ellipsis spacer" id="av-file">3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span>
         </div>
       </div>
+      </div>
 
       <div class="secondary gap-m">Voice name</div>
       <input type="text" id="av-name" class="gap-s" placeholder="e.g. Alex — narration">
       <label class="check gap-m"><input type="checkbox" id="av-has-text">Include transcript (optional)</label>
-      <textarea id="av-text" class="gap-s" placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate." hidden></textarea>
+      <textarea id="av-text" class="gap-s reserve" placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate."></textarea>
       <label class="check wrap gap-m"><input type="checkbox" id="av-consent">This is my own voice, or I have the speaker's permission to make a synthetic copy of it.</label>
       <div class="meta gap-s" id="av-result"></div>
       <div class="actions">
