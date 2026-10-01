@@ -22,7 +22,7 @@ mkdirSync(out, { recursive: true });
 function copyStatic() {
   // The preview gets a viewport tag so a narrow browser window behaves like a narrow panel.
   const html = readFileSync(join(root, "src/ui/index.html"), "utf8");
-  writeFileSync(join(out, "index.html"), preview ? html.replace("<head>", '<head>\n  <meta name="viewport" content="width=device-width">') : html);
+  writeFileSync(join(out, "index.html"), preview ? html.replace("<head>", '<head>\n  <meta name="viewport" content="width=device-width">\n  <meta name="color-scheme" content="dark light">') : html);
   cpSync(join(root, "src/ui/styles.css"), join(out, "styles.css"));
   if (!preview) {
     writeFileSync(join(out, "manifest.json"), readFileSync(join(root, "manifest.json"), "utf8").replace("__VERSION__", version));

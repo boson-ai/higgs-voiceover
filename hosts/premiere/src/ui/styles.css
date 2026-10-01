@@ -410,11 +410,13 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
    the buttons move under the boxes. */
 .split { flex-wrap: wrap; margin-top: -6px; }
 .split > .group { margin-top: 6px; flex-shrink: 0; }
+/* The buttons keep to the right edge, also on a line of their own. */
+.split > .group:last-child { flex: 1 0 auto; justify-content: flex-end; }
 .card .row.split { margin-top: 2px; }
 
 /* A docked panel is often narrow: one column that scrolls, the text first. */
 @media (max-width: 720px) {
-  .cols { flex-direction: column; overflow-y: auto; }
+  .cols { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
   .right { flex: 0 0 auto; }
   #text { flex: 0 0 auto; height: 170px; }
   .left { width: auto; margin-right: 0; margin-top: 20px; flex: 0 0 auto; }

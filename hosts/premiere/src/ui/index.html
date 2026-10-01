@@ -94,19 +94,23 @@
       <div class="left">
         <div class="head"><div class="title">Voice</div></div>
         <div class="list" id="voice-list" title="Double-click a voice to use it."></div>
-        <div class="row block" style="margin-top: 8px">
+        <div class="row split block" style="margin-top: 2px">
+          <div class="row group">
           <button class="ghost" id="voice-add">Add voice…</button>
           <button class="ghost" id="voice-preview">Preview</button>
           <button class="ghost danger" id="voice-delete">Delete</button>
+          </div>
           <div class="spacer"></div>
+          <div class="row group">
           <button id="voice-use">Use this voice</button>
+          </div>
         </div>
 
         <div class="head section-gap"><div class="title">Tags</div></div>
         <div class="row block">
-          <input type="text" id="tag-search" class="spacer" placeholder="Search tags">
-          <select id="tag-type" style="width: 120px"></select>
-          <button id="tag-insert">Insert</button>
+          <input type="text" id="tag-search" class="spacer" style="min-width: 60px" placeholder="Search tags">
+          <select id="tag-type" style="width: 116px; flex-shrink: 0"></select>
+          <button id="tag-insert" style="flex-shrink: 0">Insert</button>
         </div>
         <div class="list col" id="tag-box">
           <div class="list-head"><span class="spacer">Tag</span><span style="width: 104px">Type</span></div>
