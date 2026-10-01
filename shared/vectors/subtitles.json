@@ -1,0 +1,8246 @@
+{
+  "about": "Subtitles from subtitles.lua. fn is the Lua function, or: align/split tokenize input.text (split through display_text) and align it to input.words over input.seconds first; char_width maps over cps; for_take returns {cues, method}; srt returns {text, origin}; place is ui.lua's path (for_take or whole per take, offset, bound, frames, srt). Token indices (first, last, word) count from 0.",
+  "cases": [
+    {
+      "expect": {
+        "FILL_SECONDS": 0.8,
+        "LAG_SECONDS": 0.5,
+        "LIMIT": 42,
+        "LIMIT_CJK": 16,
+        "LIMIT_JA": 13,
+        "LIMIT_TH": 35,
+        "MAX_SECONDS": 7,
+        "MIN_SECONDS": 0.833333333333,
+        "MODES": ["short", "sentence"]
+      },
+      "fn": "constants",
+      "input": [],
+      "name": "constants"
+    },
+    {
+      "expect": "Hello there !",
+      "fn": "display_text",
+      "input": {
+        "text": "<|emotion:joy|> Hello  there <|sfx:laugh|>!"
+      },
+      "name": "display_text: tags are not shown"
+    },
+    {
+      "expect": "Haha, that was fun.",
+      "fn": "display_text",
+      "input": {
+        "text": "<|sfx:laughter|>Haha, that was fun."
+      },
+      "name": "display_text: a sound effect before a word"
+    },
+    {
+      "expect": "several lines and tabs",
+      "fn": "display_text",
+      "input": {
+        "text": "  several\n\nlines\tand tabs  "
+      },
+      "name": "display_text: line breaks and tabs collapse"
+    },
+    {
+      "expect": "",
+      "fn": "display_text",
+      "input": {
+        "text": "<|emotion:happy|>"
+      },
+      "name": "display_text: only a tag shows nothing"
+    },
+    {
+      "expect": "你好，世界！",
+      "fn": "display_text",
+      "input": {
+        "text": "<|emotion:joy|>你好，世界！"
+      },
+      "name": "display_text: Chinese keeps its marks"
+    },
+    {
+      "expect": "",
+      "fn": "display_text",
+      "input": [],
+      "name": "display_text: nothing"
+    },
+    {
+      "expect": ["were", "its", "well", "ÉcoleПриветabc", "125050", "eg", "我们", "qué", "ab", ""],
+      "fn": "key_of",
+      "input": {
+        "texts": [
+          "We're,",
+          "it’s",
+          "“Well,”",
+          "ÉCOLE Привет ABC",
+          "1,250.50",
+          "e.g.",
+          "我们，",
+          "¿Qué?",
+          "a·b",
+          ""
+        ]
+      },
+      "name": "key_of: letters and digits only"
+    },
+    {
+      "expect": [5.25, 11.25, 16.1538461538, 7.2, 13.125, 7.875, 12, 0],
+      "fn": "text_width",
+      "input": {
+        "texts": [
+          "拍摄",
+          "iPhone拍摄",
+          "こんにちは",
+          "สวัสดี",
+          "안녕하세요",
+          "ＡＢＣ",
+          "Hello, world",
+          ""
+        ]
+      },
+      "name": "text_width: per script, mixed lines share"
+    },
+    {
+      "expect": [
+        1,
+        1,
+        1,
+        1.2,
+        2.625,
+        2.625,
+        3.23076923077,
+        3.23076923077,
+        2.625,
+        2.625,
+        2.625,
+        2.625,
+        2.625,
+        2.625,
+        2.625,
+        3.23076923077,
+        3.23076923077,
+        1,
+        1
+      ],
+      "fn": "char_width",
+      "input": {
+        "cps": [
+          65,
+          233,
+          1040,
+          3585,
+          4352,
+          12288,
+          12354,
+          12543,
+          12593,
+          19968,
+          44032,
+          55215,
+          63744,
+          65281,
+          65381,
+          65382,
+          65437,
+          65438,
+          128512
+        ]
+      },
+      "name": "char_width across scripts"
+    },
+    {
+      "expect": [
+        "sentence",
+        false,
+        false,
+        false,
+        false,
+        "clause",
+        "sentence",
+        "clause",
+        "clause",
+        "sentence",
+        "sentence",
+        "sentence",
+        "sentence",
+        "sentence",
+        "clause",
+        "clause",
+        "clause",
+        false,
+        "sentence",
+        "sentence",
+        "sentence",
+        "clause",
+        "clause",
+        "sentence",
+        "sentence",
+        "clause",
+        "sentence",
+        false,
+        "sentence"
+      ],
+      "fn": "ending",
+      "input": {
+        "texts": [
+          "today.",
+          "Dr.",
+          "Mr.",
+          "e.g.",
+          "vs.",
+          "well,",
+          "fine.”",
+          "so...",
+          "so…",
+          "end?",
+          "end!",
+          "Hmm?!",
+          "(fine.)",
+          "«Bien».",
+          "wait—",
+          "a;",
+          "x:",
+          "word",
+          "好。",
+          "好！",
+          "好？",
+          "好，",
+          "好、",
+          "नमस्ते।",
+          "حالك؟",
+          "بخير،",
+          "Ok.\"",
+          "",
+          "."
+        ]
+      },
+      "name": "ending: sentence, clause or none, in many scripts"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "well",
+          "space": false,
+          "text": "“Well,”",
+          "width": 7
+        },
+        {
+          "cjk": false,
+          "key": "she",
+          "space": true,
+          "text": "she",
+          "width": 3
+        },
+        {
+          "cjk": false,
+          "key": "said",
+          "space": true,
+          "text": "said —",
+          "width": 6
+        },
+        {
+          "cjk": false,
+          "key": "its",
+          "space": true,
+          "text": "it's",
+          "width": 4
+        },
+        {
+          "cjk": false,
+          "key": "fine",
+          "space": true,
+          "text": "fine.",
+          "width": 5
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "“Well,” she said — it's fine."
+      },
+      "name": "tokenize: quotes, a lone dash, an apostrophe"
+    },
+    {
+      "expect": [
+        {
+          "cjk": true,
+          "key": "我",
+          "space": false,
+          "text": "我",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "们",
+          "space": false,
+          "text": "们",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "今",
+          "space": false,
+          "text": "今",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "天",
+          "space": false,
+          "text": "天，",
+          "width": 5.25
+        },
+        {
+          "cjk": true,
+          "key": "好",
+          "space": false,
+          "text": "好",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "吗",
+          "space": false,
+          "text": "吗？",
+          "width": 5.25
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "我们今天，好吗？"
+      },
+      "name": "tokenize: Chinese splits into characters"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "qué",
+          "space": false,
+          "text": "¿Qué",
+          "width": 4
+        },
+        {
+          "cjk": false,
+          "key": "tal",
+          "space": true,
+          "text": "tal?",
+          "width": 4
+        },
+        {
+          "cjk": false,
+          "key": "bien",
+          "space": true,
+          "text": "«Bien».",
+          "width": 7
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "¿Qué tal? «Bien»."
+      },
+      "name": "tokenize: Spanish opening marks and guillemets"
+    },
+    {
+      "expect": [
+        {
+          "cjk": true,
+          "key": "他",
+          "space": false,
+          "text": "他",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "说",
+          "space": false,
+          "text": "说",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "好",
+          "space": false,
+          "text": "「好」",
+          "width": 7.875
+        },
+        {
+          "cjk": true,
+          "key": "吧",
+          "space": false,
+          "text": "吧。",
+          "width": 5.25
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "他说「好」吧。"
+      },
+      "name": "tokenize: an opening bracket after Chinese opens the next"
+    },
+    {
+      "expect": [
+        {
+          "cjk": true,
+          "key": "他",
+          "space": false,
+          "text": "他",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "说",
+          "space": false,
+          "text": "说\"",
+          "width": 3.625
+        },
+        {
+          "cjk": true,
+          "key": "好",
+          "space": false,
+          "text": "好\"",
+          "width": 3.625
+        },
+        {
+          "cjk": true,
+          "key": "吧",
+          "space": false,
+          "text": "吧",
+          "width": 2.625
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "他说\"好\"吧"
+      },
+      "name": "tokenize: a straight quote after Chinese closes"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "iphone",
+          "space": false,
+          "text": "iPhone",
+          "width": 6
+        },
+        {
+          "cjk": true,
+          "key": "拍",
+          "space": false,
+          "text": "拍",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "摄",
+          "space": false,
+          "text": "摄",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "的",
+          "space": false,
+          "text": "的",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "日",
+          "space": false,
+          "text": "日",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "落",
+          "space": false,
+          "text": "落",
+          "width": 2.625
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "iPhone拍摄的日落"
+      },
+      "name": "tokenize: mixed scripts"
+    },
+    {
+      "expect": [
+        {
+          "cjk": true,
+          "key": "こ",
+          "space": false,
+          "text": "こ",
+          "width": 3.23076923077
+        },
+        {
+          "cjk": true,
+          "key": "ん",
+          "space": false,
+          "text": "ん",
+          "width": 3.23076923077
+        },
+        {
+          "cjk": true,
+          "key": "に",
+          "space": false,
+          "text": "に",
+          "width": 3.23076923077
+        },
+        {
+          "cjk": true,
+          "key": "ち",
+          "space": false,
+          "text": "ち",
+          "width": 3.23076923077
+        },
+        {
+          "cjk": true,
+          "key": "は",
+          "space": false,
+          "text": "は、",
+          "width": 5.85576923077
+        },
+        {
+          "cjk": true,
+          "key": "世",
+          "space": false,
+          "text": "世",
+          "width": 2.625
+        },
+        {
+          "cjk": true,
+          "key": "界",
+          "space": false,
+          "text": "界。",
+          "width": 5.25
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "こんにちは、世界。"
+      },
+      "name": "tokenize: Japanese kana"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "안녕하세요",
+          "space": false,
+          "text": "안녕하세요",
+          "width": 13.125
+        },
+        {
+          "cjk": false,
+          "key": "여러분",
+          "space": true,
+          "text": "여러분,",
+          "width": 8.875
+        },
+        {
+          "cjk": false,
+          "key": "반갑습니다",
+          "space": true,
+          "text": "반갑습니다.",
+          "width": 14.125
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "안녕하세요 여러분, 반갑습니다."
+      },
+      "name": "tokenize: Korean keeps its words"
+    },
+    {
+      "expect": [
+        {
+          "cjk": true,
+          "key": "ส",
+          "space": false,
+          "text": "ส",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ว",
+          "space": false,
+          "text": "ว",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ั",
+          "space": false,
+          "text": "ั",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ส",
+          "space": false,
+          "text": "ส",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ด",
+          "space": false,
+          "text": "ด",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ี",
+          "space": false,
+          "text": "ี",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ค",
+          "space": true,
+          "text": "ค",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ร",
+          "space": false,
+          "text": "ร",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "ั",
+          "space": false,
+          "text": "ั",
+          "width": 1.2
+        },
+        {
+          "cjk": true,
+          "key": "บ",
+          "space": false,
+          "text": "บ",
+          "width": 1.2
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "สวัสดี ครับ"
+      },
+      "name": "tokenize: Thai is one character a token"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "rock",
+          "space": false,
+          "text": "rock",
+          "width": 4
+        },
+        {
+          "cjk": false,
+          "key": "n",
+          "space": true,
+          "text": "'n'",
+          "width": 3
+        },
+        {
+          "cjk": false,
+          "key": "roll",
+          "space": true,
+          "text": "roll",
+          "width": 4
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "rock 'n' roll"
+      },
+      "name": "tokenize: rock 'n' roll"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "we",
+          "space": false,
+          "text": "We",
+          "width": 2
+        },
+        {
+          "cjk": false,
+          "key": "paid",
+          "space": true,
+          "text": "paid",
+          "width": 4
+        },
+        {
+          "cjk": false,
+          "key": "125050",
+          "space": true,
+          "text": "1,250.50",
+          "width": 8
+        },
+        {
+          "cjk": false,
+          "key": "dollars",
+          "space": true,
+          "text": "dollars.",
+          "width": 8
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "We paid 1,250.50 dollars."
+      },
+      "name": "tokenize: numbers keep their separators"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "hello",
+          "space": false,
+          "text": "\"Hello\"",
+          "width": 7
+        },
+        {
+          "cjk": false,
+          "key": "she",
+          "space": true,
+          "text": "she",
+          "width": 3
+        },
+        {
+          "cjk": false,
+          "key": "said",
+          "space": true,
+          "text": "said",
+          "width": 4
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "\"Hello\" she said"
+      },
+      "name": "tokenize: a leading quote"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "",
+          "space": false,
+          "text": "...",
+          "width": 3
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "..."
+      },
+      "name": "tokenize: only marks"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "done",
+          "space": false,
+          "text": "Done(",
+          "width": 5
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "Done ( "
+      },
+      "name": "tokenize: marks at the end with nothing after"
+    },
+    {
+      "expect": [],
+      "fn": "tokenize",
+      "input": {
+        "text": ""
+      },
+      "name": "tokenize: nothing"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "one",
+          "space": false,
+          "text": "one",
+          "width": 3
+        },
+        {
+          "cjk": false,
+          "key": "two",
+          "space": true,
+          "text": "two",
+          "width": 3
+        },
+        {
+          "cjk": false,
+          "key": "three",
+          "space": true,
+          "text": "three",
+          "width": 5
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "one\ttwo\nthree"
+      },
+      "name": "tokenize: tabs and line breaks are spaces"
+    },
+    {
+      "expect": [
+        {
+          "cjk": false,
+          "key": "well",
+          "space": false,
+          "text": "Well …",
+          "width": 6
+        },
+        {
+          "cjk": false,
+          "key": "maybe",
+          "space": true,
+          "text": "maybe",
+          "width": 5
+        }
+      ],
+      "fn": "tokenize",
+      "input": {
+        "text": "Well … maybe"
+      },
+      "name": "tokenize: an ellipsis standing alone"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "hello",
+            "s": 0.1,
+            "space": false,
+            "text": "Hello,",
+            "width": 6,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "world",
+            "s": 0.35,
+            "space": true,
+            "text": "World!",
+            "width": 6,
+            "word": 1
+          },
+          {
+            "cjk": false,
+            "e": 0.8,
+            "key": "its",
+            "s": 0.6,
+            "space": true,
+            "text": "It's <",
+            "width": 6,
+            "word": 2
+          },
+          {
+            "cjk": false,
+            "e": 1.55,
+            "key": "bfineb",
+            "s": 0.85,
+            "space": false,
+            "text": "b>fine</b>.",
+            "width": 11,
+            "word": 3
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 3,
+        "text": "Hello, World! It's <b>fine</b>.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hello"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "world"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "it's"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "b"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "fine"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "b"
+          }
+        ]
+      },
+      "name": "align: tags and punctuation do not stop a match"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "we",
+            "s": 0.1,
+            "space": false,
+            "text": "We",
+            "width": 2,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "paid",
+            "s": 0.35,
+            "space": true,
+            "text": "paid",
+            "width": 4,
+            "word": 1
+          },
+          {
+            "cjk": false,
+            "e": 1.85,
+            "key": "1250",
+            "s": 0.55,
+            "space": true,
+            "text": "1,250",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 2.05,
+            "key": "dollars",
+            "s": 1.85,
+            "space": true,
+            "text": "dollars",
+            "width": 7,
+            "word": 7
+          },
+          {
+            "cjk": false,
+            "e": 2.3,
+            "key": "today",
+            "s": 2.1,
+            "space": true,
+            "text": "today.",
+            "width": 6,
+            "word": 8
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 4,
+        "text": "We paid 1,250 dollars today.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "we"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "paid"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "one"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "thousand"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "two"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "hundred"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "fifty"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "dollars"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "today"
+          }
+        ]
+      },
+      "name": "align: a number read as words is placed between its neighbours"
+    },
+    {
+      "expect": {
+        "method": "estimate",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.826315789474,
+            "key": "something",
+            "s": 0.05,
+            "space": false,
+            "text": "Something",
+            "width": 9
+          },
+          {
+            "cjk": false,
+            "e": 1.21447368421,
+            "key": "else",
+            "s": 0.826315789474,
+            "space": true,
+            "text": "else",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 1.91315789474,
+            "key": "entirely",
+            "s": 1.21447368421,
+            "space": true,
+            "text": "entirely",
+            "width": 8
+          },
+          {
+            "cjk": false,
+            "e": 2.30131578947,
+            "key": "here",
+            "s": 1.91315789474,
+            "space": true,
+            "text": "here",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 3,
+            "key": "now",
+            "s": 2.30131578947,
+            "space": true,
+            "text": "now.",
+            "width": 4
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 3,
+        "text": "Something else entirely here now.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hola"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "que"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "tal"
+          }
+        ]
+      },
+      "name": "align: an unrelated list is an estimate"
+    },
+    {
+      "expect": {
+        "method": "estimate",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.304347826087,
+            "key": "no",
+            "s": 0.05,
+            "space": false,
+            "text": "No",
+            "width": 2
+          },
+          {
+            "cjk": false,
+            "e": 0.982608695652,
+            "key": "timings",
+            "s": 0.304347826087,
+            "space": true,
+            "text": "timings",
+            "width": 7
+          },
+          {
+            "cjk": false,
+            "e": 1.23695652174,
+            "key": "at",
+            "s": 0.982608695652,
+            "space": true,
+            "text": "at",
+            "width": 2
+          },
+          {
+            "cjk": false,
+            "e": 2,
+            "key": "all",
+            "s": 1.23695652174,
+            "space": true,
+            "text": "all.",
+            "width": 4
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "No timings at all."
+      },
+      "name": "align: no list is an estimate"
+    },
+    {
+      "expect": {
+        "method": "estimate",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.1,
+            "key": "quick",
+            "s": 0.01,
+            "space": false,
+            "text": "Quick.",
+            "width": 6
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 0,
+        "text": "Quick."
+      },
+      "name": "align: an estimate with a tiny clip"
+    },
+    {
+      "expect": {
+        "method": "estimate",
+        "tokens": []
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hello"
+          }
+        ]
+      },
+      "name": "align: no tokens"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "hello",
+            "s": 0.1,
+            "space": false,
+            "text": "Hello",
+            "width": 5,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.8,
+            "key": "there",
+            "s": 0.6,
+            "space": true,
+            "text": "there",
+            "width": 5,
+            "word": 2
+          },
+          {
+            "cjk": false,
+            "e": 1.05,
+            "key": "friend",
+            "s": 0.85,
+            "space": true,
+            "text": "friend.",
+            "width": 7,
+            "word": 3
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "text": "Hello there friend.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hello"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "um"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "there"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "friend"
+          }
+        ]
+      },
+      "name": "align: a word Boson adds is skipped"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "hello",
+            "s": 0.1,
+            "space": false,
+            "text": "Hello",
+            "width": 5,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.35,
+            "key": "big",
+            "s": 0.3,
+            "space": true,
+            "text": "big",
+            "width": 3
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "world",
+            "s": 0.35,
+            "space": true,
+            "text": "world",
+            "width": 5,
+            "word": 1
+          },
+          {
+            "cjk": false,
+            "e": 0.8,
+            "key": "today",
+            "s": 0.6,
+            "space": true,
+            "text": "today.",
+            "width": 6,
+            "word": 2
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "Hello big world today.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hello"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "world"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "today"
+          }
+        ]
+      },
+      "name": "align: a typed word Boson skipped is filled"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 1,
+            "key": "um",
+            "s": 0.7,
+            "space": false,
+            "text": "Um,",
+            "width": 3
+          },
+          {
+            "cjk": false,
+            "e": 1.2,
+            "key": "hello",
+            "s": 1,
+            "space": true,
+            "text": "hello",
+            "width": 5,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 1.45,
+            "key": "world",
+            "s": 1.25,
+            "space": true,
+            "text": "world.",
+            "width": 6,
+            "word": 1
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "Um, hello world.",
+        "words": [
+          {
+            "end": 1.2,
+            "start": 1,
+            "word": "hello"
+          },
+          {
+            "end": 1.45,
+            "start": 1.25,
+            "word": "world"
+          }
+        ]
+      },
+      "name": "align: unmatched at the start is filled backwards"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "hello",
+            "s": 0.1,
+            "space": false,
+            "text": "Hello",
+            "width": 5,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "world",
+            "s": 0.35,
+            "space": true,
+            "text": "world,",
+            "width": 6,
+            "word": 1
+          },
+          {
+            "cjk": false,
+            "e": 0.85,
+            "key": "okay",
+            "s": 0.55,
+            "space": true,
+            "text": "okay",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 1.45,
+            "key": "then",
+            "s": 0.85,
+            "space": true,
+            "text": "then.",
+            "width": 5
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 3,
+        "text": "Hello world, okay then.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hello"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "world"
+          }
+        ]
+      },
+      "name": "align: unmatched at the end is filled forwards"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.5,
+            "key": "one",
+            "s": 0.1,
+            "space": false,
+            "text": "one",
+            "width": 3,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.51,
+            "key": "two",
+            "s": 0.5,
+            "space": true,
+            "text": "two",
+            "width": 3
+          },
+          {
+            "cjk": false,
+            "e": 0.8,
+            "key": "three",
+            "s": 0.5,
+            "space": true,
+            "text": "three",
+            "width": 5,
+            "word": 1
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 1,
+        "text": "one two three",
+        "words": [
+          {
+            "end": 0.5,
+            "start": 0.1,
+            "word": "one"
+          },
+          {
+            "end": 0.8,
+            "start": 0.5,
+            "word": "three"
+          }
+        ]
+      },
+      "name": "align: no room between anchors"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "the",
+            "s": 0.1,
+            "space": false,
+            "text": "the",
+            "width": 3,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.35,
+            "key": "scatter",
+            "s": 0.3,
+            "space": true,
+            "text": "scatter",
+            "width": 7
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "cat",
+            "s": 0.35,
+            "space": true,
+            "text": "cat",
+            "width": 3,
+            "word": 1
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "the scatter cat",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "the"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "cat"
+          }
+        ]
+      },
+      "name": "align: a word found inside another is passed over"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "hi",
+            "s": 0.1,
+            "space": false,
+            "text": "Hi",
+            "width": 2,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.7,
+            "key": "there",
+            "s": 0.35,
+            "space": true,
+            "text": "there.",
+            "width": 6,
+            "word": 1
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": "1",
+        "text": "Hi there.",
+        "words": [
+          {
+            "end": "0.3",
+            "start": "0.1",
+            "word": "hi"
+          },
+          {
+            "end": "0.7",
+            "start": "0.35",
+            "word": "there"
+          }
+        ]
+      },
+      "name": "align: timings as strings"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "hi",
+            "s": 0.1,
+            "space": false,
+            "text": "Hi",
+            "width": 2,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.5,
+            "key": "there",
+            "s": 0.3,
+            "space": true,
+            "text": "there",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 0.7,
+            "key": "you",
+            "s": 0.5,
+            "space": true,
+            "text": "you.",
+            "width": 4,
+            "word": 2
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 1,
+        "text": "Hi there you.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "hi"
+          },
+          {
+            "word": "there"
+          },
+          {
+            "end": 0.7,
+            "start": 0.5,
+            "word": "you"
+          }
+        ]
+      },
+      "name": "align: a word without timing is ignored"
+    },
+    {
+      "expect": {
+        "method": "estimate",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.375,
+            "key": "one",
+            "s": 0.05,
+            "space": false,
+            "text": "one",
+            "width": 3
+          },
+          {
+            "cjk": false,
+            "e": 0.7,
+            "key": "two",
+            "s": 0.375,
+            "space": true,
+            "text": "two",
+            "width": 3
+          },
+          {
+            "cjk": false,
+            "e": 1.1875,
+            "key": "three",
+            "s": 0.7,
+            "space": true,
+            "text": "three",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 1.59375,
+            "key": "four",
+            "s": 1.1875,
+            "space": true,
+            "text": "four",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 2,
+            "key": "five",
+            "s": 1.59375,
+            "space": true,
+            "text": "five",
+            "width": 4
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "one two three four five",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "one"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "zzz"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "yyy"
+          }
+        ]
+      },
+      "name": "align: fewer than half matched is an estimate"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": true,
+            "e": 0.25,
+            "key": "我",
+            "s": 0.1,
+            "space": false,
+            "text": "我",
+            "width": 2.625,
+            "word": 0
+          },
+          {
+            "cjk": true,
+            "e": 0.42,
+            "key": "们",
+            "s": 0.27,
+            "space": false,
+            "text": "们",
+            "width": 2.625,
+            "word": 1
+          },
+          {
+            "cjk": true,
+            "e": 0.59,
+            "key": "今",
+            "s": 0.44,
+            "space": false,
+            "text": "今",
+            "width": 2.625,
+            "word": 2
+          },
+          {
+            "cjk": true,
+            "e": 0.76,
+            "key": "天",
+            "s": 0.61,
+            "space": false,
+            "text": "天",
+            "width": 2.625,
+            "word": 3
+          },
+          {
+            "cjk": true,
+            "e": 0.93,
+            "key": "要",
+            "s": 0.78,
+            "space": false,
+            "text": "要",
+            "width": 2.625,
+            "word": 4
+          },
+          {
+            "cjk": true,
+            "e": 1.1,
+            "key": "调",
+            "s": 0.95,
+            "space": false,
+            "text": "调",
+            "width": 2.625,
+            "word": 5
+          },
+          {
+            "cjk": true,
+            "e": 1.27,
+            "key": "色",
+            "s": 1.12,
+            "space": false,
+            "text": "色",
+            "width": 2.625,
+            "word": 6
+          },
+          {
+            "cjk": true,
+            "e": 1.44,
+            "key": "一",
+            "s": 1.29,
+            "space": false,
+            "text": "一",
+            "width": 2.625,
+            "word": 7
+          },
+          {
+            "cjk": true,
+            "e": 1.61,
+            "key": "段",
+            "s": 1.46,
+            "space": false,
+            "text": "段",
+            "width": 2.625,
+            "word": 8
+          },
+          {
+            "cjk": true,
+            "e": 1.78,
+            "key": "视",
+            "s": 1.63,
+            "space": false,
+            "text": "视",
+            "width": 2.625,
+            "word": 9
+          },
+          {
+            "cjk": true,
+            "e": 1.95,
+            "key": "频",
+            "s": 1.8,
+            "space": false,
+            "text": "频。",
+            "width": 5.25,
+            "word": 10
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 3,
+        "text": "我们今天要调色一段视频。",
+        "words": [
+          {
+            "end": 0.25,
+            "start": 0.1,
+            "word": "我"
+          },
+          {
+            "end": 0.42,
+            "start": 0.27,
+            "word": "们"
+          },
+          {
+            "end": 0.59,
+            "start": 0.44,
+            "word": "今"
+          },
+          {
+            "end": 0.76,
+            "start": 0.61,
+            "word": "天"
+          },
+          {
+            "end": 0.93,
+            "start": 0.78,
+            "word": "要"
+          },
+          {
+            "end": 1.1,
+            "start": 0.95,
+            "word": "调"
+          },
+          {
+            "end": 1.27,
+            "start": 1.12,
+            "word": "色"
+          },
+          {
+            "end": 1.44,
+            "start": 1.29,
+            "word": "一"
+          },
+          {
+            "end": 1.61,
+            "start": 1.46,
+            "word": "段"
+          },
+          {
+            "end": 1.78,
+            "start": 1.63,
+            "word": "视"
+          },
+          {
+            "end": 1.95,
+            "start": 1.8,
+            "word": "频"
+          }
+        ]
+      },
+      "name": "align: Chinese timed per character"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": true,
+            "e": 0.3,
+            "key": "我",
+            "s": 0.1,
+            "space": false,
+            "text": "我",
+            "width": 2.625,
+            "word": 0
+          },
+          {
+            "cjk": true,
+            "e": 0.3,
+            "key": "们",
+            "s": 0.1,
+            "space": false,
+            "text": "们",
+            "width": 2.625,
+            "word": 0
+          },
+          {
+            "cjk": true,
+            "e": 0.55,
+            "key": "今",
+            "s": 0.35,
+            "space": false,
+            "text": "今",
+            "width": 2.625,
+            "word": 1
+          },
+          {
+            "cjk": true,
+            "e": 0.55,
+            "key": "天",
+            "s": 0.35,
+            "space": false,
+            "text": "天",
+            "width": 2.625,
+            "word": 1
+          },
+          {
+            "cjk": true,
+            "e": 0.8,
+            "key": "要",
+            "s": 0.6,
+            "space": false,
+            "text": "要",
+            "width": 2.625,
+            "word": 2
+          },
+          {
+            "cjk": true,
+            "e": 1.05,
+            "key": "调",
+            "s": 0.85,
+            "space": false,
+            "text": "调",
+            "width": 2.625,
+            "word": 3
+          },
+          {
+            "cjk": true,
+            "e": 1.05,
+            "key": "色",
+            "s": 0.85,
+            "space": false,
+            "text": "色",
+            "width": 2.625,
+            "word": 3
+          },
+          {
+            "cjk": true,
+            "e": 1.3,
+            "key": "一",
+            "s": 1.1,
+            "space": false,
+            "text": "一",
+            "width": 2.625,
+            "word": 4
+          },
+          {
+            "cjk": true,
+            "e": 1.3,
+            "key": "段",
+            "s": 1.1,
+            "space": false,
+            "text": "段",
+            "width": 2.625,
+            "word": 4
+          },
+          {
+            "cjk": true,
+            "e": 1.55,
+            "key": "视",
+            "s": 1.35,
+            "space": false,
+            "text": "视",
+            "width": 2.625,
+            "word": 5
+          },
+          {
+            "cjk": true,
+            "e": 1.55,
+            "key": "频",
+            "s": 1.35,
+            "space": false,
+            "text": "频。",
+            "width": 5.25,
+            "word": 5
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 3,
+        "text": "我们今天要调色一段视频。",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "我们"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "今天"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "要"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "调色"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "一段"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "视频"
+          }
+        ]
+      },
+      "name": "align: Chinese timed per word shares the word"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": true,
+            "e": 0.25,
+            "key": "こ",
+            "s": 0.1,
+            "space": false,
+            "text": "こ",
+            "width": 3.23076923077,
+            "word": 0
+          },
+          {
+            "cjk": true,
+            "e": 0.42,
+            "key": "ん",
+            "s": 0.27,
+            "space": false,
+            "text": "ん",
+            "width": 3.23076923077,
+            "word": 1
+          },
+          {
+            "cjk": true,
+            "e": 0.59,
+            "key": "に",
+            "s": 0.44,
+            "space": false,
+            "text": "に",
+            "width": 3.23076923077,
+            "word": 2
+          },
+          {
+            "cjk": true,
+            "e": 0.76,
+            "key": "ち",
+            "s": 0.61,
+            "space": false,
+            "text": "ち",
+            "width": 3.23076923077,
+            "word": 3
+          },
+          {
+            "cjk": true,
+            "e": 0.93,
+            "key": "は",
+            "s": 0.78,
+            "space": false,
+            "text": "は、",
+            "width": 5.85576923077,
+            "word": 4
+          },
+          {
+            "cjk": true,
+            "e": 1.1,
+            "key": "世",
+            "s": 0.95,
+            "space": false,
+            "text": "世",
+            "width": 2.625,
+            "word": 5
+          },
+          {
+            "cjk": true,
+            "e": 1.27,
+            "key": "界",
+            "s": 1.12,
+            "space": false,
+            "text": "界。",
+            "width": 5.25,
+            "word": 6
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "こんにちは、世界。",
+        "words": [
+          {
+            "end": 0.25,
+            "start": 0.1,
+            "word": "こ"
+          },
+          {
+            "end": 0.42,
+            "start": 0.27,
+            "word": "ん"
+          },
+          {
+            "end": 0.59,
+            "start": 0.44,
+            "word": "に"
+          },
+          {
+            "end": 0.76,
+            "start": 0.61,
+            "word": "ち"
+          },
+          {
+            "end": 0.93,
+            "start": 0.78,
+            "word": "は"
+          },
+          {
+            "end": 1.1,
+            "start": 0.95,
+            "word": "世"
+          },
+          {
+            "end": 1.27,
+            "start": 1.12,
+            "word": "界"
+          }
+        ]
+      },
+      "name": "align: Japanese timed per character"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": true,
+            "e": 0.3,
+            "key": "一",
+            "s": 0.1,
+            "space": false,
+            "text": "一",
+            "width": 2.625,
+            "word": 0
+          },
+          {
+            "cjk": true,
+            "e": 0.307142857143,
+            "key": "二",
+            "s": 0.3,
+            "space": false,
+            "text": "二",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.314285714286,
+            "key": "三",
+            "s": 0.307142857143,
+            "space": false,
+            "text": "三",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.321428571429,
+            "key": "四",
+            "s": 0.314285714286,
+            "space": false,
+            "text": "四",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.328571428571,
+            "key": "五",
+            "s": 0.321428571429,
+            "space": false,
+            "text": "五",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.335714285714,
+            "key": "六",
+            "s": 0.328571428571,
+            "space": false,
+            "text": "六",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.342857142857,
+            "key": "七",
+            "s": 0.335714285714,
+            "space": false,
+            "text": "七",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.35,
+            "key": "八",
+            "s": 0.342857142857,
+            "space": false,
+            "text": "八",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 0.55,
+            "key": "九",
+            "s": 0.35,
+            "space": false,
+            "text": "九",
+            "width": 2.625,
+            "word": 1
+          },
+          {
+            "cjk": true,
+            "e": 0.8,
+            "key": "十",
+            "s": 0.6,
+            "space": false,
+            "text": "十",
+            "width": 2.625,
+            "word": 2
+          },
+          {
+            "cjk": true,
+            "e": 1.05,
+            "key": "甲",
+            "s": 0.85,
+            "space": false,
+            "text": "甲",
+            "width": 2.625,
+            "word": 3
+          },
+          {
+            "cjk": true,
+            "e": 1.3,
+            "key": "乙",
+            "s": 1.1,
+            "space": false,
+            "text": "乙",
+            "width": 2.625,
+            "word": 4
+          },
+          {
+            "cjk": true,
+            "e": 1.55,
+            "key": "丙",
+            "s": 1.35,
+            "space": false,
+            "text": "丙",
+            "width": 2.625,
+            "word": 5
+          },
+          {
+            "cjk": true,
+            "e": 1.8,
+            "key": "丁",
+            "s": 1.6,
+            "space": false,
+            "text": "丁",
+            "width": 2.625,
+            "word": 6
+          },
+          {
+            "cjk": true,
+            "e": 2.05,
+            "key": "戊",
+            "s": 1.85,
+            "space": false,
+            "text": "戊",
+            "width": 2.625,
+            "word": 7
+          },
+          {
+            "cjk": true,
+            "e": 2.3,
+            "key": "己",
+            "s": 2.1,
+            "space": false,
+            "text": "己",
+            "width": 2.625,
+            "word": 8
+          },
+          {
+            "cjk": true,
+            "e": 2.55,
+            "key": "庚",
+            "s": 2.35,
+            "space": false,
+            "text": "庚",
+            "width": 2.625,
+            "word": 9
+          },
+          {
+            "cjk": true,
+            "e": 2.8,
+            "key": "辛",
+            "s": 2.6,
+            "space": false,
+            "text": "辛",
+            "width": 2.625,
+            "word": 10
+          },
+          {
+            "cjk": true,
+            "e": 3.05,
+            "key": "壬",
+            "s": 2.85,
+            "space": false,
+            "text": "壬",
+            "width": 2.625,
+            "word": 11
+          },
+          {
+            "cjk": true,
+            "e": 3.3,
+            "key": "癸",
+            "s": 3.1,
+            "space": false,
+            "text": "癸",
+            "width": 2.625,
+            "word": 12
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 4,
+        "text": "一二三四五六七八九十甲乙丙丁戊己庚辛壬癸",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "一"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "九"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "十"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "甲"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "乙"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "丙"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "丁"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "戊"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "己"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "庚"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "辛"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "壬"
+          },
+          {
+            "end": 3.3,
+            "start": 3.1,
+            "word": "癸"
+          }
+        ]
+      },
+      "name": "align: a jump ahead within 48 bytes resyncs"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": true,
+            "e": 0.3,
+            "key": "一",
+            "s": 0.1,
+            "space": false,
+            "text": "一",
+            "width": 2.625,
+            "word": 0
+          },
+          {
+            "cjk": true,
+            "e": 0.8,
+            "key": "二",
+            "s": 0.6,
+            "space": false,
+            "text": "二",
+            "width": 2.625,
+            "word": 2
+          },
+          {
+            "cjk": true,
+            "e": 1.05,
+            "key": "三",
+            "s": 0.85,
+            "space": false,
+            "text": "三",
+            "width": 2.625,
+            "word": 3
+          },
+          {
+            "cjk": true,
+            "e": 1.3,
+            "key": "四",
+            "s": 1.1,
+            "space": false,
+            "text": "四",
+            "width": 2.625,
+            "word": 4
+          },
+          {
+            "cjk": true,
+            "e": 1.55,
+            "key": "五",
+            "s": 1.35,
+            "space": false,
+            "text": "五",
+            "width": 2.625,
+            "word": 5
+          },
+          {
+            "cjk": true,
+            "e": 1.8,
+            "key": "六",
+            "s": 1.6,
+            "space": false,
+            "text": "六",
+            "width": 2.625,
+            "word": 6
+          },
+          {
+            "cjk": true,
+            "e": 2.05,
+            "key": "七",
+            "s": 1.85,
+            "space": false,
+            "text": "七",
+            "width": 2.625,
+            "word": 7
+          },
+          {
+            "cjk": true,
+            "e": 2.3,
+            "key": "八",
+            "s": 2.1,
+            "space": false,
+            "text": "八",
+            "width": 2.625,
+            "word": 8
+          },
+          {
+            "cjk": true,
+            "e": 2.55,
+            "key": "九",
+            "s": 2.35,
+            "space": false,
+            "text": "九",
+            "width": 2.625,
+            "word": 9
+          },
+          {
+            "cjk": true,
+            "e": 2.8,
+            "key": "十",
+            "s": 2.6,
+            "space": false,
+            "text": "十",
+            "width": 2.625,
+            "word": 10
+          },
+          {
+            "cjk": true,
+            "e": 3.05,
+            "key": "甲",
+            "s": 2.85,
+            "space": false,
+            "text": "甲",
+            "width": 2.625,
+            "word": 11
+          },
+          {
+            "cjk": true,
+            "e": 3.3,
+            "key": "乙",
+            "s": 3.1,
+            "space": false,
+            "text": "乙",
+            "width": 2.625,
+            "word": 12
+          },
+          {
+            "cjk": true,
+            "e": 3.55,
+            "key": "丙",
+            "s": 3.35,
+            "space": false,
+            "text": "丙",
+            "width": 2.625,
+            "word": 13
+          },
+          {
+            "cjk": true,
+            "e": 3.8,
+            "key": "丁",
+            "s": 3.6,
+            "space": false,
+            "text": "丁",
+            "width": 2.625,
+            "word": 14
+          },
+          {
+            "cjk": true,
+            "e": 4.05,
+            "key": "戊",
+            "s": 3.85,
+            "space": false,
+            "text": "戊",
+            "width": 2.625,
+            "word": 15
+          },
+          {
+            "cjk": true,
+            "e": 4.3,
+            "key": "己",
+            "s": 4.1,
+            "space": false,
+            "text": "己",
+            "width": 2.625,
+            "word": 16
+          },
+          {
+            "cjk": true,
+            "e": 4.55,
+            "key": "庚",
+            "s": 4.35,
+            "space": false,
+            "text": "庚",
+            "width": 2.625,
+            "word": 17
+          },
+          {
+            "cjk": true,
+            "e": 4.8,
+            "key": "辛",
+            "s": 4.6,
+            "space": false,
+            "text": "辛",
+            "width": 2.625,
+            "word": 18
+          },
+          {
+            "cjk": true,
+            "e": 4.85,
+            "key": "壬",
+            "s": 4.8,
+            "space": false,
+            "text": "壬",
+            "width": 2.625
+          },
+          {
+            "cjk": true,
+            "e": 5.05,
+            "key": "癸",
+            "s": 4.85,
+            "space": false,
+            "text": "癸",
+            "width": 2.625,
+            "word": 19
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 6,
+        "text": "一二三四五六七八九十甲乙丙丁戊己庚辛壬癸",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "一"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "壬"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "二"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "三"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "四"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "五"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "六"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "七"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "八"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "九"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "十"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "甲"
+          },
+          {
+            "end": 3.3,
+            "start": 3.1,
+            "word": "乙"
+          },
+          {
+            "end": 3.55,
+            "start": 3.35,
+            "word": "丙"
+          },
+          {
+            "end": 3.8,
+            "start": 3.6,
+            "word": "丁"
+          },
+          {
+            "end": 4.05,
+            "start": 3.85,
+            "word": "戊"
+          },
+          {
+            "end": 4.3,
+            "start": 4.1,
+            "word": "己"
+          },
+          {
+            "end": 4.55,
+            "start": 4.35,
+            "word": "庚"
+          },
+          {
+            "end": 4.8,
+            "start": 4.6,
+            "word": "辛"
+          },
+          {
+            "end": 5.05,
+            "start": 4.85,
+            "word": "癸"
+          }
+        ]
+      },
+      "name": "align: a jump ahead past 48 bytes is not followed"
+    },
+    {
+      "expect": {
+        "method": "estimate",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.403731343284,
+            "key": "alpha",
+            "s": 0.05,
+            "space": false,
+            "text": "alpha",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 0.698507462687,
+            "key": "beta",
+            "s": 0.403731343284,
+            "space": true,
+            "text": "beta",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 1.05223880597,
+            "key": "gamma",
+            "s": 0.698507462687,
+            "space": true,
+            "text": "gamma",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 1.40597014925,
+            "key": "delta",
+            "s": 1.05223880597,
+            "space": true,
+            "text": "delta",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 1.8776119403,
+            "key": "epsilon",
+            "s": 1.40597014925,
+            "space": true,
+            "text": "epsilon",
+            "width": 7
+          },
+          {
+            "cjk": false,
+            "e": 2.1723880597,
+            "key": "zeta",
+            "s": 1.8776119403,
+            "space": true,
+            "text": "zeta",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 2.40820895522,
+            "key": "eta",
+            "s": 2.1723880597,
+            "space": true,
+            "text": "eta",
+            "width": 3
+          },
+          {
+            "cjk": false,
+            "e": 2.76194029851,
+            "key": "theta",
+            "s": 2.40820895522,
+            "space": true,
+            "text": "theta",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 3.05671641791,
+            "key": "iota",
+            "s": 2.76194029851,
+            "space": true,
+            "text": "iota",
+            "width": 4
+          },
+          {
+            "cjk": false,
+            "e": 3.41044776119,
+            "key": "kappa",
+            "s": 3.05671641791,
+            "space": true,
+            "text": "kappa",
+            "width": 5
+          },
+          {
+            "cjk": false,
+            "e": 3.82313432836,
+            "key": "lambda",
+            "s": 3.41044776119,
+            "space": true,
+            "text": "lambda",
+            "width": 6
+          },
+          {
+            "cjk": false,
+            "e": 4,
+            "key": "mu",
+            "s": 3.82313432836,
+            "space": true,
+            "text": "mu",
+            "width": 2
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 4,
+        "text": "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "alpha"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "mu"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "beta"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "gamma"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "delta"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "epsilon"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "zeta"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "eta"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "theta"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "iota"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "kappa"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "lambda"
+          }
+        ]
+      },
+      "name": "align: an English jump past 48 bytes is not followed"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.3,
+            "key": "qué",
+            "s": 0.1,
+            "space": false,
+            "text": "¿Qué",
+            "width": 4,
+            "word": 0
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "tal",
+            "s": 0.35,
+            "space": true,
+            "text": "tal?",
+            "width": 4,
+            "word": 1
+          },
+          {
+            "cjk": false,
+            "e": 0.8,
+            "key": "muy",
+            "s": 0.6,
+            "space": true,
+            "text": "Muy",
+            "width": 3,
+            "word": 2
+          },
+          {
+            "cjk": false,
+            "e": 1.05,
+            "key": "bien",
+            "s": 0.85,
+            "space": true,
+            "text": "bien,",
+            "width": 5,
+            "word": 3
+          },
+          {
+            "cjk": false,
+            "e": 1.3,
+            "key": "gracias",
+            "s": 1.1,
+            "space": true,
+            "text": "gracias.",
+            "width": 8,
+            "word": 4
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 2,
+        "text": "¿Qué tal? Muy bien, gracias.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "qué"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "tal"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "muy"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "bien"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "gracias"
+          }
+        ]
+      },
+      "name": "align: Spanish with accents"
+    },
+    {
+      "expect": {
+        "method": "words",
+        "tokens": [
+          {
+            "cjk": false,
+            "e": 0.35,
+            "key": "sfxlaughterhaha",
+            "s": 0,
+            "space": false,
+            "text": "<|sfx:laughter|>Haha,",
+            "width": 21
+          },
+          {
+            "cjk": false,
+            "e": 0.55,
+            "key": "great",
+            "s": 0.35,
+            "space": true,
+            "text": "great.",
+            "width": 6,
+            "word": 1
+          }
+        ]
+      },
+      "fn": "align",
+      "input": {
+        "seconds": 1.5,
+        "text": "<|sfx:laughter|>Haha, great.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "haha"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "great"
+          }
+        ]
+      },
+      "name": "align: a tag word in the timings"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.3,
+          "first": 0,
+          "last": 11,
+          "lines": ["中华人民共和国国务院总理"],
+          "start": 0.1,
+          "text": "中华人民共和国国务院总理"
+        },
+        {
+          "finish": 1.3,
+          "first": 12,
+          "last": 18,
+          "lines": ["今天发表讲话了。"],
+          "start": 0.35,
+          "text": "今天发表讲话了。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 4,
+        "text": "中华人民共和国国务院总理今天发表讲话了。",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "中华人民共和国国务院总理"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "今天"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "发表"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "讲话"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "了"
+          }
+        ]
+      },
+      "name": "split (short): a long first Chinese word is not broken"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.95953608247,
+          "first": 0,
+          "last": 4,
+          "lines": ["When we started this project,"],
+          "start": 0.05,
+          "text": "When we started this project,"
+        },
+        {
+          "finish": 3.68427835052,
+          "first": 5,
+          "last": 9,
+          "lines": ["nobody on the team believed"],
+          "start": 1.95953608247,
+          "text": "nobody on the team believed"
+        },
+        {
+          "finish": 5.90180412371,
+          "first": 10,
+          "last": 15,
+          "lines": ["that a four-person studio could ship"],
+          "start": 3.68427835052,
+          "text": "that a four-person studio could ship"
+        },
+        {
+          "finish": 7.93453608247,
+          "first": 16,
+          "last": 22,
+          "lines": ["a feature film in under a year,"],
+          "start": 5.90180412371,
+          "text": "a feature film in under a year,"
+        },
+        {
+          "finish": 10.0904639175,
+          "first": 23,
+          "last": 29,
+          "lines": ["but here we are, and the premiere"],
+          "start": 7.93453608247,
+          "text": "but here we are, and the premiere"
+        },
+        {
+          "finish": 12,
+          "first": 30,
+          "last": 34,
+          "lines": ["is next Friday in Toronto."],
+          "start": 10.0904639175,
+          "text": "is next Friday in Toronto."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 12,
+        "text": "When we started this project, nobody on the team believed that a four-person studio could ship a feature film in under a year, but here we are, and the premiere is next Friday in Toronto."
+      },
+      "name": "split (short): a long English sentence"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.14829931973,
+          "first": 0,
+          "last": 4,
+          "lines": ["When we started this project,"],
+          "start": 0.05,
+          "text": "When we started this project,"
+        },
+        {
+          "finish": 4.04353741497,
+          "first": 5,
+          "last": 9,
+          "lines": ["nobody on the team believed"],
+          "start": 2.14829931973,
+          "text": "nobody on the team believed"
+        },
+        {
+          "finish": 6.14183673469,
+          "first": 10,
+          "last": 14,
+          "lines": ["a four-person studio could ship"],
+          "start": 4.04353741497,
+          "text": "a four-person studio could ship"
+        },
+        {
+          "finish": 8.57857142857,
+          "first": 15,
+          "last": 21,
+          "lines": ["a feature film in under a year."],
+          "start": 6.14183673469,
+          "text": "a feature film in under a year."
+        },
+        {
+          "finish": 10,
+          "first": 22,
+          "last": 25,
+          "lines": ["But here we are."],
+          "start": 8.57857142857,
+          "text": "But here we are."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 10,
+        "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are."
+      },
+      "name": "split (short): a long sentence, then a short one"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.3,
+          "first": 0,
+          "last": 4,
+          "lines": ["When we started this project,"],
+          "start": 0.1,
+          "text": "When we started this project,"
+        },
+        {
+          "finish": 2.55,
+          "first": 5,
+          "last": 9,
+          "lines": ["nobody on the team believed"],
+          "start": 1.35,
+          "text": "nobody on the team believed"
+        },
+        {
+          "finish": 4.05,
+          "first": 10,
+          "last": 14,
+          "lines": ["a four-person studio could ship"],
+          "start": 2.6,
+          "text": "a four-person studio could ship"
+        },
+        {
+          "finish": 5.8,
+          "first": 15,
+          "last": 21,
+          "lines": ["a feature film in under a year."],
+          "start": 4.1,
+          "text": "a feature film in under a year."
+        },
+        {
+          "finish": 6.8,
+          "first": 22,
+          "last": 25,
+          "lines": ["But here we are."],
+          "start": 5.85,
+          "text": "But here we are."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 10,
+        "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "when"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "we"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "started"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "this"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "project"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "nobody"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "on"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "the"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "team"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "believed"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "a"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "four"
+          },
+          {
+            "end": 3.3,
+            "start": 3.1,
+            "word": "person"
+          },
+          {
+            "end": 3.55,
+            "start": 3.35,
+            "word": "studio"
+          },
+          {
+            "end": 3.8,
+            "start": 3.6,
+            "word": "could"
+          },
+          {
+            "end": 4.05,
+            "start": 3.85,
+            "word": "ship"
+          },
+          {
+            "end": 4.3,
+            "start": 4.1,
+            "word": "a"
+          },
+          {
+            "end": 4.55,
+            "start": 4.35,
+            "word": "feature"
+          },
+          {
+            "end": 4.8,
+            "start": 4.6,
+            "word": "film"
+          },
+          {
+            "end": 5.05,
+            "start": 4.85,
+            "word": "in"
+          },
+          {
+            "end": 5.3,
+            "start": 5.1,
+            "word": "under"
+          },
+          {
+            "end": 5.55,
+            "start": 5.35,
+            "word": "a"
+          },
+          {
+            "end": 5.8,
+            "start": 5.6,
+            "word": "year"
+          },
+          {
+            "end": 6.05,
+            "start": 5.85,
+            "word": "but"
+          },
+          {
+            "end": 6.3,
+            "start": 6.1,
+            "word": "here"
+          },
+          {
+            "end": 6.55,
+            "start": 6.35,
+            "word": "we"
+          },
+          {
+            "end": 6.8,
+            "start": 6.6,
+            "word": "are"
+          }
+        ]
+      },
+      "name": "split (short): timed from Boson's words"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.45,
+          "first": 0,
+          "last": 7,
+          "lines": ["Nobody on the team believed a small studio"],
+          "start": 0.1,
+          "text": "Nobody on the team believed a small studio"
+        },
+        {
+          "finish": 4.45,
+          "first": 8,
+          "last": 15,
+          "lines": ["could ship this feature film in a year."],
+          "start": 2.5,
+          "text": "could ship this feature film in a year."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 6,
+        "text": "Nobody on the team believed a small studio could ship this feature film in a year.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "nobody"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "on"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "the"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "team"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "believed"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "a"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "small"
+          },
+          {
+            "end": 2.45,
+            "start": 2.25,
+            "word": "studio"
+          },
+          {
+            "end": 2.7,
+            "start": 2.5,
+            "word": "could"
+          },
+          {
+            "end": 2.95,
+            "start": 2.75,
+            "word": "ship"
+          },
+          {
+            "end": 3.2,
+            "start": 3,
+            "word": "this"
+          },
+          {
+            "end": 3.45,
+            "start": 3.25,
+            "word": "feature"
+          },
+          {
+            "end": 3.7,
+            "start": 3.5,
+            "word": "film"
+          },
+          {
+            "end": 3.95,
+            "start": 3.75,
+            "word": "in"
+          },
+          {
+            "end": 4.2,
+            "start": 4,
+            "word": "a"
+          },
+          {
+            "end": 4.45,
+            "start": 4.25,
+            "word": "year"
+          }
+        ]
+      },
+      "name": "split (short): a pause in the voice is a place to break"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.55,
+          "first": 0,
+          "last": 9,
+          "lines": ["I think we should all go down to the beach"],
+          "start": 0.1,
+          "text": "I think we should all go down to the beach"
+        },
+        {
+          "finish": 3.27,
+          "first": 10,
+          "last": 11,
+          "lines": ["together tomorrow."],
+          "start": 2.82,
+          "text": "together tomorrow."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 4,
+        "text": "I think we should all go down to the beach together tomorrow.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "i"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "think"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "we"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "should"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "all"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "go"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "down"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "to"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "the"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "beach"
+          },
+          {
+            "end": 3.02,
+            "start": 2.82,
+            "word": "together"
+          },
+          {
+            "end": 3.27,
+            "start": 3.07,
+            "word": "tomorrow"
+          }
+        ]
+      },
+      "name": "split (short): a short breath (0.27 s) is a place to break too"
+    },
+    {
+      "expect": [
+        {
+          "finish": 6.4,
+          "first": 0,
+          "last": 3,
+          "lines": ["We waited for hours"],
+          "start": 0.1,
+          "text": "We waited for hours"
+        },
+        {
+          "finish": 12.8,
+          "first": 4,
+          "last": 7,
+          "lines": ["and nobody came back."],
+          "start": 6.5,
+          "text": "and nobody came back."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 14,
+        "text": "We waited for hours and nobody came back.",
+        "words": [
+          {
+            "end": 1.6,
+            "start": 0.1,
+            "word": "we"
+          },
+          {
+            "end": 3.2,
+            "start": 1.7,
+            "word": "waited"
+          },
+          {
+            "end": 4.8,
+            "start": 3.3,
+            "word": "for"
+          },
+          {
+            "end": 6.4,
+            "start": 4.9,
+            "word": "hours"
+          },
+          {
+            "end": 8,
+            "start": 6.5,
+            "word": "and"
+          },
+          {
+            "end": 9.6,
+            "start": 8.1,
+            "word": "nobody"
+          },
+          {
+            "end": 11.2,
+            "start": 9.7,
+            "word": "came"
+          },
+          {
+            "end": 12.8,
+            "start": 11.3,
+            "word": "back"
+          }
+        ]
+      },
+      "name": "split (short): slow speech is cut before 7 seconds"
+    },
+    {
+      "expect": [
+        {
+          "finish": 9,
+          "first": 0,
+          "last": 5,
+          "lines": ["We will now read the list"],
+          "start": 0.1,
+          "text": "We will now read the list"
+        },
+        {
+          "finish": 18,
+          "first": 6,
+          "last": 11,
+          "lines": ["of every name on the wall,"],
+          "start": 9.1,
+          "text": "of every name on the wall,"
+        },
+        {
+          "finish": 28.5,
+          "first": 12,
+          "last": 18,
+          "lines": ["slowly and with care for each one."],
+          "start": 18.1,
+          "text": "slowly and with care for each one."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 30,
+        "text": "We will now read the list of every name on the wall, slowly and with care for each one.",
+        "words": [
+          {
+            "end": 1.5,
+            "start": 0.1,
+            "word": "we"
+          },
+          {
+            "end": 3,
+            "start": 1.6,
+            "word": "will"
+          },
+          {
+            "end": 4.5,
+            "start": 3.1,
+            "word": "now"
+          },
+          {
+            "end": 6,
+            "start": 4.6,
+            "word": "read"
+          },
+          {
+            "end": 7.5,
+            "start": 6.1,
+            "word": "the"
+          },
+          {
+            "end": 9,
+            "start": 7.6,
+            "word": "list"
+          },
+          {
+            "end": 10.5,
+            "start": 9.1,
+            "word": "of"
+          },
+          {
+            "end": 12,
+            "start": 10.6,
+            "word": "every"
+          },
+          {
+            "end": 13.5,
+            "start": 12.1,
+            "word": "name"
+          },
+          {
+            "end": 15,
+            "start": 13.6,
+            "word": "on"
+          },
+          {
+            "end": 16.5,
+            "start": 15.1,
+            "word": "the"
+          },
+          {
+            "end": 18,
+            "start": 16.6,
+            "word": "wall"
+          },
+          {
+            "end": 19.5,
+            "start": 18.1,
+            "word": "slowly"
+          },
+          {
+            "end": 21,
+            "start": 19.6,
+            "word": "and"
+          },
+          {
+            "end": 22.5,
+            "start": 21.1,
+            "word": "with"
+          },
+          {
+            "end": 24,
+            "start": 22.6,
+            "word": "care"
+          },
+          {
+            "end": 25.5,
+            "start": 24.1,
+            "word": "for"
+          },
+          {
+            "end": 27,
+            "start": 25.6,
+            "word": "each"
+          },
+          {
+            "end": 28.5,
+            "start": 27.1,
+            "word": "one"
+          }
+        ]
+      },
+      "name": "split (short): slow speech with natural breaks"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.847727272727,
+          "first": 0,
+          "last": 0,
+          "lines": ["Yes."],
+          "start": 0.05,
+          "text": "Yes."
+        },
+        {
+          "finish": 2,
+          "first": 1,
+          "last": 2,
+          "lines": ["I agree."],
+          "start": 0.847727272727,
+          "text": "I agree."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 2,
+        "text": "Yes. I agree."
+      },
+      "name": "split (short): two short sentences"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.895,
+          "first": 0,
+          "last": 1,
+          "lines": ["你好。"],
+          "start": 0.05,
+          "text": "你好。"
+        },
+        {
+          "finish": 2,
+          "first": 2,
+          "last": 4,
+          "lines": ["我很好。"],
+          "start": 0.895,
+          "text": "我很好。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 2,
+        "text": "你好。我很好。"
+      },
+      "name": "split (short): two Chinese sentences"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.79532374101,
+          "first": 0,
+          "last": 11,
+          "lines": ["我们今天要调色一段完全用"],
+          "start": 0.05,
+          "text": "我们今天要调色一段完全用"
+        },
+        {
+          "finish": 5.42625899281,
+          "first": 12,
+          "last": 22,
+          "lines": ["手机拍摄的日落延时视频，"],
+          "start": 2.79532374101,
+          "text": "手机拍摄的日落延时视频，"
+        },
+        {
+          "finish": 8,
+          "first": 23,
+          "last": 32,
+          "lines": ["效果真的让我大吃一惊。"],
+          "start": 5.42625899281,
+          "text": "效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 8,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。"
+      },
+      "name": "split (short): a long Chinese sentence"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.8,
+          "first": 0,
+          "last": 11,
+          "lines": ["我们今天要调色一段完全用"],
+          "start": 0.1,
+          "text": "我们今天要调色一段完全用"
+        },
+        {
+          "finish": 3.3,
+          "first": 12,
+          "last": 22,
+          "lines": ["手机拍摄的日落延时视频，"],
+          "start": 1.85,
+          "text": "手机拍摄的日落延时视频，"
+        },
+        {
+          "finish": 4.55,
+          "first": 23,
+          "last": 32,
+          "lines": ["效果真的让我大吃一惊。"],
+          "start": 3.35,
+          "text": "效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 8,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "我们"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "今天"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "要"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "调色"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "一段"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "完全"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "用"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "手机"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "拍摄"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "的"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "日落"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "延时"
+          },
+          {
+            "end": 3.3,
+            "start": 3.1,
+            "word": "视频"
+          },
+          {
+            "end": 3.55,
+            "start": 3.35,
+            "word": "效果"
+          },
+          {
+            "end": 3.8,
+            "start": 3.6,
+            "word": "真的"
+          },
+          {
+            "end": 4.05,
+            "start": 3.85,
+            "word": "让"
+          },
+          {
+            "end": 4.3,
+            "start": 4.1,
+            "word": "我"
+          },
+          {
+            "end": 4.55,
+            "start": 4.35,
+            "word": "大吃一惊"
+          }
+        ]
+      },
+      "name": "split (short): Chinese timed per word"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.12,
+          "first": 0,
+          "last": 11,
+          "lines": ["我们今天要调色一段完全用"],
+          "start": 0.1,
+          "text": "我们今天要调色一段完全用"
+        },
+        {
+          "finish": 3.99,
+          "first": 12,
+          "last": 22,
+          "lines": ["手机拍摄的日落延时视频，"],
+          "start": 2.14,
+          "text": "手机拍摄的日落延时视频，"
+        },
+        {
+          "finish": 5.69,
+          "first": 23,
+          "last": 32,
+          "lines": ["效果真的让我大吃一惊。"],
+          "start": 4.01,
+          "text": "效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 8,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。",
+        "words": [
+          {
+            "end": 0.25,
+            "start": 0.1,
+            "word": "我"
+          },
+          {
+            "end": 0.42,
+            "start": 0.27,
+            "word": "们"
+          },
+          {
+            "end": 0.59,
+            "start": 0.44,
+            "word": "今"
+          },
+          {
+            "end": 0.76,
+            "start": 0.61,
+            "word": "天"
+          },
+          {
+            "end": 0.93,
+            "start": 0.78,
+            "word": "要"
+          },
+          {
+            "end": 1.1,
+            "start": 0.95,
+            "word": "调"
+          },
+          {
+            "end": 1.27,
+            "start": 1.12,
+            "word": "色"
+          },
+          {
+            "end": 1.44,
+            "start": 1.29,
+            "word": "一"
+          },
+          {
+            "end": 1.61,
+            "start": 1.46,
+            "word": "段"
+          },
+          {
+            "end": 1.78,
+            "start": 1.63,
+            "word": "完"
+          },
+          {
+            "end": 1.95,
+            "start": 1.8,
+            "word": "全"
+          },
+          {
+            "end": 2.12,
+            "start": 1.97,
+            "word": "用"
+          },
+          {
+            "end": 2.29,
+            "start": 2.14,
+            "word": "手"
+          },
+          {
+            "end": 2.46,
+            "start": 2.31,
+            "word": "机"
+          },
+          {
+            "end": 2.63,
+            "start": 2.48,
+            "word": "拍"
+          },
+          {
+            "end": 2.8,
+            "start": 2.65,
+            "word": "摄"
+          },
+          {
+            "end": 2.97,
+            "start": 2.82,
+            "word": "的"
+          },
+          {
+            "end": 3.14,
+            "start": 2.99,
+            "word": "日"
+          },
+          {
+            "end": 3.31,
+            "start": 3.16,
+            "word": "落"
+          },
+          {
+            "end": 3.48,
+            "start": 3.33,
+            "word": "延"
+          },
+          {
+            "end": 3.65,
+            "start": 3.5,
+            "word": "时"
+          },
+          {
+            "end": 3.82,
+            "start": 3.67,
+            "word": "视"
+          },
+          {
+            "end": 3.99,
+            "start": 3.84,
+            "word": "频"
+          },
+          {
+            "end": 4.16,
+            "start": 4.01,
+            "word": "效"
+          },
+          {
+            "end": 4.33,
+            "start": 4.18,
+            "word": "果"
+          },
+          {
+            "end": 4.5,
+            "start": 4.35,
+            "word": "真"
+          },
+          {
+            "end": 4.67,
+            "start": 4.52,
+            "word": "的"
+          },
+          {
+            "end": 4.84,
+            "start": 4.69,
+            "word": "让"
+          },
+          {
+            "end": 5.01,
+            "start": 4.86,
+            "word": "我"
+          },
+          {
+            "end": 5.18,
+            "start": 5.03,
+            "word": "大"
+          },
+          {
+            "end": 5.35,
+            "start": 5.2,
+            "word": "吃"
+          },
+          {
+            "end": 5.52,
+            "start": 5.37,
+            "word": "一"
+          },
+          {
+            "end": 5.69,
+            "start": 5.54,
+            "word": "惊"
+          }
+        ]
+      },
+      "name": "split (short): Chinese timed per character"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.63260869565,
+          "first": 0,
+          "last": 11,
+          "lines": ["今日はとても良い天気です"],
+          "start": 0.05,
+          "text": "今日はとても良い天気です"
+        },
+        {
+          "finish": 5,
+          "first": 12,
+          "last": 22,
+          "lines": ["ね散歩に行きましょうか"],
+          "start": 2.63260869565,
+          "text": "ね散歩に行きましょうか"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 5,
+        "text": "今日はとても良い天気ですね散歩に行きましょうか"
+      },
+      "name": "split (short): Japanese"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.36970588235,
+          "first": 0,
+          "last": 3,
+          "lines": ["Cuando empezamos este proyecto,"],
+          "start": 0.05,
+          "text": "Cuando empezamos este proyecto,"
+        },
+        {
+          "finish": 5.25176470588,
+          "first": 4,
+          "last": 11,
+          "lines": ["nadie en el equipo creía que un estudio"],
+          "start": 2.36970588235,
+          "text": "nadie en el equipo creía que un estudio"
+        },
+        {
+          "finish": 7.78235294118,
+          "first": 12,
+          "last": 16,
+          "lines": ["de cuatro personas pudiera terminar"],
+          "start": 5.25176470588,
+          "text": "de cuatro personas pudiera terminar"
+        },
+        {
+          "finish": 10.3129411765,
+          "first": 17,
+          "last": 23,
+          "lines": ["una película en menos de un año,"],
+          "start": 7.78235294118,
+          "text": "una película en menos de un año,"
+        },
+        {
+          "finish": 12,
+          "first": 24,
+          "last": 26,
+          "lines": ["pero aquí estamos."],
+          "start": 10.3129411765,
+          "text": "pero aquí estamos."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 12,
+        "text": "Cuando empezamos este proyecto, nadie en el equipo creía que un estudio de cuatro personas pudiera terminar una película en menos de un año, pero aquí estamos."
+      },
+      "name": "split (short): a long Spanish sentence"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.05909090909,
+          "first": 0,
+          "last": 25,
+          "lines": ["สวัสดีครับทุกคนวันนี้เราจะ"],
+          "start": 0.05,
+          "text": "สวัสดีครับทุกคนวันนี้เราจะ"
+        },
+        {
+          "finish": 4.06818181818,
+          "first": 26,
+          "last": 51,
+          "lines": ["มาพูดถึงการตัดต่อวิดีโอด้ว"],
+          "start": 2.05909090909,
+          "text": "มาพูดถึงการตัดต่อวิดีโอด้ว"
+        },
+        {
+          "finish": 6,
+          "first": 52,
+          "last": 76,
+          "lines": ["ยโปรแกรมใหม่ที่น่าสนใจมาก"],
+          "start": 4.06818181818,
+          "text": "ยโปรแกรมใหม่ที่น่าสนใจมาก"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 6,
+        "text": "สวัสดีครับทุกคนวันนี้เราจะมาพูดถึงการตัดต่อวิดีโอด้วยโปรแกรมใหม่ที่น่าสนใจมาก"
+      },
+      "name": "split (short): Thai"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.20694444444,
+          "first": 0,
+          "last": 1,
+          "lines": ["안녕하세요 여러분,"],
+          "start": 0.05,
+          "text": "안녕하세요 여러분,"
+        },
+        {
+          "finish": 2.81840277778,
+          "first": 2,
+          "last": 4,
+          "lines": ["오늘은 새로운 프로그램으로"],
+          "start": 1.20694444444,
+          "text": "오늘은 새로운 프로그램으로"
+        },
+        {
+          "finish": 4.30590277778,
+          "first": 5,
+          "last": 7,
+          "lines": ["동영상을 편집하는 방법에"],
+          "start": 2.81840277778,
+          "text": "동영상을 편집하는 방법에"
+        },
+        {
+          "finish": 6,
+          "first": 8,
+          "last": 10,
+          "lines": ["대해 이야기해 보겠습니다."],
+          "start": 4.30590277778,
+          "text": "대해 이야기해 보겠습니다."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 6,
+        "text": "안녕하세요 여러분, 오늘은 새로운 프로그램으로 동영상을 편집하는 방법에 대해 이야기해 보겠습니다."
+      },
+      "name": "split (short): Korean"
+    },
+    {
+      "expect": [
+        {
+          "finish": 3.13265306122,
+          "first": 0,
+          "last": 7,
+          "lines": ["Mr. Smith met Dr. Jones at the studio,"],
+          "start": 0.05,
+          "text": "Mr. Smith met Dr. Jones at the studio,"
+        },
+        {
+          "finish": 4.8362244898,
+          "first": 8,
+          "last": 12,
+          "lines": ["e.g. for the final mix"],
+          "start": 3.13265306122,
+          "text": "e.g. for the final mix"
+        },
+        {
+          "finish": 8,
+          "first": 13,
+          "last": 18,
+          "lines": ["of the documentary vs. the trailer."],
+          "start": 4.8362244898,
+          "text": "of the documentary vs. the trailer."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 8,
+        "text": "Mr. Smith met Dr. Jones at the studio, e.g. for the final mix of the documentary vs. the trailer."
+      },
+      "name": "split (short): abbreviations do not end sentences"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.48243243243,
+          "first": 0,
+          "last": 3,
+          "lines": ["Well... I think so,"],
+          "start": 0.05,
+          "text": "Well... I think so,"
+        },
+        {
+          "finish": 3.84594594595,
+          "first": 4,
+          "last": 10,
+          "lines": ["but we should ask the whole team"],
+          "start": 1.48243243243,
+          "text": "but we should ask the whole team"
+        },
+        {
+          "finish": 6.56756756757,
+          "first": 11,
+          "last": 16,
+          "lines": ["before we decide anything at all."],
+          "start": 3.84594594595,
+          "text": "before we decide anything at all."
+        },
+        {
+          "finish": 8,
+          "first": 17,
+          "last": 18,
+          "lines": ["Maybe tomorrow."],
+          "start": 6.56756756757,
+          "text": "Maybe tomorrow."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 8,
+        "text": "Well... I think so, but we should ask the whole team before we decide anything at all. Maybe tomorrow."
+      },
+      "name": "split (short): an ellipsis trails on"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.33130434783,
+          "first": 0,
+          "last": 4,
+          "lines": ["Welcome back to the channel!"],
+          "start": 0.05,
+          "text": "Welcome back to the channel!"
+        },
+        {
+          "finish": 4.26695652174,
+          "first": 5,
+          "last": 9,
+          "lines": ["Haha, today we are grading"],
+          "start": 2.33130434783,
+          "text": "Haha, today we are grading"
+        },
+        {
+          "finish": 5.71869565217,
+          "first": 10,
+          "last": 12,
+          "lines": ["a sunset timelapse,"],
+          "start": 4.26695652174,
+          "text": "a sunset timelapse,"
+        },
+        {
+          "finish": 8,
+          "first": 13,
+          "last": 17,
+          "lines": ["shot entirely on the iPhone."],
+          "start": 5.71869565217,
+          "text": "shot entirely on the iPhone."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 8,
+        "text": "<|emotion:happy|>Welcome back to the channel! <|sfx:laughter|>Haha, today we are grading a sunset timelapse, shot entirely on the iPhone."
+      },
+      "name": "split (short): tags inside the line"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.388571428571,
+          "first": 0,
+          "last": 0,
+          "lines": ["Visit"],
+          "start": 0.05,
+          "text": "Visit"
+        },
+        {
+          "finish": 3.37928571429,
+          "first": 1,
+          "last": 1,
+          "lines": ["https://example.com/a/very/long/path/that/never/ends/at/all/really"],
+          "start": 0.388571428571,
+          "text": "https://example.com/a/very/long/path/that/never/ends/at/all/really"
+        },
+        {
+          "finish": 4,
+          "first": 2,
+          "last": 2,
+          "lines": ["today."],
+          "start": 3.37928571429,
+          "text": "today."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 4,
+        "text": "Visit https://example.com/a/very/long/path/that/never/ends/at/all/really today."
+      },
+      "name": "split (short): a word wider than a line"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.92233009709,
+          "first": 0,
+          "last": 4,
+          "lines": ["When we started this project"],
+          "start": 0.05,
+          "text": "When we started this project"
+        },
+        {
+          "finish": 4.76310679612,
+          "first": 5,
+          "last": 12,
+          "lines": ["in the spring, nobody on the team believed"],
+          "start": 1.92233009709,
+          "text": "in the spring, nobody on the team believed"
+        },
+        {
+          "finish": 7.15194174757,
+          "first": 13,
+          "last": 18,
+          "lines": ["that a four-person studio working out"],
+          "start": 4.76310679612,
+          "text": "that a four-person studio working out"
+        },
+        {
+          "finish": 9.66990291262,
+          "first": 19,
+          "last": 27,
+          "lines": ["of a garage in the east end could ship"],
+          "start": 7.15194174757,
+          "text": "of a garage in the east end could ship"
+        },
+        {
+          "finish": 11.6713592233,
+          "first": 28,
+          "last": 34,
+          "lines": ["a feature film in under a year"],
+          "start": 9.66990291262,
+          "text": "a feature film in under a year"
+        },
+        {
+          "finish": 13.4791262136,
+          "first": 35,
+          "last": 38,
+          "lines": ["without any outside money,"],
+          "start": 11.6713592233,
+          "text": "without any outside money,"
+        },
+        {
+          "finish": 14.6412621359,
+          "first": 39,
+          "last": 42,
+          "lines": ["but here we are,"],
+          "start": 13.4791262136,
+          "text": "but here we are,"
+        },
+        {
+          "finish": 17.4174757282,
+          "first": 43,
+          "last": 50,
+          "lines": ["and the premiere is next Friday in Toronto"],
+          "start": 14.6412621359,
+          "text": "and the premiere is next Friday in Toronto"
+        },
+        {
+          "finish": 20,
+          "first": 51,
+          "last": 57,
+          "lines": ["at the big theatre on Queen Street."],
+          "start": 17.4174757282,
+          "text": "at the big theatre on Queen Street."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 20,
+        "text": "When we started this project in the spring, nobody on the team believed that a four-person studio working out of a garage in the east end could ship a feature film in under a year without any outside money, but here we are, and the premiere is next Friday in Toronto at the big theatre on Queen Street."
+      },
+      "name": "split (short): a very long sentence pairs its phrases"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.31111111111,
+          "first": 0,
+          "last": 7,
+          "lines": ["and then we went home without a word"],
+          "start": 0.05,
+          "text": "and then we went home without a word"
+        },
+        {
+          "finish": 4.32777777778,
+          "first": 8,
+          "last": 14,
+          "lines": ["to anyone about what we had seen"],
+          "start": 2.31111111111,
+          "text": "to anyone about what we had seen"
+        },
+        {
+          "finish": 5,
+          "first": 15,
+          "last": 16,
+          "lines": ["that night"],
+          "start": 4.32777777778,
+          "text": "that night"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 5,
+        "text": "and then we went home without a word to anyone about what we had seen that night"
+      },
+      "name": "split (short): no closing stop"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.988613861386,
+          "first": 0,
+          "last": 0,
+          "lines": ["नमस्ते।"],
+          "start": 0.05,
+          "text": "नमस्ते।"
+        },
+        {
+          "finish": 2.35742574257,
+          "first": 1,
+          "last": 3,
+          "lines": ["आप कैसे हैं?"],
+          "start": 0.988613861386,
+          "text": "आप कैसे हैं?"
+        },
+        {
+          "finish": 3.17871287129,
+          "first": 4,
+          "last": 5,
+          "lines": ["كيف حالك؟"],
+          "start": 2.35742574257,
+          "text": "كيف حالك؟"
+        },
+        {
+          "finish": 4,
+          "first": 6,
+          "last": 7,
+          "lines": ["أنا بخير."],
+          "start": 3.17871287129,
+          "text": "أنا بخير."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 4,
+        "text": "नमस्ते। आप कैसे हैं? كيف حالك؟ أنا بخير."
+      },
+      "name": "split (short): Hindi and Arabic stops"
+    },
+    {
+      "expect": [],
+      "fn": "split",
+      "input": {
+        "mode": "short",
+        "seconds": 1,
+        "text": ""
+      },
+      "name": "split (short): nothing"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.3,
+          "first": 0,
+          "last": 18,
+          "lines": ["中华人民共和国国务院总理", "今天发表讲话了。"],
+          "start": 0.1,
+          "text": "中华人民共和国国务院总理\n今天发表讲话了。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 4,
+        "text": "中华人民共和国国务院总理今天发表讲话了。",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "中华人民共和国国务院总理"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "今天"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "发表"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "讲话"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "了"
+          }
+        ]
+      },
+      "name": "split (sentence): a long first Chinese word is not broken"
+    },
+    {
+      "expect": [
+        {
+          "finish": 3.68427835052,
+          "first": 0,
+          "last": 9,
+          "lines": ["When we started this project,", "nobody on the team believed"],
+          "start": 0.05,
+          "text": "When we started this project,\nnobody on the team believed"
+        },
+        {
+          "finish": 7.93453608247,
+          "first": 10,
+          "last": 22,
+          "lines": ["that a four-person studio could ship", "a feature film in under a year,"],
+          "start": 3.68427835052,
+          "text": "that a four-person studio could ship\na feature film in under a year,"
+        },
+        {
+          "finish": 12,
+          "first": 23,
+          "last": 34,
+          "lines": ["but here we are, and the premiere", "is next Friday in Toronto."],
+          "start": 7.93453608247,
+          "text": "but here we are, and the premiere\nis next Friday in Toronto."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 12,
+        "text": "When we started this project, nobody on the team believed that a four-person studio could ship a feature film in under a year, but here we are, and the premiere is next Friday in Toronto."
+      },
+      "name": "split (sentence): a long English sentence"
+    },
+    {
+      "expect": [
+        {
+          "finish": 4.04353741497,
+          "first": 0,
+          "last": 9,
+          "lines": ["When we started this project,", "nobody on the team believed"],
+          "start": 0.05,
+          "text": "When we started this project,\nnobody on the team believed"
+        },
+        {
+          "finish": 8.57857142857,
+          "first": 10,
+          "last": 21,
+          "lines": ["a four-person studio could ship", "a feature film in under a year."],
+          "start": 4.04353741497,
+          "text": "a four-person studio could ship\na feature film in under a year."
+        },
+        {
+          "finish": 10,
+          "first": 22,
+          "last": 25,
+          "lines": ["But here we are."],
+          "start": 8.57857142857,
+          "text": "But here we are."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 10,
+        "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are."
+      },
+      "name": "split (sentence): a long sentence, then a short one"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.55,
+          "first": 0,
+          "last": 9,
+          "lines": ["When we started this project,", "nobody on the team believed"],
+          "start": 0.1,
+          "text": "When we started this project,\nnobody on the team believed"
+        },
+        {
+          "finish": 5.8,
+          "first": 10,
+          "last": 21,
+          "lines": ["a four-person studio could ship", "a feature film in under a year."],
+          "start": 2.6,
+          "text": "a four-person studio could ship\na feature film in under a year."
+        },
+        {
+          "finish": 6.8,
+          "first": 22,
+          "last": 25,
+          "lines": ["But here we are."],
+          "start": 5.85,
+          "text": "But here we are."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 10,
+        "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "when"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "we"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "started"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "this"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "project"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "nobody"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "on"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "the"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "team"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "believed"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "a"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "four"
+          },
+          {
+            "end": 3.3,
+            "start": 3.1,
+            "word": "person"
+          },
+          {
+            "end": 3.55,
+            "start": 3.35,
+            "word": "studio"
+          },
+          {
+            "end": 3.8,
+            "start": 3.6,
+            "word": "could"
+          },
+          {
+            "end": 4.05,
+            "start": 3.85,
+            "word": "ship"
+          },
+          {
+            "end": 4.3,
+            "start": 4.1,
+            "word": "a"
+          },
+          {
+            "end": 4.55,
+            "start": 4.35,
+            "word": "feature"
+          },
+          {
+            "end": 4.8,
+            "start": 4.6,
+            "word": "film"
+          },
+          {
+            "end": 5.05,
+            "start": 4.85,
+            "word": "in"
+          },
+          {
+            "end": 5.3,
+            "start": 5.1,
+            "word": "under"
+          },
+          {
+            "end": 5.55,
+            "start": 5.35,
+            "word": "a"
+          },
+          {
+            "end": 5.8,
+            "start": 5.6,
+            "word": "year"
+          },
+          {
+            "end": 6.05,
+            "start": 5.85,
+            "word": "but"
+          },
+          {
+            "end": 6.3,
+            "start": 6.1,
+            "word": "here"
+          },
+          {
+            "end": 6.55,
+            "start": 6.35,
+            "word": "we"
+          },
+          {
+            "end": 6.8,
+            "start": 6.6,
+            "word": "are"
+          }
+        ]
+      },
+      "name": "split (sentence): timed from Boson's words"
+    },
+    {
+      "expect": [
+        {
+          "finish": 4.45,
+          "first": 0,
+          "last": 15,
+          "lines": ["Nobody on the team believed a small studio", "could ship this feature film in a year."],
+          "start": 0.1,
+          "text": "Nobody on the team believed a small studio\ncould ship this feature film in a year."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 6,
+        "text": "Nobody on the team believed a small studio could ship this feature film in a year.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "nobody"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "on"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "the"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "team"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "believed"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "a"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "small"
+          },
+          {
+            "end": 2.45,
+            "start": 2.25,
+            "word": "studio"
+          },
+          {
+            "end": 2.7,
+            "start": 2.5,
+            "word": "could"
+          },
+          {
+            "end": 2.95,
+            "start": 2.75,
+            "word": "ship"
+          },
+          {
+            "end": 3.2,
+            "start": 3,
+            "word": "this"
+          },
+          {
+            "end": 3.45,
+            "start": 3.25,
+            "word": "feature"
+          },
+          {
+            "end": 3.7,
+            "start": 3.5,
+            "word": "film"
+          },
+          {
+            "end": 3.95,
+            "start": 3.75,
+            "word": "in"
+          },
+          {
+            "end": 4.2,
+            "start": 4,
+            "word": "a"
+          },
+          {
+            "end": 4.45,
+            "start": 4.25,
+            "word": "year"
+          }
+        ]
+      },
+      "name": "split (sentence): a pause in the voice is a place to break"
+    },
+    {
+      "expect": [
+        {
+          "finish": 3.27,
+          "first": 0,
+          "last": 11,
+          "lines": ["I think we should all go down to the beach", "together tomorrow."],
+          "start": 0.1,
+          "text": "I think we should all go down to the beach\ntogether tomorrow."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 4,
+        "text": "I think we should all go down to the beach together tomorrow.",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "i"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "think"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "we"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "should"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "all"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "go"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "down"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "to"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "the"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "beach"
+          },
+          {
+            "end": 3.02,
+            "start": 2.82,
+            "word": "together"
+          },
+          {
+            "end": 3.27,
+            "start": 3.07,
+            "word": "tomorrow"
+          }
+        ]
+      },
+      "name": "split (sentence): a short breath (0.27 s) is a place to break too"
+    },
+    {
+      "expect": [
+        {
+          "finish": 12.8,
+          "first": 0,
+          "last": 7,
+          "lines": ["We waited for hours and nobody came back."],
+          "start": 0.1,
+          "text": "We waited for hours and nobody came back."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 14,
+        "text": "We waited for hours and nobody came back.",
+        "words": [
+          {
+            "end": 1.6,
+            "start": 0.1,
+            "word": "we"
+          },
+          {
+            "end": 3.2,
+            "start": 1.7,
+            "word": "waited"
+          },
+          {
+            "end": 4.8,
+            "start": 3.3,
+            "word": "for"
+          },
+          {
+            "end": 6.4,
+            "start": 4.9,
+            "word": "hours"
+          },
+          {
+            "end": 8,
+            "start": 6.5,
+            "word": "and"
+          },
+          {
+            "end": 9.6,
+            "start": 8.1,
+            "word": "nobody"
+          },
+          {
+            "end": 11.2,
+            "start": 9.7,
+            "word": "came"
+          },
+          {
+            "end": 12.8,
+            "start": 11.3,
+            "word": "back"
+          }
+        ]
+      },
+      "name": "split (sentence): slow speech is cut before 7 seconds"
+    },
+    {
+      "expect": [
+        {
+          "finish": 18,
+          "first": 0,
+          "last": 11,
+          "lines": ["We will now read the list", "of every name on the wall,"],
+          "start": 0.1,
+          "text": "We will now read the list\nof every name on the wall,"
+        },
+        {
+          "finish": 28.5,
+          "first": 12,
+          "last": 18,
+          "lines": ["slowly and with care for each one."],
+          "start": 18.1,
+          "text": "slowly and with care for each one."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 30,
+        "text": "We will now read the list of every name on the wall, slowly and with care for each one.",
+        "words": [
+          {
+            "end": 1.5,
+            "start": 0.1,
+            "word": "we"
+          },
+          {
+            "end": 3,
+            "start": 1.6,
+            "word": "will"
+          },
+          {
+            "end": 4.5,
+            "start": 3.1,
+            "word": "now"
+          },
+          {
+            "end": 6,
+            "start": 4.6,
+            "word": "read"
+          },
+          {
+            "end": 7.5,
+            "start": 6.1,
+            "word": "the"
+          },
+          {
+            "end": 9,
+            "start": 7.6,
+            "word": "list"
+          },
+          {
+            "end": 10.5,
+            "start": 9.1,
+            "word": "of"
+          },
+          {
+            "end": 12,
+            "start": 10.6,
+            "word": "every"
+          },
+          {
+            "end": 13.5,
+            "start": 12.1,
+            "word": "name"
+          },
+          {
+            "end": 15,
+            "start": 13.6,
+            "word": "on"
+          },
+          {
+            "end": 16.5,
+            "start": 15.1,
+            "word": "the"
+          },
+          {
+            "end": 18,
+            "start": 16.6,
+            "word": "wall"
+          },
+          {
+            "end": 19.5,
+            "start": 18.1,
+            "word": "slowly"
+          },
+          {
+            "end": 21,
+            "start": 19.6,
+            "word": "and"
+          },
+          {
+            "end": 22.5,
+            "start": 21.1,
+            "word": "with"
+          },
+          {
+            "end": 24,
+            "start": 22.6,
+            "word": "care"
+          },
+          {
+            "end": 25.5,
+            "start": 24.1,
+            "word": "for"
+          },
+          {
+            "end": 27,
+            "start": 25.6,
+            "word": "each"
+          },
+          {
+            "end": 28.5,
+            "start": 27.1,
+            "word": "one"
+          }
+        ]
+      },
+      "name": "split (sentence): slow speech with natural breaks"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.847727272727,
+          "first": 0,
+          "last": 0,
+          "lines": ["Yes."],
+          "start": 0.05,
+          "text": "Yes."
+        },
+        {
+          "finish": 2,
+          "first": 1,
+          "last": 2,
+          "lines": ["I agree."],
+          "start": 0.847727272727,
+          "text": "I agree."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 2,
+        "text": "Yes. I agree."
+      },
+      "name": "split (sentence): two short sentences"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.895,
+          "first": 0,
+          "last": 1,
+          "lines": ["你好。"],
+          "start": 0.05,
+          "text": "你好。"
+        },
+        {
+          "finish": 2,
+          "first": 2,
+          "last": 4,
+          "lines": ["我很好。"],
+          "start": 0.895,
+          "text": "我很好。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 2,
+        "text": "你好。我很好。"
+      },
+      "name": "split (sentence): two Chinese sentences"
+    },
+    {
+      "expect": [
+        {
+          "finish": 5.42625899281,
+          "first": 0,
+          "last": 22,
+          "lines": ["我们今天要调色一段完全用", "手机拍摄的日落延时视频，"],
+          "start": 0.05,
+          "text": "我们今天要调色一段完全用\n手机拍摄的日落延时视频，"
+        },
+        {
+          "finish": 8,
+          "first": 23,
+          "last": 32,
+          "lines": ["效果真的让我大吃一惊。"],
+          "start": 5.42625899281,
+          "text": "效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 8,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。"
+      },
+      "name": "split (sentence): a long Chinese sentence"
+    },
+    {
+      "expect": [
+        {
+          "finish": 3.3,
+          "first": 0,
+          "last": 22,
+          "lines": ["我们今天要调色一段完全用", "手机拍摄的日落延时视频，"],
+          "start": 0.1,
+          "text": "我们今天要调色一段完全用\n手机拍摄的日落延时视频，"
+        },
+        {
+          "finish": 4.55,
+          "first": 23,
+          "last": 32,
+          "lines": ["效果真的让我大吃一惊。"],
+          "start": 3.35,
+          "text": "效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 8,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.1,
+            "word": "我们"
+          },
+          {
+            "end": 0.55,
+            "start": 0.35,
+            "word": "今天"
+          },
+          {
+            "end": 0.8,
+            "start": 0.6,
+            "word": "要"
+          },
+          {
+            "end": 1.05,
+            "start": 0.85,
+            "word": "调色"
+          },
+          {
+            "end": 1.3,
+            "start": 1.1,
+            "word": "一段"
+          },
+          {
+            "end": 1.55,
+            "start": 1.35,
+            "word": "完全"
+          },
+          {
+            "end": 1.8,
+            "start": 1.6,
+            "word": "用"
+          },
+          {
+            "end": 2.05,
+            "start": 1.85,
+            "word": "手机"
+          },
+          {
+            "end": 2.3,
+            "start": 2.1,
+            "word": "拍摄"
+          },
+          {
+            "end": 2.55,
+            "start": 2.35,
+            "word": "的"
+          },
+          {
+            "end": 2.8,
+            "start": 2.6,
+            "word": "日落"
+          },
+          {
+            "end": 3.05,
+            "start": 2.85,
+            "word": "延时"
+          },
+          {
+            "end": 3.3,
+            "start": 3.1,
+            "word": "视频"
+          },
+          {
+            "end": 3.55,
+            "start": 3.35,
+            "word": "效果"
+          },
+          {
+            "end": 3.8,
+            "start": 3.6,
+            "word": "真的"
+          },
+          {
+            "end": 4.05,
+            "start": 3.85,
+            "word": "让"
+          },
+          {
+            "end": 4.3,
+            "start": 4.1,
+            "word": "我"
+          },
+          {
+            "end": 4.55,
+            "start": 4.35,
+            "word": "大吃一惊"
+          }
+        ]
+      },
+      "name": "split (sentence): Chinese timed per word"
+    },
+    {
+      "expect": [
+        {
+          "finish": 3.99,
+          "first": 0,
+          "last": 22,
+          "lines": ["我们今天要调色一段完全用", "手机拍摄的日落延时视频，"],
+          "start": 0.1,
+          "text": "我们今天要调色一段完全用\n手机拍摄的日落延时视频，"
+        },
+        {
+          "finish": 5.69,
+          "first": 23,
+          "last": 32,
+          "lines": ["效果真的让我大吃一惊。"],
+          "start": 4.01,
+          "text": "效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 8,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。",
+        "words": [
+          {
+            "end": 0.25,
+            "start": 0.1,
+            "word": "我"
+          },
+          {
+            "end": 0.42,
+            "start": 0.27,
+            "word": "们"
+          },
+          {
+            "end": 0.59,
+            "start": 0.44,
+            "word": "今"
+          },
+          {
+            "end": 0.76,
+            "start": 0.61,
+            "word": "天"
+          },
+          {
+            "end": 0.93,
+            "start": 0.78,
+            "word": "要"
+          },
+          {
+            "end": 1.1,
+            "start": 0.95,
+            "word": "调"
+          },
+          {
+            "end": 1.27,
+            "start": 1.12,
+            "word": "色"
+          },
+          {
+            "end": 1.44,
+            "start": 1.29,
+            "word": "一"
+          },
+          {
+            "end": 1.61,
+            "start": 1.46,
+            "word": "段"
+          },
+          {
+            "end": 1.78,
+            "start": 1.63,
+            "word": "完"
+          },
+          {
+            "end": 1.95,
+            "start": 1.8,
+            "word": "全"
+          },
+          {
+            "end": 2.12,
+            "start": 1.97,
+            "word": "用"
+          },
+          {
+            "end": 2.29,
+            "start": 2.14,
+            "word": "手"
+          },
+          {
+            "end": 2.46,
+            "start": 2.31,
+            "word": "机"
+          },
+          {
+            "end": 2.63,
+            "start": 2.48,
+            "word": "拍"
+          },
+          {
+            "end": 2.8,
+            "start": 2.65,
+            "word": "摄"
+          },
+          {
+            "end": 2.97,
+            "start": 2.82,
+            "word": "的"
+          },
+          {
+            "end": 3.14,
+            "start": 2.99,
+            "word": "日"
+          },
+          {
+            "end": 3.31,
+            "start": 3.16,
+            "word": "落"
+          },
+          {
+            "end": 3.48,
+            "start": 3.33,
+            "word": "延"
+          },
+          {
+            "end": 3.65,
+            "start": 3.5,
+            "word": "时"
+          },
+          {
+            "end": 3.82,
+            "start": 3.67,
+            "word": "视"
+          },
+          {
+            "end": 3.99,
+            "start": 3.84,
+            "word": "频"
+          },
+          {
+            "end": 4.16,
+            "start": 4.01,
+            "word": "效"
+          },
+          {
+            "end": 4.33,
+            "start": 4.18,
+            "word": "果"
+          },
+          {
+            "end": 4.5,
+            "start": 4.35,
+            "word": "真"
+          },
+          {
+            "end": 4.67,
+            "start": 4.52,
+            "word": "的"
+          },
+          {
+            "end": 4.84,
+            "start": 4.69,
+            "word": "让"
+          },
+          {
+            "end": 5.01,
+            "start": 4.86,
+            "word": "我"
+          },
+          {
+            "end": 5.18,
+            "start": 5.03,
+            "word": "大"
+          },
+          {
+            "end": 5.35,
+            "start": 5.2,
+            "word": "吃"
+          },
+          {
+            "end": 5.52,
+            "start": 5.37,
+            "word": "一"
+          },
+          {
+            "end": 5.69,
+            "start": 5.54,
+            "word": "惊"
+          }
+        ]
+      },
+      "name": "split (sentence): Chinese timed per character"
+    },
+    {
+      "expect": [
+        {
+          "finish": 5,
+          "first": 0,
+          "last": 22,
+          "lines": ["今日はとても良い天気で", "すね散歩に行きましょうか"],
+          "start": 0.05,
+          "text": "今日はとても良い天気で\nすね散歩に行きましょうか"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 5,
+        "text": "今日はとても良い天気ですね散歩に行きましょうか"
+      },
+      "name": "split (sentence): Japanese"
+    },
+    {
+      "expect": [
+        {
+          "finish": 5.25176470588,
+          "first": 0,
+          "last": 11,
+          "lines": ["Cuando empezamos este proyecto,", "nadie en el equipo creía que un estudio"],
+          "start": 0.05,
+          "text": "Cuando empezamos este proyecto,\nnadie en el equipo creía que un estudio"
+        },
+        {
+          "finish": 10.3129411765,
+          "first": 12,
+          "last": 23,
+          "lines": ["de cuatro personas pudiera terminar", "una película en menos de un año,"],
+          "start": 5.25176470588,
+          "text": "de cuatro personas pudiera terminar\nuna película en menos de un año,"
+        },
+        {
+          "finish": 12,
+          "first": 24,
+          "last": 26,
+          "lines": ["pero aquí estamos."],
+          "start": 10.3129411765,
+          "text": "pero aquí estamos."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 12,
+        "text": "Cuando empezamos este proyecto, nadie en el equipo creía que un estudio de cuatro personas pudiera terminar una película en menos de un año, pero aquí estamos."
+      },
+      "name": "split (sentence): a long Spanish sentence"
+    },
+    {
+      "expect": [
+        {
+          "finish": 4.06818181818,
+          "first": 0,
+          "last": 51,
+          "lines": [
+            "สวัสดีครับทุกคนวันนี้เราจะ",
+            "มาพูดถึงการตัดต่อวิดีโอด้ว"
+          ],
+          "start": 0.05,
+          "text": "สวัสดีครับทุกคนวันนี้เราจะ\nมาพูดถึงการตัดต่อวิดีโอด้ว"
+        },
+        {
+          "finish": 6,
+          "first": 52,
+          "last": 76,
+          "lines": ["ยโปรแกรมใหม่ที่น่าสนใจมาก"],
+          "start": 4.06818181818,
+          "text": "ยโปรแกรมใหม่ที่น่าสนใจมาก"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 6,
+        "text": "สวัสดีครับทุกคนวันนี้เราจะมาพูดถึงการตัดต่อวิดีโอด้วยโปรแกรมใหม่ที่น่าสนใจมาก"
+      },
+      "name": "split (sentence): Thai"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.81840277778,
+          "first": 0,
+          "last": 4,
+          "lines": ["안녕하세요 여러분,", "오늘은 새로운 프로그램으로"],
+          "start": 0.05,
+          "text": "안녕하세요 여러분,\n오늘은 새로운 프로그램으로"
+        },
+        {
+          "finish": 6,
+          "first": 5,
+          "last": 10,
+          "lines": ["동영상을 편집하는 방법에", "대해 이야기해 보겠습니다."],
+          "start": 2.81840277778,
+          "text": "동영상을 편집하는 방법에\n대해 이야기해 보겠습니다."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 6,
+        "text": "안녕하세요 여러분, 오늘은 새로운 프로그램으로 동영상을 편집하는 방법에 대해 이야기해 보겠습니다."
+      },
+      "name": "split (sentence): Korean"
+    },
+    {
+      "expect": [
+        {
+          "finish": 3.13265306122,
+          "first": 0,
+          "last": 7,
+          "lines": ["Mr. Smith met Dr. Jones at the studio,"],
+          "start": 0.05,
+          "text": "Mr. Smith met Dr. Jones at the studio,"
+        },
+        {
+          "finish": 8,
+          "first": 8,
+          "last": 18,
+          "lines": ["e.g. for the final mix", "of the documentary vs. the trailer."],
+          "start": 3.13265306122,
+          "text": "e.g. for the final mix\nof the documentary vs. the trailer."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 8,
+        "text": "Mr. Smith met Dr. Jones at the studio, e.g. for the final mix of the documentary vs. the trailer."
+      },
+      "name": "split (sentence): abbreviations do not end sentences"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.48243243243,
+          "first": 0,
+          "last": 3,
+          "lines": ["Well... I think so,"],
+          "start": 0.05,
+          "text": "Well... I think so,"
+        },
+        {
+          "finish": 6.56756756757,
+          "first": 4,
+          "last": 16,
+          "lines": ["but we should ask the whole team", "before we decide anything at all."],
+          "start": 1.48243243243,
+          "text": "but we should ask the whole team\nbefore we decide anything at all."
+        },
+        {
+          "finish": 8,
+          "first": 17,
+          "last": 18,
+          "lines": ["Maybe tomorrow."],
+          "start": 6.56756756757,
+          "text": "Maybe tomorrow."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 8,
+        "text": "Well... I think so, but we should ask the whole team before we decide anything at all. Maybe tomorrow."
+      },
+      "name": "split (sentence): an ellipsis trails on"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.33130434783,
+          "first": 0,
+          "last": 4,
+          "lines": ["Welcome back to the channel!"],
+          "start": 0.05,
+          "text": "Welcome back to the channel!"
+        },
+        {
+          "finish": 8,
+          "first": 5,
+          "last": 17,
+          "lines": ["Haha, today we are grading a sunset", "timelapse, shot entirely on the iPhone."],
+          "start": 2.33130434783,
+          "text": "Haha, today we are grading a sunset\ntimelapse, shot entirely on the iPhone."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 8,
+        "text": "<|emotion:happy|>Welcome back to the channel! <|sfx:laughter|>Haha, today we are grading a sunset timelapse, shot entirely on the iPhone."
+      },
+      "name": "split (sentence): tags inside the line"
+    },
+    {
+      "expect": [
+        {
+          "finish": 4,
+          "first": 0,
+          "last": 2,
+          "lines": ["Visit", "https://example.com/a/very/long/path/that/never/ends/at/all/really", "today."],
+          "start": 0.05,
+          "text": "Visit\nhttps://example.com/a/very/long/path/that/never/ends/at/all/really\ntoday."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 4,
+        "text": "Visit https://example.com/a/very/long/path/that/never/ends/at/all/really today."
+      },
+      "name": "split (sentence): a word wider than a line"
+    },
+    {
+      "expect": [
+        {
+          "finish": 4.76310679612,
+          "first": 0,
+          "last": 12,
+          "lines": ["When we started this project", "in the spring, nobody on the team believed"],
+          "start": 0.05,
+          "text": "When we started this project\nin the spring, nobody on the team believed"
+        },
+        {
+          "finish": 9.66990291262,
+          "first": 13,
+          "last": 27,
+          "lines": ["that a four-person studio working out", "of a garage in the east end could ship"],
+          "start": 4.76310679612,
+          "text": "that a four-person studio working out\nof a garage in the east end could ship"
+        },
+        {
+          "finish": 13.4791262136,
+          "first": 28,
+          "last": 38,
+          "lines": ["a feature film in under a year", "without any outside money,"],
+          "start": 9.66990291262,
+          "text": "a feature film in under a year\nwithout any outside money,"
+        },
+        {
+          "finish": 14.6412621359,
+          "first": 39,
+          "last": 42,
+          "lines": ["but here we are,"],
+          "start": 13.4791262136,
+          "text": "but here we are,"
+        },
+        {
+          "finish": 20,
+          "first": 43,
+          "last": 57,
+          "lines": ["and the premiere is next Friday in Toronto", "at the big theatre on Queen Street."],
+          "start": 14.6412621359,
+          "text": "and the premiere is next Friday in Toronto\nat the big theatre on Queen Street."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 20,
+        "text": "When we started this project in the spring, nobody on the team believed that a four-person studio working out of a garage in the east end could ship a feature film in under a year without any outside money, but here we are, and the premiere is next Friday in Toronto at the big theatre on Queen Street."
+      },
+      "name": "split (sentence): a very long sentence pairs its phrases"
+    },
+    {
+      "expect": [
+        {
+          "finish": 5,
+          "first": 0,
+          "last": 16,
+          "lines": ["and then we went home without a word", "to anyone about what we had seen", "that night"],
+          "start": 0.05,
+          "text": "and then we went home without a word\nto anyone about what we had seen\nthat night"
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 5,
+        "text": "and then we went home without a word to anyone about what we had seen that night"
+      },
+      "name": "split (sentence): no closing stop"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.988613861386,
+          "first": 0,
+          "last": 0,
+          "lines": ["नमस्ते।"],
+          "start": 0.05,
+          "text": "नमस्ते।"
+        },
+        {
+          "finish": 2.35742574257,
+          "first": 1,
+          "last": 3,
+          "lines": ["आप कैसे हैं?"],
+          "start": 0.988613861386,
+          "text": "आप कैसे हैं?"
+        },
+        {
+          "finish": 3.17871287129,
+          "first": 4,
+          "last": 5,
+          "lines": ["كيف حالك؟"],
+          "start": 2.35742574257,
+          "text": "كيف حالك؟"
+        },
+        {
+          "finish": 4,
+          "first": 6,
+          "last": 7,
+          "lines": ["أنا بخير."],
+          "start": 3.17871287129,
+          "text": "أنا بخير."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 4,
+        "text": "नमस्ते। आप कैसे हैं? كيف حالك؟ أنا بخير."
+      },
+      "name": "split (sentence): Hindi and Arabic stops"
+    },
+    {
+      "expect": [],
+      "fn": "split",
+      "input": {
+        "mode": "sentence",
+        "seconds": 1,
+        "text": ""
+      },
+      "name": "split (sentence): nothing"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.90235849057,
+          "first": 0,
+          "last": 4,
+          "lines": ["Welcome back to the channel!"],
+          "start": 0.05,
+          "text": "Welcome back to the channel!"
+        },
+        {
+          "finish": 4.14764150943,
+          "first": 5,
+          "last": 10,
+          "lines": ["Today we're grading a sunset timelapse,"],
+          "start": 1.90235849057,
+          "text": "Today we're grading a sunset timelapse,"
+        },
+        {
+          "finish": 6,
+          "first": 11,
+          "last": 15,
+          "lines": ["shot entirely on the iPhone."],
+          "start": 4.14764150943,
+          "text": "shot entirely on the iPhone."
+        }
+      ],
+      "fn": "split",
+      "input": {
+        "mode": "other",
+        "seconds": 6,
+        "text": "Welcome back to the channel! Today we're grading a sunset timelapse, shot entirely on the iPhone."
+      },
+      "name": "split (other): an unknown mode splits short"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "finish": 1.6,
+            "first": 0,
+            "last": 2,
+            "lines": ["Hello there, friend."],
+            "start": 0.1,
+            "text": "Hello there, friend."
+          }
+        ],
+        "method": "words"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "pause": 0.4,
+          "seconds": 2.4,
+          "text": "Hello there, friend.",
+          "words": [
+            {
+              "end": 0.4,
+              "start": 0.1,
+              "word": "Hello"
+            },
+            {
+              "end": 0.8,
+              "start": 0.45,
+              "word": "there"
+            },
+            {
+              "end": 1.6,
+              "start": 1,
+              "word": "friend"
+            }
+          ]
+        }
+      },
+      "name": "for_take (short): a take with timings is timed from them"
+    },
+    {
+      "expect": {
+        "cues": [],
+        "method": "none"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "pause": 0.4,
+          "seconds": 2,
+          "text": "Hello there, friend."
+        }
+      },
+      "name": "for_take (short): no word timings, no subtitles"
+    },
+    {
+      "expect": {
+        "cues": [],
+        "method": "none"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "seconds": 2,
+          "text": "Hello there, friend.",
+          "words": []
+        }
+      },
+      "name": "for_take (short): an empty list, no subtitles"
+    },
+    {
+      "expect": {
+        "cues": [],
+        "method": "none"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "seconds": 2,
+          "text": "Hello there, friend.",
+          "words": [
+            {
+              "end": 1,
+              "start": 0,
+              "word": "bonjour"
+            }
+          ]
+        }
+      },
+      "name": "for_take (short): timings that do not match give none"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "finish": 1.05,
+            "first": 0,
+            "last": 3,
+            "lines": ["Haha, that was great."],
+            "start": 0.1,
+            "text": "Haha, that was great."
+          },
+          {
+            "finish": 1.55,
+            "first": 4,
+            "last": 5,
+            "lines": ["Really great!"],
+            "start": 1.1,
+            "text": "Really great!"
+          }
+        ],
+        "method": "words"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "pause": 0.2,
+          "seconds": 3,
+          "text": "<|sfx:laughter|>Haha, that was great. <|emotion:happy|>Really great!",
+          "words": [
+            {
+              "end": 0.3,
+              "start": 0.1,
+              "word": "haha"
+            },
+            {
+              "end": 0.55,
+              "start": 0.35,
+              "word": "that"
+            },
+            {
+              "end": 0.8,
+              "start": 0.6,
+              "word": "was"
+            },
+            {
+              "end": 1.05,
+              "start": 0.85,
+              "word": "great"
+            },
+            {
+              "end": 1.3,
+              "start": 1.1,
+              "word": "really"
+            },
+            {
+              "end": 1.55,
+              "start": 1.35,
+              "word": "great"
+            }
+          ]
+        }
+      },
+      "name": "for_take (short): tags and a sound effect"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "finish": 2.55,
+            "first": 0,
+            "last": 9,
+            "lines": ["When we started this project,", "nobody on the team believed"],
+            "start": 0.1,
+            "text": "When we started this project,\nnobody on the team believed"
+          },
+          {
+            "finish": 5.8,
+            "first": 10,
+            "last": 21,
+            "lines": ["a four-person studio could ship", "a feature film in under a year."],
+            "start": 2.6,
+            "text": "a four-person studio could ship\na feature film in under a year."
+          },
+          {
+            "finish": 6.8,
+            "first": 22,
+            "last": 25,
+            "lines": ["But here we are."],
+            "start": 5.85,
+            "text": "But here we are."
+          }
+        ],
+        "method": "words"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "sentence",
+        "take": {
+          "seconds": 9,
+          "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are.",
+          "words": [
+            {
+              "end": 0.3,
+              "start": 0.1,
+              "word": "when"
+            },
+            {
+              "end": 0.55,
+              "start": 0.35,
+              "word": "we"
+            },
+            {
+              "end": 0.8,
+              "start": 0.6,
+              "word": "started"
+            },
+            {
+              "end": 1.05,
+              "start": 0.85,
+              "word": "this"
+            },
+            {
+              "end": 1.3,
+              "start": 1.1,
+              "word": "project"
+            },
+            {
+              "end": 1.55,
+              "start": 1.35,
+              "word": "nobody"
+            },
+            {
+              "end": 1.8,
+              "start": 1.6,
+              "word": "on"
+            },
+            {
+              "end": 2.05,
+              "start": 1.85,
+              "word": "the"
+            },
+            {
+              "end": 2.3,
+              "start": 2.1,
+              "word": "team"
+            },
+            {
+              "end": 2.55,
+              "start": 2.35,
+              "word": "believed"
+            },
+            {
+              "end": 2.8,
+              "start": 2.6,
+              "word": "a"
+            },
+            {
+              "end": 3.05,
+              "start": 2.85,
+              "word": "four"
+            },
+            {
+              "end": 3.3,
+              "start": 3.1,
+              "word": "person"
+            },
+            {
+              "end": 3.55,
+              "start": 3.35,
+              "word": "studio"
+            },
+            {
+              "end": 3.8,
+              "start": 3.6,
+              "word": "could"
+            },
+            {
+              "end": 4.05,
+              "start": 3.85,
+              "word": "ship"
+            },
+            {
+              "end": 4.3,
+              "start": 4.1,
+              "word": "a"
+            },
+            {
+              "end": 4.55,
+              "start": 4.35,
+              "word": "feature"
+            },
+            {
+              "end": 4.8,
+              "start": 4.6,
+              "word": "film"
+            },
+            {
+              "end": 5.05,
+              "start": 4.85,
+              "word": "in"
+            },
+            {
+              "end": 5.3,
+              "start": 5.1,
+              "word": "under"
+            },
+            {
+              "end": 5.55,
+              "start": 5.35,
+              "word": "a"
+            },
+            {
+              "end": 5.8,
+              "start": 5.6,
+              "word": "year"
+            },
+            {
+              "end": 6.05,
+              "start": 5.85,
+              "word": "but"
+            },
+            {
+              "end": 6.3,
+              "start": 6.1,
+              "word": "here"
+            },
+            {
+              "end": 6.55,
+              "start": 6.35,
+              "word": "we"
+            },
+            {
+              "end": 6.8,
+              "start": 6.6,
+              "word": "are"
+            }
+          ]
+        }
+      },
+      "name": "for_take (sentence): a long take in sentences"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "finish": 1.48,
+            "first": 0,
+            "last": 11,
+            "lines": ["我们今天要调色一段完全用"],
+            "start": 0.1,
+            "text": "我们今天要调色一段完全用"
+          },
+          {
+            "finish": 2.68,
+            "first": 12,
+            "last": 22,
+            "lines": ["手机拍摄的日落延时视频，"],
+            "start": 1.5,
+            "text": "手机拍摄的日落延时视频，"
+          },
+          {
+            "finish": 3.68,
+            "first": 23,
+            "last": 32,
+            "lines": ["效果真的让我大吃一惊。"],
+            "start": 2.7,
+            "text": "效果真的让我大吃一惊。"
+          }
+        ],
+        "method": "words"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "pause": "0.3",
+          "seconds": "4.5",
+          "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。",
+          "words": [
+            {
+              "end": 0.28,
+              "start": 0.1,
+              "word": "我们"
+            },
+            {
+              "end": 0.48,
+              "start": 0.3,
+              "word": "今天"
+            },
+            {
+              "end": 0.68,
+              "start": 0.5,
+              "word": "要"
+            },
+            {
+              "end": 0.88,
+              "start": 0.7,
+              "word": "调色"
+            },
+            {
+              "end": 1.08,
+              "start": 0.9,
+              "word": "一段"
+            },
+            {
+              "end": 1.28,
+              "start": 1.1,
+              "word": "完全"
+            },
+            {
+              "end": 1.48,
+              "start": 1.3,
+              "word": "用"
+            },
+            {
+              "end": 1.68,
+              "start": 1.5,
+              "word": "手机"
+            },
+            {
+              "end": 1.88,
+              "start": 1.7,
+              "word": "拍摄"
+            },
+            {
+              "end": 2.08,
+              "start": 1.9,
+              "word": "的"
+            },
+            {
+              "end": 2.28,
+              "start": 2.1,
+              "word": "日落"
+            },
+            {
+              "end": 2.48,
+              "start": 2.3,
+              "word": "延时"
+            },
+            {
+              "end": 2.68,
+              "start": 2.5,
+              "word": "视频"
+            },
+            {
+              "end": 2.88,
+              "start": 2.7,
+              "word": "效果"
+            },
+            {
+              "end": 3.08,
+              "start": 2.9,
+              "word": "真的"
+            },
+            {
+              "end": 3.28,
+              "start": 3.1,
+              "word": "让"
+            },
+            {
+              "end": 3.48,
+              "start": 3.3,
+              "word": "我"
+            },
+            {
+              "end": 3.68,
+              "start": 3.5,
+              "word": "大吃一惊"
+            }
+          ]
+        }
+      },
+      "name": "for_take (short): a Chinese take"
+    },
+    {
+      "expect": {
+        "cues": [],
+        "method": "none"
+      },
+      "fn": "for_take",
+      "input": {
+        "mode": "short",
+        "take": {
+          "seconds": 1,
+          "text": "<|emotion:joy|>",
+          "words": [
+            {
+              "end": 0.3,
+              "start": 0.1,
+              "word": "hi"
+            }
+          ]
+        }
+      },
+      "name": "for_take (short): text with nothing to show"
+    },
+    {
+      "expect": [
+        {
+          "finish": 4.2,
+          "lines": ["A line in a language Boson cannot time,", "long enough to need two lines here."],
+          "start": 0,
+          "text": "A line in a language Boson cannot time,\nlong enough to need two lines here."
+        }
+      ],
+      "fn": "whole",
+      "input": {
+        "seconds": 4.2,
+        "text": "A line in a language Boson cannot time, long enough to need two lines here."
+      },
+      "name": "whole: a long line wraps onto two balanced lines"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.5,
+          "lines": ["Hello there."],
+          "start": 0,
+          "text": "Hello there."
+        }
+      ],
+      "fn": "whole",
+      "input": {
+        "seconds": 1.5,
+        "text": "Hello there."
+      },
+      "name": "whole: a short line is one line"
+    },
+    {
+      "expect": [],
+      "fn": "whole",
+      "input": {
+        "seconds": 2,
+        "text": "<|emotion:joy|>"
+      },
+      "name": "whole: nothing to show"
+    },
+    {
+      "expect": [
+        {
+          "finish": 6,
+          "lines": [
+            "我们今天要调色一段完全用手",
+            "机拍摄的日落延时视频，",
+            "效果真的让我大吃一惊。"
+          ],
+          "start": 0,
+          "text": "我们今天要调色一段完全用手\n机拍摄的日落延时视频，\n效果真的让我大吃一惊。"
+        }
+      ],
+      "fn": "whole",
+      "input": {
+        "seconds": 6,
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。"
+      },
+      "name": "whole: a long Chinese line"
+    },
+    {
+      "expect": [
+        {
+          "finish": 12,
+          "lines": [
+            "When we started this project,",
+            "nobody on the team believed",
+            "that a four-person studio could ship",
+            "a feature film in under a year,",
+            "but here we are, and the premiere",
+            "is next Friday in Toronto."
+          ],
+          "start": 0,
+          "text": "When we started this project,\nnobody on the team believed\nthat a four-person studio could ship\na feature film in under a year,\nbut here we are, and the premiere\nis next Friday in Toronto."
+        }
+      ],
+      "fn": "whole",
+      "input": {
+        "seconds": 12,
+        "text": "When we started this project, nobody on the team believed that a four-person studio could ship a feature film in under a year, but here we are, and the premiere is next Friday in Toronto."
+      },
+      "name": "whole: three lines"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.1,
+          "lines": ["Hello."],
+          "start": 0,
+          "text": "Hello."
+        }
+      ],
+      "fn": "whole",
+      "input": {
+        "text": "Hello."
+      },
+      "name": "whole: no length is a tenth of a second"
+    },
+    {
+      "expect": [
+        {
+          "finish": 2.5,
+          "lines": ["Hello."],
+          "start": 0,
+          "text": "Hello."
+        }
+      ],
+      "fn": "whole",
+      "input": {
+        "seconds": "2.5",
+        "text": "Hello."
+      },
+      "name": "whole: a length as a string"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 1,
+          "start": 0.08,
+          "text": "One",
+          "to": 32
+        },
+        {
+          "finish": 1.6,
+          "from": 32,
+          "start": 1.35,
+          "text": "Two",
+          "to": 52
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 96,
+          "limit": 124,
+          "start": 4,
+          "text": "Three",
+          "to": 124
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: three subtitles at 24 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 2,
+          "start": 0.08,
+          "text": "One",
+          "to": 33
+        },
+        {
+          "finish": 1.6,
+          "from": 33,
+          "start": 1.35,
+          "text": "Two",
+          "to": 54
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 100,
+          "limit": 130,
+          "start": 4,
+          "text": "Three",
+          "to": 130
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": 25
+      },
+      "name": "frames: three subtitles at 25 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 2,
+          "start": 0.08,
+          "text": "One",
+          "to": 40
+        },
+        {
+          "finish": 1.6,
+          "from": 40,
+          "start": 1.35,
+          "text": "Two",
+          "to": 65
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 119,
+          "limit": 155,
+          "start": 4,
+          "text": "Three",
+          "to": 155
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": 29.97
+      },
+      "name": "frames: three subtitles at 29.97 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 2,
+          "start": 0.08,
+          "text": "One",
+          "to": 40
+        },
+        {
+          "finish": 1.6,
+          "from": 40,
+          "start": 1.35,
+          "text": "Two",
+          "to": 65
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 120,
+          "limit": 156,
+          "start": 4,
+          "text": "Three",
+          "to": 156
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": 30
+      },
+      "name": "frames: three subtitles at 30 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 4,
+          "start": 0.08,
+          "text": "One",
+          "to": 81
+        },
+        {
+          "finish": 1.6,
+          "from": 81,
+          "start": 1.35,
+          "text": "Two",
+          "to": 131
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 240,
+          "limit": 312,
+          "start": 4,
+          "text": "Three",
+          "to": 312
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": 60
+      },
+      "name": "frames: three subtitles at 60 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 1,
+          "start": 0.08,
+          "text": "One",
+          "to": 32
+        },
+        {
+          "finish": 1.6,
+          "from": 32,
+          "start": 1.35,
+          "text": "Two",
+          "to": 52
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 95,
+          "limit": 124,
+          "start": 4,
+          "text": "Three",
+          "to": 124
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": 23.976
+      },
+      "name": "frames: three subtitles at 23.976 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 1,
+          "start": 0.08,
+          "text": "One",
+          "to": 32
+        },
+        {
+          "finish": 1.6,
+          "from": 32,
+          "start": 1.35,
+          "text": "Two",
+          "to": 52
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 96,
+          "limit": 124,
+          "start": 4,
+          "text": "Three",
+          "to": 124
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ]
+      },
+      "name": "frames: no rate is 24 fps"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.2,
+          "from": 2,
+          "start": 0.08,
+          "text": "One",
+          "to": 40
+        },
+        {
+          "finish": 1.6,
+          "from": 40,
+          "start": 1.35,
+          "text": "Two",
+          "to": 65
+        },
+        {
+          "bound": 5.2,
+          "finish": 5,
+          "from": 120,
+          "limit": 156,
+          "start": 4,
+          "text": "Three",
+          "to": 156
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.2,
+            "start": 0.08,
+            "text": "One"
+          },
+          {
+            "finish": 1.6,
+            "start": 1.35,
+            "text": "Two"
+          },
+          {
+            "bound": 5.2,
+            "finish": 5,
+            "start": 4,
+            "text": "Three"
+          }
+        ],
+        "fps": "30"
+      },
+      "name": "frames: a rate as a string"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1.1,
+          "from": 5,
+          "start": 1,
+          "text": "a",
+          "to": 26
+        },
+        {
+          "finish": 2,
+          "from": 26,
+          "start": 1.05,
+          "text": "b",
+          "to": 63
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1.1,
+            "start": 1,
+            "text": "a"
+          },
+          {
+            "finish": 2,
+            "start": 1.05,
+            "text": "b"
+          }
+        ],
+        "fps": 25
+      },
+      "name": "frames: subtitles never overlap"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1,
+          "from": 0,
+          "start": 0,
+          "text": "a",
+          "to": 52
+        },
+        {
+          "finish": 3,
+          "from": 52,
+          "start": 2.2,
+          "text": "b",
+          "to": 84
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1,
+            "start": 0,
+            "text": "a"
+          },
+          {
+            "finish": 3,
+            "start": 2.2,
+            "text": "b"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: a 1.2 s pause leaves 0.7 s after the lag — filled"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1,
+          "from": 0,
+          "start": 0,
+          "text": "a",
+          "to": 36
+        },
+        {
+          "finish": 3,
+          "from": 57,
+          "start": 2.4,
+          "text": "b",
+          "to": 84
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1,
+            "start": 0,
+            "text": "a"
+          },
+          {
+            "finish": 3,
+            "start": 2.4,
+            "text": "b"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: a 1.4 s pause leaves 0.9 s — kept"
+    },
+    {
+      "expect": [
+        {
+          "bound": 2.2,
+          "finish": 2,
+          "from": 0,
+          "limit": 52,
+          "start": 0,
+          "text": "a",
+          "to": 52
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "bound": 2.2,
+            "finish": 2,
+            "start": 0,
+            "text": "a"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: the last never runs past its clip"
+    },
+    {
+      "expect": [
+        {
+          "bound": 0.3,
+          "finish": 0.2,
+          "from": 0,
+          "limit": 7,
+          "start": 0,
+          "text": "a",
+          "to": 20
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "bound": 0.3,
+            "finish": 0.2,
+            "start": 0,
+            "text": "a"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: a clip shorter than the minimum"
+    },
+    {
+      "expect": [
+        {
+          "bound": 0,
+          "finish": 0.5,
+          "from": 0,
+          "limit": 0,
+          "start": 0,
+          "text": "a",
+          "to": 20
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "bound": 0,
+            "finish": 0.5,
+            "start": 0,
+            "text": "a"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: a bound at zero still bounds"
+    },
+    {
+      "expect": [
+        {
+          "bound": 1.5,
+          "finish": 2,
+          "from": 0,
+          "limit": 37,
+          "start": 0,
+          "text": "a",
+          "to": 50
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "bound": 1.5,
+            "finish": 2,
+            "start": 0,
+            "text": "a"
+          }
+        ],
+        "fps": 25
+      },
+      "name": "frames: a bound inside the voice"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1,
+          "from": 0,
+          "start": 0,
+          "text": "a",
+          "to": 36
+        },
+        {
+          "finish": 3.1,
+          "from": 59,
+          "start": 3,
+          "text": "b",
+          "to": 79
+        },
+        {
+          "finish": 4,
+          "from": 79,
+          "start": 3.3,
+          "text": "c",
+          "to": 108
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1,
+            "start": 0,
+            "text": "a"
+          },
+          {
+            "finish": 3.1,
+            "start": 3,
+            "text": "b"
+          },
+          {
+            "finish": 4,
+            "start": 3.3,
+            "text": "c"
+          }
+        ],
+        "fps": 24
+      },
+      "name": "frames: a short one borrows from the gap before"
+    },
+    {
+      "expect": [
+        {
+          "finish": 0.1,
+          "from": 0,
+          "start": 0,
+          "text": "a",
+          "to": 4
+        },
+        {
+          "finish": 0.25,
+          "from": 4,
+          "start": 0.15,
+          "text": "b",
+          "to": 9
+        },
+        {
+          "finish": 0.4,
+          "from": 9,
+          "start": 0.3,
+          "text": "c",
+          "to": 13
+        },
+        {
+          "finish": 0.55,
+          "from": 13,
+          "start": 0.45,
+          "text": "d",
+          "to": 38
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 0.1,
+            "start": 0,
+            "text": "a"
+          },
+          {
+            "finish": 0.25,
+            "start": 0.15,
+            "text": "b"
+          },
+          {
+            "finish": 0.4,
+            "start": 0.3,
+            "text": "c"
+          },
+          {
+            "finish": 0.55,
+            "start": 0.45,
+            "text": "d"
+          }
+        ],
+        "fps": 30
+      },
+      "name": "frames: crowded short subtitles"
+    },
+    {
+      "expect": [
+        {
+          "finish": 1,
+          "from": 60,
+          "start": 1,
+          "text": "a",
+          "to": 110
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "finish": 1,
+            "start": 1,
+            "text": "a"
+          }
+        ],
+        "fps": 60
+      },
+      "name": "frames: a voice of no length still gets a frame"
+    },
+    {
+      "expect": [
+        {
+          "bound": 2,
+          "finish": 1.9,
+          "from": 2,
+          "limit": 50,
+          "start": 0.1,
+          "text": "a",
+          "to": 51
+        },
+        {
+          "bound": 3.6,
+          "finish": 3.5,
+          "from": 51,
+          "limit": 90,
+          "start": 2.05,
+          "text": "b",
+          "to": 90
+        }
+      ],
+      "fn": "frames",
+      "input": {
+        "cues": [
+          {
+            "bound": 2,
+            "finish": 1.9,
+            "start": 0.1,
+            "text": "a"
+          },
+          {
+            "bound": 3.6,
+            "finish": 3.5,
+            "start": 2.05,
+            "text": "b"
+          }
+        ],
+        "fps": 25
+      },
+      "name": "frames: two clips, each bounded"
+    },
+    {
+      "expect": [],
+      "fn": "frames",
+      "input": {
+        "cues": [],
+        "fps": 24
+      },
+      "name": "frames: nothing"
+    },
+    {
+      "expect": {
+        "origin": 1,
+        "text": "1\n00:00:00,000 --> 00:00:01,250\nOne\n\n2\n00:00:01,250 --> 00:00:02,375\nTwo\nlines\n\n3\n00:00:03,958 --> 00:00:05,125\nThree\n"
+      },
+      "fn": "srt",
+      "input": {
+        "cues": [
+          {
+            "from": 1,
+            "text": "One",
+            "to": 31
+          },
+          {
+            "from": 31,
+            "text": "Two\nlines",
+            "to": 58
+          },
+          {
+            "from": 96,
+            "text": "Three",
+            "to": 124
+          }
+        ],
+        "fps": 24
+      },
+      "name": "srt: starts at its first subtitle"
+    },
+    {
+      "expect": {
+        "origin": 1,
+        "text": "1\n00:00:02,000 --> 00:00:03,250\nOne\n\n2\n00:00:03,250 --> 00:00:04,375\nTwo\nlines\n\n3\n00:00:05,958 --> 00:00:07,125\nThree\n"
+      },
+      "fn": "srt",
+      "input": {
+        "cues": [
+          {
+            "from": 1,
+            "text": "One",
+            "to": 31
+          },
+          {
+            "from": 31,
+            "text": "Two\nlines",
+            "to": 58
+          },
+          {
+            "from": 96,
+            "text": "Three",
+            "to": 124
+          }
+        ],
+        "fps": 24,
+        "lead": 48
+      },
+      "name": "srt: with a lead-in"
+    },
+    {
+      "expect": {
+        "origin": 1,
+        "text": "1\n00:00:00,334 --> 00:00:01,335\nOne\n\n2\n00:00:01,335 --> 00:00:02,236\nTwo\nlines\n\n3\n00:00:03,504 --> 00:00:04,438\nThree\n"
+      },
+      "fn": "srt",
+      "input": {
+        "cues": [
+          {
+            "from": 1,
+            "text": "One",
+            "to": 31
+          },
+          {
+            "from": 31,
+            "text": "Two\nlines",
+            "to": 58
+          },
+          {
+            "from": 96,
+            "text": "Three",
+            "to": 124
+          }
+        ],
+        "fps": 29.97,
+        "lead": 10
+      },
+      "name": "srt: at 29.97 fps"
+    },
+    {
+      "expect": {
+        "origin": 90000,
+        "text": "1\n01:00:00,000 --> 01:00:02,000\nLate\n\n2\n02:00:00,000 --> 02:00:01,000\nLater\n"
+      },
+      "fn": "srt",
+      "input": {
+        "cues": [
+          {
+            "from": 90000,
+            "text": "Late",
+            "to": 90050
+          },
+          {
+            "from": 180000,
+            "text": "Later",
+            "to": 180025
+          }
+        ],
+        "fps": 25,
+        "lead": 90000
+      },
+      "name": "srt: past an hour"
+    },
+    {
+      "expect": {
+        "origin": 0,
+        "text": "1\n00:00:00,000 --> 00:00:00,667\n你好。\n"
+      },
+      "fn": "srt",
+      "input": {
+        "cues": [
+          {
+            "from": 0,
+            "text": "你好。",
+            "to": 20
+          }
+        ],
+        "fps": 30
+      },
+      "name": "srt: Chinese text"
+    },
+    {
+      "expect": {
+        "origin": 0,
+        "text": ""
+      },
+      "fn": "srt",
+      "input": {
+        "cues": [],
+        "fps": 24
+      },
+      "name": "srt: nothing"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "bound": 1.79166666667,
+            "finish": 1.3,
+            "first": 0,
+            "from": 2,
+            "last": 4,
+            "limit": 43,
+            "lines": ["Welcome back to the channel!"],
+            "start": 0.1,
+            "text": "Welcome back to the channel!",
+            "to": 46
+          },
+          {
+            "bound": 5.41666666667,
+            "finish": 3.38333333333,
+            "first": 0,
+            "from": 46,
+            "last": 5,
+            "limit": 130,
+            "lines": ["Today we're grading a sunset timelapse,"],
+            "start": 1.93333333333,
+            "text": "Today we're grading a sunset timelapse,",
+            "to": 82
+          },
+          {
+            "bound": 5.41666666667,
+            "finish": 4.63333333333,
+            "first": 6,
+            "from": 82,
+            "last": 10,
+            "limit": 130,
+            "lines": ["shot entirely on the iPhone."],
+            "start": 3.43333333333,
+            "text": "shot entirely on the iPhone.",
+            "to": 124
+          }
+        ],
+        "origin": 2,
+        "srt": "1\n00:00:00,500 --> 00:00:02,333\nWelcome back to the channel!\n\n2\n00:00:02,333 --> 00:00:03,833\nToday we're grading a sunset timelapse,\n\n3\n00:00:03,833 --> 00:00:05,583\nshot entirely on the iPhone.\n"
+      },
+      "fn": "place",
+      "input": {
+        "ends": [143, 230],
+        "fps": 24,
+        "lead": 12,
+        "mode": "short",
+        "starts": [100, 144],
+        "takes": [
+          {
+            "seconds": 1.8,
+            "text": "Welcome back to the channel!",
+            "words": [
+              {
+                "end": 0.3,
+                "start": 0.1,
+                "word": "welcome"
+              },
+              {
+                "end": 0.55,
+                "start": 0.35,
+                "word": "back"
+              },
+              {
+                "end": 0.8,
+                "start": 0.6,
+                "word": "to"
+              },
+              {
+                "end": 1.05,
+                "start": 0.85,
+                "word": "the"
+              },
+              {
+                "end": 1.3,
+                "start": 1.1,
+                "word": "channel"
+              }
+            ]
+          },
+          {
+            "seconds": 3.6,
+            "text": "Today we're grading a sunset timelapse, shot entirely on the iPhone.",
+            "words": [
+              {
+                "end": 0.3,
+                "start": 0.1,
+                "word": "today"
+              },
+              {
+                "end": 0.55,
+                "start": 0.35,
+                "word": "we're"
+              },
+              {
+                "end": 0.8,
+                "start": 0.6,
+                "word": "grading"
+              },
+              {
+                "end": 1.05,
+                "start": 0.85,
+                "word": "a"
+              },
+              {
+                "end": 1.3,
+                "start": 1.1,
+                "word": "sunset"
+              },
+              {
+                "end": 1.55,
+                "start": 1.35,
+                "word": "timelapse"
+              },
+              {
+                "end": 1.8,
+                "start": 1.6,
+                "word": "shot"
+              },
+              {
+                "end": 2.05,
+                "start": 1.85,
+                "word": "entirely"
+              },
+              {
+                "end": 2.3,
+                "start": 2.1,
+                "word": "on"
+              },
+              {
+                "end": 2.55,
+                "start": 2.35,
+                "word": "the"
+              },
+              {
+                "end": 2.8,
+                "start": 2.6,
+                "word": "iphone"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "place: two timed takes"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "bound": 2.4,
+            "finish": 1.6,
+            "first": 0,
+            "from": 2,
+            "last": 2,
+            "limit": 60,
+            "lines": ["Hello there, friend."],
+            "start": 0.1,
+            "text": "Hello there, friend.",
+            "to": 60
+          },
+          {
+            "bound": 5.4,
+            "finish": 5.4,
+            "from": 60,
+            "limit": 135,
+            "lines": ["这是一段没有时间信息的旁白，", "所以整句显示。"],
+            "start": 2.4,
+            "text": "这是一段没有时间信息的旁白，\n所以整句显示。",
+            "to": 135
+          }
+        ],
+        "origin": 2,
+        "srt": "1\n00:00:00,000 --> 00:00:02,320\nHello there, friend.\n\n2\n00:00:02,320 --> 00:00:05,320\n这是一段没有时间信息的旁白，\n所以整句显示。\n"
+      },
+      "fn": "place",
+      "input": {
+        "ends": [60, 135],
+        "fps": 25,
+        "lead": 0,
+        "mode": "sentence",
+        "starts": [0, 60],
+        "takes": [
+          {
+            "pause": 0.4,
+            "seconds": 2.4,
+            "text": "Hello there, friend.",
+            "words": [
+              {
+                "end": 0.4,
+                "start": 0.1,
+                "word": "Hello"
+              },
+              {
+                "end": 0.8,
+                "start": 0.45,
+                "word": "there"
+              },
+              {
+                "end": 1.6,
+                "start": 1,
+                "word": "friend"
+              }
+            ]
+          },
+          {
+            "seconds": 3,
+            "text": "这是一段没有时间信息的旁白，所以整句显示。"
+          }
+        ]
+      },
+      "name": "place: a timed take and one shown whole"
+    },
+    {
+      "expect": {
+        "cues": [
+          {
+            "bound": 9.00900900901,
+            "finish": 2.55,
+            "first": 0,
+            "from": 2,
+            "last": 9,
+            "limit": 270,
+            "lines": ["When we started this project,", "nobody on the team believed"],
+            "start": 0.1,
+            "text": "When we started this project,\nnobody on the team believed",
+            "to": 77
+          },
+          {
+            "bound": 9.00900900901,
+            "finish": 5.8,
+            "first": 10,
+            "from": 77,
+            "last": 21,
+            "limit": 270,
+            "lines": ["a four-person studio could ship", "a feature film in under a year."],
+            "start": 2.6,
+            "text": "a four-person studio could ship\na feature film in under a year.",
+            "to": 175
+          },
+          {
+            "bound": 9.00900900901,
+            "finish": 6.8,
+            "first": 22,
+            "from": 175,
+            "last": 25,
+            "limit": 270,
+            "lines": ["But here we are."],
+            "start": 5.85,
+            "text": "But here we are.",
+            "to": 219
+          }
+        ],
+        "origin": 2,
+        "srt": "1\n00:00:01,001 --> 00:00:03,504\nWhen we started this project,\nnobody on the team believed\n\n2\n00:00:03,504 --> 00:00:06,773\na four-person studio could ship\na feature film in under a year.\n\n3\n00:00:06,773 --> 00:00:08,242\nBut here we are.\n"
+      },
+      "fn": "place",
+      "input": {
+        "ends": [570],
+        "fps": 29.97,
+        "lead": 30,
+        "mode": "sentence",
+        "starts": [300],
+        "takes": [
+          {
+            "seconds": 9,
+            "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are.",
+            "words": [
+              {
+                "end": 0.3,
+                "start": 0.1,
+                "word": "when"
+              },
+              {
+                "end": 0.55,
+                "start": 0.35,
+                "word": "we"
+              },
+              {
+                "end": 0.8,
+                "start": 0.6,
+                "word": "started"
+              },
+              {
+                "end": 1.05,
+                "start": 0.85,
+                "word": "this"
+              },
+              {
+                "end": 1.3,
+                "start": 1.1,
+                "word": "project"
+              },
+              {
+                "end": 1.55,
+                "start": 1.35,
+                "word": "nobody"
+              },
+              {
+                "end": 1.8,
+                "start": 1.6,
+                "word": "on"
+              },
+              {
+                "end": 2.05,
+                "start": 1.85,
+                "word": "the"
+              },
+              {
+                "end": 2.3,
+                "start": 2.1,
+                "word": "team"
+              },
+              {
+                "end": 2.55,
+                "start": 2.35,
+                "word": "believed"
+              },
+              {
+                "end": 2.8,
+                "start": 2.6,
+                "word": "a"
+              },
+              {
+                "end": 3.05,
+                "start": 2.85,
+                "word": "four"
+              },
+              {
+                "end": 3.3,
+                "start": 3.1,
+                "word": "person"
+              },
+              {
+                "end": 3.55,
+                "start": 3.35,
+                "word": "studio"
+              },
+              {
+                "end": 3.8,
+                "start": 3.6,
+                "word": "could"
+              },
+              {
+                "end": 4.05,
+                "start": 3.85,
+                "word": "ship"
+              },
+              {
+                "end": 4.3,
+                "start": 4.1,
+                "word": "a"
+              },
+              {
+                "end": 4.55,
+                "start": 4.35,
+                "word": "feature"
+              },
+              {
+                "end": 4.8,
+                "start": 4.6,
+                "word": "film"
+              },
+              {
+                "end": 5.05,
+                "start": 4.85,
+                "word": "in"
+              },
+              {
+                "end": 5.3,
+                "start": 5.1,
+                "word": "under"
+              },
+              {
+                "end": 5.55,
+                "start": 5.35,
+                "word": "a"
+              },
+              {
+                "end": 5.8,
+                "start": 5.6,
+                "word": "year"
+              },
+              {
+                "end": 6.05,
+                "start": 5.85,
+                "word": "but"
+              },
+              {
+                "end": 6.3,
+                "start": 6.1,
+                "word": "here"
+              },
+              {
+                "end": 6.55,
+                "start": 6.35,
+                "word": "we"
+              },
+              {
+                "end": 6.8,
+                "start": 6.6,
+                "word": "are"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "place: sentences at 29.97"
+    },
+    {
+      "expect": [
+        "When we started this project,",
+        "nobody on the team believed",
+        "that a four-person studio could ship",
+        "a feature film in under a year,",
+        "but here we are, and the premiere",
+        "is next Friday in Toronto."
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "short",
+        "text": "When we started this project, nobody on the team believed that a four-person studio could ship a feature film in under a year, but here we are, and the premiere is next Friday in Toronto."
+      },
+      "name": "preview (short): When_we_started_this"
+    },
+    {
+      "expect": [
+        "When we started this project,\nnobody on the team believed",
+        "that a four-person studio could ship\na feature film in under a year,",
+        "but here we are, and the premiere\nis next Friday in Toronto."
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "sentence",
+        "text": "When we started this project, nobody on the team believed that a four-person studio could ship a feature film in under a year, but here we are, and the premiere is next Friday in Toronto."
+      },
+      "name": "preview (sentence): When_we_started_this"
+    },
+    {
+      "expect": [
+        "Welcome back to the channel!",
+        "Today we're grading a sunset timelapse,\nshot entirely on the iPhone."
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "sentence",
+        "text": "Welcome back to the channel! Today we're grading a sunset timelapse, shot entirely on the iPhone."
+      },
+      "name": "preview (sentence): Welcome_back_to_the"
+    },
+    {
+      "expect": ["Nobody on the team believed\na small studio could ship a feature film."],
+      "fn": "preview",
+      "input": {
+        "mode": "sentence",
+        "text": "Nobody on the team believed a small studio could ship a feature film."
+      },
+      "name": "preview (sentence): Nobody_on_the_team"
+    },
+    {
+      "expect": [
+        "When we started this project,",
+        "nobody on the team believed",
+        "a four-person studio could ship",
+        "a feature film in under a year.",
+        "But here we are."
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "short",
+        "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are."
+      },
+      "name": "preview (short): When_we_started_this"
+    },
+    {
+      "expect": [
+        "When we started this project,\nnobody on the team believed",
+        "a four-person studio could ship\na feature film in under a year.",
+        "But here we are."
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "sentence",
+        "text": "When we started this project, nobody on the team believed a four-person studio could ship a feature film in under a year. But here we are."
+      },
+      "name": "preview (sentence): When_we_started_this"
+    },
+    {
+      "expect": ["Hello there, friend."],
+      "fn": "preview",
+      "input": {
+        "mode": "short",
+        "text": "Hello there, friend."
+      },
+      "name": "preview (short): Hello_there_friend"
+    },
+    {
+      "expect": ["太好了！", "我们走吧。"],
+      "fn": "preview",
+      "input": {
+        "mode": "short",
+        "text": "太好了！我们走吧。"
+      },
+      "name": "preview (short): 太好了我们走吧"
+    },
+    {
+      "expect": [
+        "我们今天要调色一段完全用",
+        "手机拍摄的日落延时视频，",
+        "效果真的让我大吃一惊。"
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "short",
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。"
+      },
+      "name": "preview (short): 我们今天要调色一"
+    },
+    {
+      "expect": [
+        "我们今天要调色一段完全用\n手机拍摄的日落延时视频，",
+        "效果真的让我大吃一惊。"
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "sentence",
+        "text": "我们今天要调色一段完全用手机拍摄的日落延时视频，效果真的让我大吃一惊。"
+      },
+      "name": "preview (sentence): 我们今天要调色一"
+    },
+    {
+      "expect": ["今日はとても良い天気です", "ね散歩に行きましょうか"],
+      "fn": "preview",
+      "input": {
+        "mode": "short",
+        "text": "今日はとても良い天気ですね散歩に行きましょうか"
+      },
+      "name": "preview (short): 今日はとても良い"
+    },
+    {
+      "expect": [
+        "Cuando empezamos este proyecto,\nnadie en el equipo creía que un estudio",
+        "de cuatro personas pudiera terminar\nuna película en menos de un año,",
+        "pero aquí estamos."
+      ],
+      "fn": "preview",
+      "input": {
+        "mode": "sentence",
+        "text": "Cuando empezamos este proyecto, nadie en el equipo creía que un estudio de cuatro personas pudiera terminar una película en menos de un año, pero aquí estamos."
+      },
+      "name": "preview (sentence): Cuando_empezamos_este_proyecto"
+    }
+  ],
+  "source": "src/higgs/subtitles.lua"
+}

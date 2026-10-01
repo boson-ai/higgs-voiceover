@@ -1,0 +1,1629 @@
+{
+  "about": "Higgs TTS control tags: taxonomy, placement and composition. Carets are UTF-16 code units.",
+  "cases": [
+    {
+      "expect": [
+        "elation",
+        "amusement",
+        "enthusiasm",
+        "determination",
+        "pride",
+        "contentment",
+        "affection",
+        "relief",
+        "contemplation",
+        "confusion",
+        "surprise",
+        "awe",
+        "longing",
+        "arousal",
+        "anger",
+        "fear",
+        "disgust",
+        "bitterness",
+        "sadness",
+        "shame",
+        "helplessness"
+      ],
+      "fn": "EMOTIONS",
+      "input": {
+        "none": true
+      },
+      "name": "constant EMOTIONS"
+    },
+    {
+      "expect": ["singing", "shouting", "whispering"],
+      "fn": "STYLES",
+      "input": {
+        "none": true
+      },
+      "name": "constant STYLES"
+    },
+    {
+      "expect": ["cough", "laughter", "crying", "screaming", "burping", "humming", "sigh", "sniff", "sneeze"],
+      "fn": "SFX",
+      "input": {
+        "none": true
+      },
+      "name": "constant SFX"
+    },
+    {
+      "expect": {
+        "burping": "Burp",
+        "cough": "Ahem",
+        "humming": "Hmm",
+        "laughter": "Haha",
+        "screaming": "Ah",
+        "sigh": "Ahh",
+        "sneeze": "Achoo",
+        "sniff": "Sff..."
+      },
+      "fn": "SFX_WORDS",
+      "input": {
+        "none": true
+      },
+      "name": "constant SFX_WORDS"
+    },
+    {
+      "expect": [
+        {
+          "label": "Normal",
+          "value": ""
+        },
+        {
+          "label": "Very slow (~0.65×)",
+          "value": "speed_very_slow"
+        },
+        {
+          "label": "Slow (~0.85×)",
+          "value": "speed_slow"
+        },
+        {
+          "label": "Fast (~1.2×)",
+          "value": "speed_fast"
+        },
+        {
+          "label": "Very fast (~1.4×)",
+          "value": "speed_very_fast"
+        }
+      ],
+      "fn": "SPEEDS",
+      "input": {
+        "none": true
+      },
+      "name": "constant SPEEDS"
+    },
+    {
+      "expect": [
+        {
+          "label": "Normal",
+          "value": ""
+        },
+        {
+          "label": "Low (~−3 st)",
+          "value": "pitch_low"
+        },
+        {
+          "label": "High (~+2.5 st)",
+          "value": "pitch_high"
+        }
+      ],
+      "fn": "PITCHES",
+      "input": {
+        "none": true
+      },
+      "name": "constant PITCHES"
+    },
+    {
+      "expect": [
+        {
+          "label": "Normal",
+          "value": ""
+        },
+        {
+          "label": "Restrained",
+          "value": "expressive_low"
+        },
+        {
+          "label": "Expressive",
+          "value": "expressive_high"
+        }
+      ],
+      "fn": "EXPRESSIVENESS",
+      "input": {
+        "none": true
+      },
+      "name": "constant EXPRESSIVENESS"
+    },
+    {
+      "expect": [
+        {
+          "label": "Pause (~0.4–0.7 s)",
+          "value": "prosody:pause"
+        },
+        {
+          "label": "Long pause (~0.7–1.5 s)",
+          "value": "prosody:long_pause"
+        }
+      ],
+      "fn": "PAUSES",
+      "input": {
+        "none": true
+      },
+      "name": "constant PAUSES"
+    },
+    {
+      "expect": 5000,
+      "fn": "MAX_CHARS",
+      "input": {
+        "none": true
+      },
+      "name": "constant MAX_CHARS"
+    },
+    {
+      "expect": ["Emotion", "Style", "Prosody", "Sound effect"],
+      "fn": "categories",
+      "input": {
+        "none": true
+      },
+      "name": "categories in menu order"
+    },
+    {
+      "expect": [
+        {
+          "label": "elation",
+          "value": "emotion:elation"
+        },
+        {
+          "label": "amusement",
+          "value": "emotion:amusement"
+        },
+        {
+          "label": "enthusiasm",
+          "value": "emotion:enthusiasm"
+        },
+        {
+          "label": "determination",
+          "value": "emotion:determination"
+        },
+        {
+          "label": "pride",
+          "value": "emotion:pride"
+        },
+        {
+          "label": "contentment",
+          "value": "emotion:contentment"
+        },
+        {
+          "label": "affection",
+          "value": "emotion:affection"
+        },
+        {
+          "label": "relief",
+          "value": "emotion:relief"
+        },
+        {
+          "label": "contemplation",
+          "value": "emotion:contemplation"
+        },
+        {
+          "label": "confusion",
+          "value": "emotion:confusion"
+        },
+        {
+          "label": "surprise",
+          "value": "emotion:surprise"
+        },
+        {
+          "label": "awe",
+          "value": "emotion:awe"
+        },
+        {
+          "label": "longing",
+          "value": "emotion:longing"
+        },
+        {
+          "label": "arousal",
+          "value": "emotion:arousal"
+        },
+        {
+          "label": "anger",
+          "value": "emotion:anger"
+        },
+        {
+          "label": "fear",
+          "value": "emotion:fear"
+        },
+        {
+          "label": "disgust",
+          "value": "emotion:disgust"
+        },
+        {
+          "label": "bitterness",
+          "value": "emotion:bitterness"
+        },
+        {
+          "label": "sadness",
+          "value": "emotion:sadness"
+        },
+        {
+          "label": "shame",
+          "value": "emotion:shame"
+        },
+        {
+          "label": "helplessness",
+          "value": "emotion:helplessness"
+        }
+      ],
+      "fn": "values_for",
+      "input": {
+        "category": "Emotion"
+      },
+      "name": "values_for Emotion"
+    },
+    {
+      "expect": [
+        {
+          "label": "singing",
+          "value": "style:singing"
+        },
+        {
+          "label": "shouting",
+          "value": "style:shouting"
+        },
+        {
+          "label": "whispering",
+          "value": "style:whispering"
+        }
+      ],
+      "fn": "values_for",
+      "input": {
+        "category": "Style"
+      },
+      "name": "values_for Style"
+    },
+    {
+      "expect": [
+        {
+          "label": "Pause (~0.4–0.7 s)",
+          "value": "prosody:pause"
+        },
+        {
+          "label": "Long pause (~0.7–1.5 s)",
+          "value": "prosody:long_pause"
+        },
+        {
+          "label": "Very slow (~0.65×)",
+          "value": "prosody:speed_very_slow"
+        },
+        {
+          "label": "Slow (~0.85×)",
+          "value": "prosody:speed_slow"
+        },
+        {
+          "label": "Fast (~1.2×)",
+          "value": "prosody:speed_fast"
+        },
+        {
+          "label": "Very fast (~1.4×)",
+          "value": "prosody:speed_very_fast"
+        },
+        {
+          "label": "Low (~−3 st)",
+          "value": "prosody:pitch_low"
+        },
+        {
+          "label": "High (~+2.5 st)",
+          "value": "prosody:pitch_high"
+        },
+        {
+          "label": "Restrained",
+          "value": "prosody:expressive_low"
+        },
+        {
+          "label": "Expressive",
+          "value": "prosody:expressive_high"
+        }
+      ],
+      "fn": "values_for",
+      "input": {
+        "category": "Prosody"
+      },
+      "name": "values_for Prosody"
+    },
+    {
+      "expect": [
+        {
+          "label": "cough",
+          "value": "sfx:cough"
+        },
+        {
+          "label": "laughter",
+          "value": "sfx:laughter"
+        },
+        {
+          "label": "crying",
+          "value": "sfx:crying"
+        },
+        {
+          "label": "screaming",
+          "value": "sfx:screaming"
+        },
+        {
+          "label": "burping",
+          "value": "sfx:burping"
+        },
+        {
+          "label": "humming",
+          "value": "sfx:humming"
+        },
+        {
+          "label": "sigh",
+          "value": "sfx:sigh"
+        },
+        {
+          "label": "sniff",
+          "value": "sfx:sniff"
+        },
+        {
+          "label": "sneeze",
+          "value": "sfx:sneeze"
+        }
+      ],
+      "fn": "values_for",
+      "input": {
+        "category": "Sound effect"
+      },
+      "name": "values_for Sound effect"
+    },
+    {
+      "expect": [],
+      "fn": "values_for",
+      "input": {
+        "category": "Nope"
+      },
+      "name": "values_for Nope"
+    },
+    {
+      "expect": [],
+      "fn": "values_for",
+      "input": {
+        "category": "emotion"
+      },
+      "name": "values_for emotion"
+    },
+    {
+      "expect": "emotion",
+      "fn": "kind",
+      "input": {
+        "value": "emotion:awe"
+      },
+      "name": "kind of emotion:awe"
+    },
+    {
+      "expect": "emotion",
+      "fn": "kind",
+      "input": {
+        "value": "emotion:"
+      },
+      "name": "kind of emotion:"
+    },
+    {
+      "expect": "style",
+      "fn": "kind",
+      "input": {
+        "value": "style:singing"
+      },
+      "name": "kind of style:singing"
+    },
+    {
+      "expect": "speed",
+      "fn": "kind",
+      "input": {
+        "value": "prosody:speed_fast"
+      },
+      "name": "kind of prosody:speed_fast"
+    },
+    {
+      "expect": "speed",
+      "fn": "kind",
+      "input": {
+        "value": "prosody:speed_very_slow"
+      },
+      "name": "kind of prosody:speed_very_slow"
+    },
+    {
+      "expect": "pitch",
+      "fn": "kind",
+      "input": {
+        "value": "prosody:pitch_low"
+      },
+      "name": "kind of prosody:pitch_low"
+    },
+    {
+      "expect": "pitch",
+      "fn": "kind",
+      "input": {
+        "value": "prosody:pitch_high"
+      },
+      "name": "kind of prosody:pitch_high"
+    },
+    {
+      "expect": "expressive",
+      "fn": "kind",
+      "input": {
+        "value": "prosody:expressive_low"
+      },
+      "name": "kind of prosody:expressive_low"
+    },
+    {
+      "expect": "expressive",
+      "fn": "kind",
+      "input": {
+        "value": "prosody:expressive_high"
+      },
+      "name": "kind of prosody:expressive_high"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "prosody:pause"
+      },
+      "name": "kind of prosody:pause"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "prosody:long_pause"
+      },
+      "name": "kind of prosody:long_pause"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "prosody:volume_up"
+      },
+      "name": "kind of prosody:volume_up"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "prosody:speed"
+      },
+      "name": "kind of prosody:speed"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "sfx:cough"
+      },
+      "name": "kind of sfx:cough"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "sfx:crying"
+      },
+      "name": "kind of sfx:crying"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": ""
+      },
+      "name": "kind of nothing"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "emotion"
+      },
+      "name": "kind of emotion"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": "Emotion:awe"
+      },
+      "name": "kind of Emotion:awe"
+    },
+    {
+      "fn": "kind",
+      "input": {
+        "value": " emotion:awe"
+      },
+      "name": "kind of  emotion:awe"
+    },
+    {
+      "expect": "<|emotion:awe|>",
+      "fn": "token",
+      "input": {
+        "value": "emotion:awe"
+      },
+      "name": "token emotion:awe"
+    },
+    {
+      "expect": "<|prosody:pause|>",
+      "fn": "token",
+      "input": {
+        "value": "prosody:pause"
+      },
+      "name": "token prosody:pause"
+    },
+    {
+      "expect": "<||>",
+      "fn": "token",
+      "input": {
+        "value": ""
+      },
+      "name": "token "
+    },
+    {
+      "expect": "Dragging works.",
+      "fn": "terminate",
+      "input": {
+        "text": "Dragging works"
+      },
+      "name": "terminate: adds a full stop to an unpunctuated line"
+    },
+    {
+      "expect": "Take 2.",
+      "fn": "terminate",
+      "input": {
+        "text": "Take 2"
+      },
+      "name": "terminate: after a digit"
+    },
+    {
+      "expect": "Already done.",
+      "fn": "terminate",
+      "input": {
+        "text": "Already done."
+      },
+      "name": "terminate: leaves a full stop alone"
+    },
+    {
+      "expect": "Really?",
+      "fn": "terminate",
+      "input": {
+        "text": "Really?"
+      },
+      "name": "terminate: leaves other punctuation alone"
+    },
+    {
+      "expect": "Well,",
+      "fn": "terminate",
+      "input": {
+        "text": "Well,"
+      },
+      "name": "terminate: leaves a comma alone"
+    },
+    {
+      "expect": "Hello ",
+      "fn": "terminate",
+      "input": {
+        "text": "Hello "
+      },
+      "name": "terminate: a trailing space is not a word"
+    },
+    {
+      "expect": "(aside)",
+      "fn": "terminate",
+      "input": {
+        "text": "(aside)"
+      },
+      "name": "terminate: a closing bracket is not a word"
+    },
+    {
+      "expect": "Hi <|sfx:laughter|>",
+      "fn": "terminate",
+      "input": {
+        "text": "Hi <|sfx:laughter|>"
+      },
+      "name": "terminate: leaves a trailing tag alone"
+    },
+    {
+      "expect": "",
+      "fn": "terminate",
+      "input": {
+        "text": ""
+      },
+      "name": "terminate: leaves an empty line alone"
+    },
+    {
+      "expect": "你好。",
+      "fn": "terminate",
+      "input": {
+        "text": "你好"
+      },
+      "name": "terminate: uses a CJK full stop for CJK"
+    },
+    {
+      "expect": "こんにちは。",
+      "fn": "terminate",
+      "input": {
+        "text": "こんにちは"
+      },
+      "name": "terminate: and for kana"
+    },
+    {
+      "expect": "안녕하세요。",
+      "fn": "terminate",
+      "input": {
+        "text": "안녕하세요"
+      },
+      "name": "terminate: and for Hangul"
+    },
+    {
+      "expect": "你好。",
+      "fn": "terminate",
+      "input": {
+        "text": "你好。"
+      },
+      "name": "terminate: leaves CJK punctuation alone"
+    },
+    {
+      "expect": "好！",
+      "fn": "terminate",
+      "input": {
+        "text": "好！"
+      },
+      "name": "terminate: leaves a fullwidth bang alone"
+    },
+    {
+      "expect": "（注）",
+      "fn": "terminate",
+      "input": {
+        "text": "（注）"
+      },
+      "name": "terminate: leaves a fullwidth bracket alone"
+    },
+    {
+      "expect": "café.",
+      "fn": "terminate",
+      "input": {
+        "text": "café"
+      },
+      "name": "terminate: an accented word still gets a stop"
+    },
+    {
+      "expect": "Привет.",
+      "fn": "terminate",
+      "input": {
+        "text": "Привет"
+      },
+      "name": "terminate: Cyrillic gets a plain stop"
+    },
+    {
+      "expect": "مرحبا.",
+      "fn": "terminate",
+      "input": {
+        "text": "مرحبا"
+      },
+      "name": "terminate: Arabic gets a plain stop"
+    },
+    {
+      "expect": "wait…",
+      "fn": "terminate",
+      "input": {
+        "text": "wait…"
+      },
+      "name": "terminate: an ellipsis is left alone"
+    },
+    {
+      "expect": "say “hi”",
+      "fn": "terminate",
+      "input": {
+        "text": "say “hi”"
+      },
+      "name": "terminate: a curly quote is left alone"
+    },
+    {
+      "expect": "Smile 😀.",
+      "fn": "terminate",
+      "input": {
+        "text": "Smile 😀"
+      },
+      "name": "terminate: an emoji gets a plain stop"
+    },
+    {
+      "expect": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.",
+      "fn": "terminate",
+      "input": {
+        "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "name": "terminate: one short of the ceiling still gets one"
+    },
+    {
+      "expect": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fn": "terminate",
+      "input": {
+        "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "name": "terminate: never pushes a full line over the ceiling"
+    },
+    {
+      "expect": {
+        "caret": 26,
+        "text": "Hello <|emotion:elation|> world"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "world",
+        "before": "Hello ",
+        "line_start": false,
+        "value": "emotion:elation"
+      },
+      "name": "place_tag: goes in at the point"
+    },
+    {
+      "expect": {
+        "caret": 26,
+        "text": "Hello <|emotion:elation|>  world"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": " world",
+        "before": "Hello ",
+        "line_start": false,
+        "value": "emotion:elation"
+      },
+      "name": "place_tag: replaces what was selected"
+    },
+    {
+      "expect": {
+        "caret": 18,
+        "text": "<|prosody:pause|> "
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "",
+        "line_start": false,
+        "value": "prosody:pause"
+      },
+      "name": "place_tag: into an empty box"
+    },
+    {
+      "expect": {
+        "caret": 24,
+        "text": "Hello <|prosody:pause|> world"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "world",
+        "before": "Hello ",
+        "line_start": false,
+        "value": "prosody:pause"
+      },
+      "name": "place_tag: a pause goes in with its space"
+    },
+    {
+      "expect": {
+        "caret": 30,
+        "text": "The end<|prosody:long_pause|> "
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "The end",
+        "line_start": false,
+        "value": "prosody:long_pause"
+      },
+      "name": "place_tag: a long pause at the end"
+    },
+    {
+      "expect": {
+        "caret": 36,
+        "text": "one\n<|prosody:speed_fast|> two three four"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": " four",
+        "before": "one\ntwo three",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: a line-start tag moves to the front of its line"
+    },
+    {
+      "expect": {
+        "caret": 36,
+        "text": "one\ntwo\n<|prosody:speed_fast|> three"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "one\ntwo\nthree",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: only its own line, not every line"
+    },
+    {
+      "expect": {
+        "caret": 26,
+        "text": "<|prosody:speed_fast|> two three"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": " three",
+        "before": "<|prosody:speed_slow|> two",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: replaces an existing speed"
+    },
+    {
+      "expect": {
+        "caret": 26,
+        "text": "<|prosody:pitch_high|> two"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|prosody:pitch_low|> two",
+        "line_start": true,
+        "value": "prosody:pitch_high"
+      },
+      "name": "place_tag: replaces an existing pitch"
+    },
+    {
+      "expect": {
+        "caret": 29,
+        "text": "<|prosody:expressive_low|> go"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|prosody:expressive_high|> go",
+        "line_start": true,
+        "value": "prosody:expressive_low"
+      },
+      "name": "place_tag: replaces an existing expressiveness"
+    },
+    {
+      "expect": {
+        "caret": 48,
+        "text": "<|prosody:speed_fast|> <|prosody:pitch_low|> two"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|prosody:pitch_low|> two",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: leaves a different axis alone"
+    },
+    {
+      "expect": {
+        "caret": 32,
+        "text": "<|prosody:pitch_high|> two three"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "two three",
+        "line_start": true,
+        "value": "prosody:pitch_high"
+      },
+      "name": "place_tag: the first line has no newline to find"
+    },
+    {
+      "expect": {
+        "caret": 28,
+        "text": "one\n<|emotion:elation|> two three"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "three",
+        "before": "one\ntwo ",
+        "line_start": true,
+        "value": "emotion:elation"
+      },
+      "name": "place_tag: emotion leads the line"
+    },
+    {
+      "expect": {
+        "caret": 24,
+        "text": "<|emotion:elation|> two three"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "three",
+        "before": "<|emotion:sadness|> two ",
+        "line_start": true,
+        "value": "emotion:elation"
+      },
+      "name": "place_tag: a new emotion replaces the old one"
+    },
+    {
+      "expect": {
+        "caret": 45,
+        "text": "<|emotion:elation|> <|prosody:speed_fast|> go"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|prosody:speed_fast|> <|emotion:sadness|> go",
+        "line_start": true,
+        "value": "emotion:elation"
+      },
+      "name": "place_tag: and leaves other leading tags"
+    },
+    {
+      "expect": {
+        "caret": 40,
+        "text": "<|style:whispering|> <|emotion:awe|> hey"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|emotion:awe|> <|style:shouting|> hey",
+        "line_start": true,
+        "value": "style:whispering"
+      },
+      "name": "place_tag: style replaces style, not emotion"
+    },
+    {
+      "expect": {
+        "caret": 39,
+        "text": "<|emotion:awe|> go <|sfx:cough|>Ahem on"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "go <|sfx:cough|>Ahem on",
+        "line_start": true,
+        "value": "emotion:awe"
+      },
+      "name": "place_tag: a tag mid-line is left where it is"
+    },
+    {
+      "expect": {
+        "caret": 33,
+        "text": "one\n<|prosody:speed_fast|> two three"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "ree",
+        "before": "one\ntwo th",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: the caret stays where it was in the text"
+    },
+    {
+      "expect": {
+        "caret": 27,
+        "text": "one\n<|prosody:speed_fast|> two"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "<|prosody:speed_slow|> two",
+        "before": "one\n",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: never inside the new tag when the old one was after the caret"
+    },
+    {
+      "expect": {
+        "caret": 41,
+        "text": "<|prosody:pitch_high|> <|emotion:awe|> hi"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|emotion:awe|><|prosody:pitch_low|>hi",
+        "line_start": true,
+        "value": "prosody:pitch_high"
+      },
+      "name": "place_tag: leading tags without spaces between them"
+    },
+    {
+      "expect": {
+        "caret": 39,
+        "text": "<|style:shouting|> <|emotion:awe|> text"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|emotion:awe|>\t<|style:singing|>text",
+        "line_start": true,
+        "value": "style:shouting"
+      },
+      "name": "place_tag: leading tags separated by a tab"
+    },
+    {
+      "expect": {
+        "caret": 18,
+        "text": "a\n<|emotion:awe|> text"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "text",
+        "before": "a\n   ",
+        "line_start": true,
+        "value": "emotion:awe"
+      },
+      "name": "place_tag: a line of only spaces"
+    },
+    {
+      "expect": {
+        "caret": 18,
+        "text": "a\n<|emotion:awe|> "
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "a\n",
+        "line_start": true,
+        "value": "emotion:awe"
+      },
+      "name": "place_tag: an empty line before the caret"
+    },
+    {
+      "expect": {
+        "caret": 27,
+        "text": "a\r\n<|prosody:speed_fast|> b c"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": " c",
+        "before": "a\r\nb",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: a Windows line break keeps its return"
+    },
+    {
+      "expect": {
+        "caret": 25,
+        "text": "<|prosody:pause|> Ahem hi"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "<|sfx:cough|>Ahem hi",
+        "line_start": true,
+        "value": "prosody:pause"
+      },
+      "name": "place_tag: a positional tag at the front is dropped by a line-start positional value"
+    },
+    {
+      "expect": {
+        "caret": 35,
+        "text": "That's funny. <|sfx:laughter|>Haha Anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "Anyway.",
+        "before": "That's funny. ",
+        "line_start": false,
+        "value": "sfx:laughter"
+      },
+      "name": "place_tag: a sound effect brings its sound, as Boson advises"
+    },
+    {
+      "expect": {
+        "caret": 20,
+        "text": "<|sfx:laughter|>haha, sure."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": " haha, sure.",
+        "before": "",
+        "line_start": false,
+        "value": "sfx:laughter"
+      },
+      "name": "place_tag: a sound already typed is not added twice"
+    },
+    {
+      "expect": {
+        "caret": 20,
+        "text": "Oh <|sfx:cough|>AHEM, sorry"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "  AHEM, sorry",
+        "before": "Oh ",
+        "line_start": false,
+        "value": "sfx:cough"
+      },
+      "name": "place_tag: whatever its case"
+    },
+    {
+      "expect": {
+        "caret": 20,
+        "text": "<|sfx:laughter|>Hahaha"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "Hahaha",
+        "before": "",
+        "line_start": false,
+        "value": "sfx:laughter"
+      },
+      "name": "place_tag: nor when it runs on"
+    },
+    {
+      "expect": {
+        "caret": 14,
+        "text": "<|sfx:crying|>I... I'm sorry."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "I... I'm sorry.",
+        "before": "",
+        "line_start": false,
+        "value": "sfx:crying"
+      },
+      "name": "place_tag: crying has no sound word"
+    },
+    {
+      "expect": {
+        "caret": 17,
+        "text": "x <|sfx:whistle|>y"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "y",
+        "before": "x ",
+        "line_start": false,
+        "value": "sfx:whistle"
+      },
+      "name": "place_tag: an unknown effect has no sound word"
+    },
+    {
+      "expect": {
+        "caret": 21,
+        "text": "So <|sfx:cough|>Ahem anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:cough"
+      },
+      "name": "place_tag: sfx cough"
+    },
+    {
+      "expect": {
+        "caret": 24,
+        "text": "So <|sfx:laughter|>Haha anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:laughter"
+      },
+      "name": "place_tag: sfx laughter"
+    },
+    {
+      "expect": {
+        "caret": 17,
+        "text": "So <|sfx:crying|>anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:crying"
+      },
+      "name": "place_tag: sfx crying"
+    },
+    {
+      "expect": {
+        "caret": 23,
+        "text": "So <|sfx:screaming|>Ah anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:screaming"
+      },
+      "name": "place_tag: sfx screaming"
+    },
+    {
+      "expect": {
+        "caret": 23,
+        "text": "So <|sfx:burping|>Burp anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:burping"
+      },
+      "name": "place_tag: sfx burping"
+    },
+    {
+      "expect": {
+        "caret": 22,
+        "text": "So <|sfx:humming|>Hmm anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:humming"
+      },
+      "name": "place_tag: sfx humming"
+    },
+    {
+      "expect": {
+        "caret": 19,
+        "text": "So <|sfx:sigh|>Ahh anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:sigh"
+      },
+      "name": "place_tag: sfx sigh"
+    },
+    {
+      "expect": {
+        "caret": 23,
+        "text": "So <|sfx:sniff|>Sff... anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:sniff"
+      },
+      "name": "place_tag: sfx sniff"
+    },
+    {
+      "expect": {
+        "caret": 23,
+        "text": "So <|sfx:sneeze|>Achoo anyway."
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "anyway.",
+        "before": "So ",
+        "line_start": false,
+        "value": "sfx:sneeze"
+      },
+      "name": "place_tag: sfx sneeze"
+    },
+    {
+      "expect": {
+        "caret": 21,
+        "text": "你好，<|prosody:pause|> 世界"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "世界",
+        "before": "你好，",
+        "line_start": false,
+        "value": "prosody:pause"
+      },
+      "name": "place_tag: CJK before the caret"
+    },
+    {
+      "expect": {
+        "caret": 24,
+        "text": "真好笑<|sfx:laughter|>Haha 。"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "。",
+        "before": "真好笑",
+        "line_start": false,
+        "value": "sfx:laughter"
+      },
+      "name": "place_tag: CJK with a sound effect"
+    },
+    {
+      "expect": {
+        "caret": 29,
+        "text": "第一行\n<|prosody:speed_fast|> 第二行"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "行",
+        "before": "第一行\n第二",
+        "line_start": true,
+        "value": "prosody:speed_fast"
+      },
+      "name": "place_tag: CJK line start"
+    },
+    {
+      "expect": {
+        "caret": 20,
+        "text": "<|emotion:anger|> 你好世界"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "世界",
+        "before": "<|emotion:awe|> 你好",
+        "line_start": true,
+        "value": "emotion:anger"
+      },
+      "name": "place_tag: CJK line start replacing an emotion"
+    },
+    {
+      "expect": {
+        "caret": 24,
+        "text": "Hi 😀 <|prosody:pause|> there"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "there",
+        "before": "Hi 😀 ",
+        "line_start": false,
+        "value": "prosody:pause"
+      },
+      "name": "place_tag: an emoji before the caret"
+    },
+    {
+      "expect": {
+        "caret": 22,
+        "text": "a\n<|emotion:awe|> 😀 bc"
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "c",
+        "before": "a\n😀 b",
+        "line_start": true,
+        "value": "emotion:awe"
+      },
+      "name": "place_tag: an emoji on a line-start line"
+    },
+    {
+      "expect": {
+        "caret": 32,
+        "text": "Très drôle <|sfx:laughter|>Haha "
+      },
+      "fn": "place_tag",
+      "input": {
+        "after": "",
+        "before": "Très drôle ",
+        "line_start": false,
+        "value": "sfx:laughter"
+      },
+      "name": "place_tag: accents and a sound effect"
+    },
+    {
+      "expect": "Dragging works",
+      "fn": "compose",
+      "input": {
+        "text": "Dragging works"
+      },
+      "name": "compose: leaves the text as typed"
+    },
+    {
+      "expect": 14,
+      "fn": "billable_length",
+      "input": {
+        "text": "Dragging works"
+      },
+      "name": "billable_length: leaves the text as typed"
+    },
+    {
+      "expect": "spaced out",
+      "fn": "compose",
+      "input": {
+        "text": "  spaced out \n"
+      },
+      "name": "compose: trims the text"
+    },
+    {
+      "expect": 10,
+      "fn": "billable_length",
+      "input": {
+        "text": "  spaced out \n"
+      },
+      "name": "billable_length: trims the text"
+    },
+    {
+      "expect": "<|emotion:awe|> ",
+      "fn": "compose",
+      "input": {
+        "direction": {
+          "emotion": "awe"
+        }
+      },
+      "name": "compose: no text at all"
+    },
+    {
+      "expect": 16,
+      "fn": "billable_length",
+      "input": {
+        "direction": {
+          "emotion": "awe"
+        }
+      },
+      "name": "billable_length: no text at all"
+    },
+    {
+      "expect": "<|emotion:awe|> <|style:whispering|> <|prosody:speed_slow|> <|prosody:pitch_low|> <|prosody:expressive_high|> Hello.",
+      "fn": "compose",
+      "input": {
+        "direction": {
+          "emotion": "awe",
+          "expressiveness": "expressive_high",
+          "pitch": "pitch_low",
+          "speed": "speed_slow",
+          "style": "whispering"
+        },
+        "text": "Hello."
+      },
+      "name": "compose: every field"
+    },
+    {
+      "expect": 116,
+      "fn": "billable_length",
+      "input": {
+        "direction": {
+          "emotion": "awe",
+          "expressiveness": "expressive_high",
+          "pitch": "pitch_low",
+          "speed": "speed_slow",
+          "style": "whispering"
+        },
+        "text": "Hello."
+      },
+      "name": "billable_length: every field"
+    },
+    {
+      "expect": "<|prosody:speed_fast|> Hello.",
+      "fn": "compose",
+      "input": {
+        "direction": {
+          "emotion": "",
+          "speed": "speed_fast",
+          "style": ""
+        },
+        "text": "Hello."
+      },
+      "name": "compose: empty fields mean leave it alone"
+    },
+    {
+      "expect": 29,
+      "fn": "billable_length",
+      "input": {
+        "direction": {
+          "emotion": "",
+          "speed": "speed_fast",
+          "style": ""
+        },
+        "text": "Hello."
+      },
+      "name": "billable_length: empty fields mean leave it alone"
+    },
+    {
+      "expect": "<|prosody:pitch_high|> Wait <|prosody:pause|> now",
+      "fn": "compose",
+      "input": {
+        "direction": {
+          "pitch": "pitch_high"
+        },
+        "text": "Wait <|prosody:pause|> now"
+      },
+      "name": "compose: keeps hand-written tags where they are"
+    },
+    {
+      "expect": 49,
+      "fn": "billable_length",
+      "input": {
+        "direction": {
+          "pitch": "pitch_high"
+        },
+        "text": "Wait <|prosody:pause|> now"
+      },
+      "name": "billable_length: keeps hand-written tags where they are"
+    },
+    {
+      "expect": "<|emotion:awe|> 你好",
+      "fn": "compose",
+      "input": {
+        "direction": {
+          "emotion": "awe"
+        },
+        "text": "你好"
+      },
+      "name": "compose: CJK counts bytes, as the Lua does"
+    },
+    {
+      "expect": 22,
+      "fn": "billable_length",
+      "input": {
+        "direction": {
+          "emotion": "awe"
+        },
+        "text": "你好"
+      },
+      "name": "billable_length: CJK counts bytes, as the Lua does"
+    },
+    {
+      "expect": true,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "<|emotion:awe|> hi"
+      },
+      "name": "has_leading_tag: an emotion"
+    },
+    {
+      "expect": true,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "   <|style:singing|> la"
+      },
+      "name": "has_leading_tag: a style after spaces"
+    },
+    {
+      "expect": true,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "<|prosody:pause|> then"
+      },
+      "name": "has_leading_tag: prosody"
+    },
+    {
+      "expect": false,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "<|sfx:cough|>Ahem"
+      },
+      "name": "has_leading_tag: a sound effect is not direction"
+    },
+    {
+      "expect": false,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "hi <|emotion:awe|>"
+      },
+      "name": "has_leading_tag: a tag mid-line is not leading"
+    },
+    {
+      "expect": false,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "plain"
+      },
+      "name": "has_leading_tag: no tags"
+    },
+    {
+      "expect": false,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": ""
+      },
+      "name": "has_leading_tag: empty"
+    },
+    {
+      "expect": false,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "<|emotion:awe"
+      },
+      "name": "has_leading_tag: an unclosed tag"
+    },
+    {
+      "expect": false,
+      "fn": "has_leading_tag",
+      "input": {
+        "text": "<|Emotion:awe|> x"
+      },
+      "name": "has_leading_tag: an uppercase category"
+    }
+  ],
+  "source": "src/higgs/tags.lua"
+}

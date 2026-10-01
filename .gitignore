@@ -20,8 +20,13 @@ tmp/
 takes/
 *.log
 
-# Built installers
+# Built installers and packages
 dist/
 
-# The built script is a release asset, not source (build.lua writes it)
-/Higgs VoiceOver.lua
+# The built Resolve script is a release asset, not source (build.lua writes it)
+/hosts/resolve/Higgs VoiceOver.lua
+
+# Premiere: dependencies and build output (npm run build writes it)
+node_modules/
+/hosts/premiere/build/
+/hosts/premiere/build-preview/

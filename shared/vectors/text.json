@@ -1,0 +1,1081 @@
+{
+  "about": "Text helpers from util.lua. fn names are the Lua's; input is a record of its arguments (utf8_codepoint takes a character index from 0, not a byte offset; is_ideographic and is_punct map over `cps`). new_id is random and has no vectors.",
+  "cases": [
+    {
+      "expect": "padded",
+      "fn": "trim",
+      "input": {
+        "s": "  padded \n"
+      },
+      "name": "trim: strips both ends"
+    },
+    {
+      "expect": "",
+      "fn": "trim",
+      "input": {
+        "s": ""
+      },
+      "name": "trim: empty stays empty"
+    },
+    {
+      "expect": "",
+      "fn": "trim",
+      "input": {
+        "s": "   \t "
+      },
+      "name": "trim: only spaces"
+    },
+    {
+      "expect": "x y",
+      "fn": "trim",
+      "input": {
+        "s": "\t\u000b\u000c\r x y \r\n"
+      },
+      "name": "trim: every ASCII space character"
+    },
+    {
+      "expect": "two  words",
+      "fn": "trim",
+      "input": {
+        "s": "  two  words  "
+      },
+      "name": "trim: inner spaces kept"
+    },
+    {
+      "expect": "　全角　",
+      "fn": "trim",
+      "input": {
+        "s": "　全角　"
+      },
+      "name": "trim: an ideographic space is not ASCII whitespace"
+    },
+    {
+      "expect": " nbsp ",
+      "fn": "trim",
+      "input": {
+        "s": " nbsp "
+      },
+      "name": "trim: nor is a no-break space"
+    },
+    {
+      "expect": " Hello  world",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<|emotion:awe|> Hello <|prosody:pause|> world"
+      },
+      "name": "strip_tags: between words"
+    },
+    {
+      "expect": "Hello",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<|emotion:happy|>Hello"
+      },
+      "name": "strip_tags: at the start"
+    },
+    {
+      "expect": "Haha, that was fun.",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<|sfx:laughter|>Haha, that was fun."
+      },
+      "name": "strip_tags: a sound effect before a word"
+    },
+    {
+      "expect": "a  b  c",
+      "fn": "strip_tags",
+      "input": {
+        "s": "a <|x|> b <|y|> c"
+      },
+      "name": "strip_tags: shortest match each time"
+    },
+    {
+      "expect": "<|unclosed tag",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<|unclosed tag"
+      },
+      "name": "strip_tags: an unclosed tag stays"
+    },
+    {
+      "expect": "<b>bold</b>",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<b>bold</b>"
+      },
+      "name": "strip_tags: HTML is not a tag"
+    },
+    {
+      "expect": "xy",
+      "fn": "strip_tags",
+      "input": {
+        "s": "x<||>y"
+      },
+      "name": "strip_tags: an empty tag"
+    },
+    {
+      "expect": "z",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<|a|b|>z"
+      },
+      "name": "strip_tags: a bar inside a tag"
+    },
+    {
+      "expect": "after",
+      "fn": "strip_tags",
+      "input": {
+        "s": "<|a\nb|>after"
+      },
+      "name": "strip_tags: across a line break"
+    },
+    {
+      "expect": "你好世界",
+      "fn": "strip_tags",
+      "input": {
+        "s": "你好<|emotion:joy|>世界"
+      },
+      "name": "strip_tags: Chinese around a tag"
+    },
+    {
+      "expect": 3,
+      "fn": "word_count",
+      "input": {
+        "s": "<|emotion:awe|> Hello there world"
+      },
+      "name": "word_count: ignores tags"
+    },
+    {
+      "expect": 0,
+      "fn": "word_count",
+      "input": {
+        "s": ""
+      },
+      "name": "word_count: empty"
+    },
+    {
+      "expect": 0,
+      "fn": "word_count",
+      "input": {
+        "s": "  \n\t "
+      },
+      "name": "word_count: only spaces"
+    },
+    {
+      "expect": 4,
+      "fn": "word_count",
+      "input": {
+        "s": "a\tb\nc  d"
+      },
+      "name": "word_count: tabs and line breaks separate"
+    },
+    {
+      "expect": 1,
+      "fn": "word_count",
+      "input": {
+        "s": "你好世界"
+      },
+      "name": "word_count: Chinese without spaces is one run"
+    },
+    {
+      "expect": 2,
+      "fn": "word_count",
+      "input": {
+        "s": "<|sfx:laughter|>Haha ok"
+      },
+      "name": "word_count: a tag glued to a word leaves the word"
+    },
+    {
+      "expect": 3,
+      "fn": "word_count",
+      "input": {
+        "s": "wait — what"
+      },
+      "name": "word_count: punctuation alone is a word"
+    },
+    {
+      "expect": 1.2,
+      "fn": "estimate_seconds",
+      "input": {
+        "s": "one two three"
+      },
+      "name": "estimate_seconds: three words"
+    },
+    {
+      "expect": 0,
+      "fn": "estimate_seconds",
+      "input": {
+        "s": ""
+      },
+      "name": "estimate_seconds: empty"
+    },
+    {
+      "expect": 0.8,
+      "fn": "estimate_seconds",
+      "input": {
+        "s": "<|emotion:joy|> Hello world <|sfx:laughter|>"
+      },
+      "name": "estimate_seconds: tags are not spoken"
+    },
+    {
+      "expect": 30,
+      "fn": "estimate_seconds",
+      "input": {
+        "s": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "estimate_seconds: a long line"
+    },
+    {
+      "expect": ["First line.", "Second line.", "Third line."],
+      "fn": "split_lines",
+      "input": {
+        "text": "First line.\nSecond line.\n\n  \n\nThird line."
+      },
+      "name": "split_lines: line breaks, blank lines collapse"
+    },
+    {
+      "expect": ["One long block of narration with no breaks at all."],
+      "fn": "split_lines",
+      "input": {
+        "text": "One long block of narration with no breaks at all."
+      },
+      "name": "split_lines: no line breaks is one segment"
+    },
+    {
+      "expect": [],
+      "fn": "split_lines",
+      "input": {
+        "text": "   \n\n  "
+      },
+      "name": "split_lines: only blank lines is nothing"
+    },
+    {
+      "expect": [],
+      "fn": "split_lines",
+      "input": {
+        "text": ""
+      },
+      "name": "split_lines: empty is nothing"
+    },
+    {
+      "expect": ["One", "Two"],
+      "fn": "split_lines",
+      "input": {
+        "text": "One\r\nTwo\r\n"
+      },
+      "name": "split_lines: Windows line ends are trimmed"
+    },
+    {
+      "expect": ["Only"],
+      "fn": "split_lines",
+      "input": {
+        "text": "Only\n"
+      },
+      "name": "split_lines: a trailing break adds nothing"
+    },
+    {
+      "expect": ["<|emotion:joy|> Hi", "你好。"],
+      "fn": "split_lines",
+      "input": {
+        "text": "<|emotion:joy|> Hi\n你好。"
+      },
+      "name": "split_lines: lines keep tags"
+    },
+    {
+      "expect": ["One sentence here.", "And a second!", "A third?", "Trailing bit"],
+      "fn": "split_sentences",
+      "input": {
+        "text": "One sentence here. And a second! A third? Trailing bit"
+      },
+      "name": "split_sentences: four pieces with a tail"
+    },
+    {
+      "expect": ["No punctuation here"],
+      "fn": "split_sentences",
+      "input": {
+        "text": "No punctuation here"
+      },
+      "name": "split_sentences: no punctuation is one piece"
+    },
+    {
+      "expect": [""],
+      "fn": "split_sentences",
+      "input": {
+        "text": ""
+      },
+      "name": "split_sentences: empty gives one empty piece"
+    },
+    {
+      "expect": ["He said \"Hi.\"", "Then he left."],
+      "fn": "split_sentences",
+      "input": {
+        "text": "He said \"Hi.\" Then he left."
+      },
+      "name": "split_sentences: a closing quote stays with its stop"
+    },
+    {
+      "expect": ["(An aside.)", "Back to it."],
+      "fn": "split_sentences",
+      "input": {
+        "text": "(An aside.) Back to it."
+      },
+      "name": "split_sentences: a closing bracket too"
+    },
+    {
+      "expect": ["Wait...", "what?!", "Yes."],
+      "fn": "split_sentences",
+      "input": {
+        "text": "Wait... what?! Yes."
+      },
+      "name": "split_sentences: runs of marks"
+    },
+    {
+      "expect": ["Mr.", "Smith arrived.", "Late."],
+      "fn": "split_sentences",
+      "input": {
+        "text": "Mr. Smith arrived. Late."
+      },
+      "name": "split_sentences: abbreviations are not handled"
+    },
+    {
+      "expect": ["Version 1.5 is out.Now"],
+      "fn": "split_sentences",
+      "input": {
+        "text": "Version 1.5 is out.Now"
+      },
+      "name": "split_sentences: a stop with no space after is not a split"
+    },
+    {
+      "expect": ["First.", "Second."],
+      "fn": "split_sentences",
+      "input": {
+        "text": "First.\nSecond."
+      },
+      "name": "split_sentences: line breaks separate too"
+    },
+    {
+      "expect": ["你好。我很好。"],
+      "fn": "split_sentences",
+      "input": {
+        "text": "你好。我很好。"
+      },
+      "name": "split_sentences: Chinese full stops are not ASCII stops"
+    },
+    {
+      "expect": ["Hi.", "Two spaces.", ". End"],
+      "fn": "split_sentences",
+      "input": {
+        "text": "Hi.  Two spaces. End"
+      },
+      "name": "split_sentences: a run of spaces between sentences repeats the tail's start (Lua quirk)"
+    },
+    {
+      "expect": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false
+      ],
+      "fn": "is_ideographic",
+      "input": {
+        "cps": [
+          32,
+          39,
+          44,
+          48,
+          65,
+          95,
+          97,
+          126,
+          233,
+          3585,
+          8212,
+          8217,
+          12289,
+          12290,
+          12354,
+          12450,
+          19968,
+          40959,
+          44032,
+          63744,
+          65281,
+          65292,
+          65296,
+          65311,
+          65313,
+          65339,
+          65371,
+          65381,
+          65382,
+          65437,
+          1040,
+          1575
+        ]
+      },
+      "name": "is_ideographic across scripts"
+    },
+    {
+      "expect": [
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "fn": "is_punct",
+      "input": {
+        "cps": [
+          32,
+          39,
+          44,
+          48,
+          65,
+          95,
+          97,
+          126,
+          233,
+          3585,
+          8212,
+          8217,
+          12289,
+          12290,
+          12354,
+          12450,
+          19968,
+          40959,
+          44032,
+          63744,
+          65281,
+          65292,
+          65296,
+          65311,
+          65313,
+          65339,
+          65371,
+          65381,
+          65382,
+          65437,
+          1040,
+          1575
+        ]
+      },
+      "name": "is_punct across scripts"
+    },
+    {
+      "expect": "Welcome_back_to_the",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": "Welcome back to the channel today"
+      },
+      "name": "clip_words: English takes words"
+    },
+    {
+      "expect": "今天我们来聊聊调",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": "今天我们来聊聊调色这件事情"
+      },
+      "name": "clip_words: Chinese characters count half"
+    },
+    {
+      "expect": "你好世界这是一段",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": "你好，世界！这是一段旁白。"
+      },
+      "name": "clip_words: marks between characters are skipped"
+    },
+    {
+      "expect": "こんにちはナ",
+      "fn": "clip_words",
+      "input": {
+        "count": 3,
+        "text": "こんにちは、ナレーションです"
+      },
+      "name": "clip_words: Japanese kana the same way"
+    },
+    {
+      "expect": "iPhone拍摄的日落真",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": "iPhone 拍摄的日落真的很美"
+      },
+      "name": "clip_words: a mixed line spends one budget"
+    },
+    {
+      "expect": "Привет_это_закадровый_голос",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": "Привет, это закадровый голос"
+      },
+      "name": "clip_words: Cyrillic keeps its words"
+    },
+    {
+      "expect": "안녕하세요_여러분",
+      "fn": "clip_words",
+      "input": {
+        "count": 2,
+        "text": "안녕하세요 여러분 반갑습니다 오늘은"
+      },
+      "name": "clip_words: Korean is a spaced script"
+    },
+    {
+      "expect": "สวัสดี",
+      "fn": "clip_words",
+      "input": {
+        "count": 3,
+        "text": "สวัสดีครับทุกคน"
+      },
+      "name": "clip_words: Thai characters count half"
+    },
+    {
+      "expect": "take",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": "..."
+      },
+      "name": "clip_words: nothing usable falls back"
+    },
+    {
+      "expect": "take",
+      "fn": "clip_words",
+      "input": {
+        "count": 4,
+        "text": ""
+      },
+      "name": "clip_words: empty falls back"
+    },
+    {
+      "expect": "Its_a_dogs",
+      "fn": "clip_words",
+      "input": {
+        "count": 3,
+        "text": "It's a dog's life"
+      },
+      "name": "clip_words: apostrophes leave the word"
+    },
+    {
+      "expect": "Hello_there",
+      "fn": "clip_words",
+      "input": {
+        "count": 2,
+        "text": "<|emotion:joy|> Hello <|sfx:laughter|> there friend"
+      },
+      "name": "clip_words: tags are not words"
+    },
+    {
+      "expect": "take",
+      "fn": "clip_words",
+      "input": {
+        "count": 0,
+        "text": "Hello world"
+      },
+      "name": "clip_words: a budget of zero gives nothing"
+    },
+    {
+      "expect": "one_two_three_four",
+      "fn": "clip_words",
+      "input": {
+        "text": "one two three four five six"
+      },
+      "name": "clip_words: the default budget is four"
+    },
+    {
+      "expect": "Él_está_aquí",
+      "fn": "clip_words",
+      "input": {
+        "count": 3,
+        "text": "Él está aquí, señor"
+      },
+      "name": "clip_words: accented letters stay"
+    },
+    {
+      "expect": "Alex_—_narrationv2!",
+      "fn": "sanitize",
+      "input": {
+        "name": "Alex  —  narration/v2!"
+      },
+      "name": "sanitize: collapses whitespace runs"
+    },
+    {
+      "expect": "take-01_final",
+      "fn": "sanitize",
+      "input": {
+        "name": "take-01_final"
+      },
+      "name": "sanitize: keeps hyphen and underscore"
+    },
+    {
+      "expect": "旁白_第一段",
+      "fn": "sanitize",
+      "input": {
+        "name": "旁白 第一段"
+      },
+      "name": "sanitize: keeps Chinese"
+    },
+    {
+      "expect": "abcdefghij",
+      "fn": "sanitize",
+      "input": {
+        "name": "a<b>c:d\"e/f\\g|h?i*j"
+      },
+      "name": "sanitize: removes only what a filesystem refuses"
+    },
+    {
+      "expect": "take",
+      "fn": "sanitize",
+      "input": {
+        "name": "take."
+      },
+      "name": "sanitize: strips a trailing dot"
+    },
+    {
+      "expect": "hidden",
+      "fn": "sanitize",
+      "input": {
+        "name": "..._hidden"
+      },
+      "name": "sanitize: strips leading dots and underscores"
+    },
+    {
+      "expect": "tabhere",
+      "fn": "sanitize",
+      "input": {
+        "name": "\u0001tab\there\u007f"
+      },
+      "name": "sanitize: drops control characters"
+    },
+    {
+      "expect": "a_._b",
+      "fn": "sanitize",
+      "input": {
+        "name": "a . b"
+      },
+      "name": "sanitize: a dot between words stays"
+    },
+    {
+      "expect": "a_b",
+      "fn": "sanitize",
+      "input": {
+        "name": "a___b"
+      },
+      "name": "sanitize: underscore runs collapse"
+    },
+    {
+      "expect": "abcdefghijabcdefghijabcdefghijabcdefghijabcdefgh",
+      "fn": "sanitize",
+      "input": {
+        "name": "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"
+      },
+      "name": "sanitize: 48 bytes of ASCII at most"
+    },
+    {
+      "expect": "旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁",
+      "fn": "sanitize",
+      "input": {
+        "name": "旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁"
+      },
+      "name": "sanitize: Chinese is cut on a character"
+    },
+    {
+      "expect": "a旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁",
+      "fn": "sanitize",
+      "input": {
+        "name": "a旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁旁"
+      },
+      "name": "sanitize: a mixed line is cut before the character that would cross 48 bytes"
+    },
+    {
+      "expect": "😀😀😀😀😀😀😀😀😀😀😀😀",
+      "fn": "sanitize",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀"
+      },
+      "name": "sanitize: four-byte characters too"
+    },
+    {
+      "expect": "",
+      "fn": "sanitize",
+      "input": {
+        "name": ""
+      },
+      "name": "sanitize: empty"
+    },
+    {
+      "expect": 0,
+      "fn": "utf8_len",
+      "input": {
+        "s": ""
+      },
+      "name": "utf8_len of nothing"
+    },
+    {
+      "expect": 3,
+      "fn": "utf8_len",
+      "input": {
+        "s": "abc"
+      },
+      "name": "utf8_len of abc"
+    },
+    {
+      "expect": 2,
+      "fn": "utf8_len",
+      "input": {
+        "s": "旁白"
+      },
+      "name": "utf8_len of 旁白"
+    },
+    {
+      "expect": 1,
+      "fn": "utf8_len",
+      "input": {
+        "s": "é"
+      },
+      "name": "utf8_len of é"
+    },
+    {
+      "expect": 2,
+      "fn": "utf8_len",
+      "input": {
+        "s": "😀a"
+      },
+      "name": "utf8_len of 😀a"
+    },
+    {
+      "expect": 6,
+      "fn": "utf8_len",
+      "input": {
+        "s": "Привет"
+      },
+      "name": "utf8_len of Привет"
+    },
+    {
+      "expect": 4,
+      "fn": "utf8_len",
+      "input": {
+        "s": "a旁😀é"
+      },
+      "name": "utf8_len of a旁😀é"
+    },
+    {
+      "expect": ["a", "旁", "😀", "é"],
+      "fn": "utf8_chars",
+      "input": {
+        "s": "a旁😀é"
+      },
+      "name": "utf8_chars of a旁😀é"
+    },
+    {
+      "expect": ["H", "o", "l", "a"],
+      "fn": "utf8_chars",
+      "input": {
+        "s": "Hola"
+      },
+      "name": "utf8_chars of Hola"
+    },
+    {
+      "expect": [],
+      "fn": "utf8_chars",
+      "input": {
+        "s": ""
+      },
+      "name": "utf8_chars of nothing"
+    },
+    {
+      "expect": 97,
+      "fn": "utf8_codepoint",
+      "input": {
+        "index": 0,
+        "s": "a旁😀é"
+      },
+      "name": "utf8_codepoint of a旁😀é at 0"
+    },
+    {
+      "expect": 26049,
+      "fn": "utf8_codepoint",
+      "input": {
+        "index": 1,
+        "s": "a旁😀é"
+      },
+      "name": "utf8_codepoint of a旁😀é at 1"
+    },
+    {
+      "expect": 128512,
+      "fn": "utf8_codepoint",
+      "input": {
+        "index": 2,
+        "s": "a旁😀é"
+      },
+      "name": "utf8_codepoint of a旁😀é at 2"
+    },
+    {
+      "expect": 233,
+      "fn": "utf8_codepoint",
+      "input": {
+        "index": 3,
+        "s": "a旁😀é"
+      },
+      "name": "utf8_codepoint of a旁😀é at 3"
+    },
+    {
+      "expect": 1090,
+      "fn": "utf8_codepoint",
+      "input": {
+        "index": 5,
+        "s": "Привет"
+      },
+      "name": "utf8_codepoint of Привет at 5"
+    },
+    {
+      "expect": "0:00",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 0
+      },
+      "name": "format_clock 0"
+    },
+    {
+      "expect": "0:09",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 9.9
+      },
+      "name": "format_clock 9.9"
+    },
+    {
+      "expect": "0:59",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 59.9
+      },
+      "name": "format_clock 59.9"
+    },
+    {
+      "expect": "1:00",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 60
+      },
+      "name": "format_clock 60"
+    },
+    {
+      "expect": "2:05",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 125.9
+      },
+      "name": "format_clock 125.9"
+    },
+    {
+      "expect": "60:00",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 3600
+      },
+      "name": "format_clock 3600"
+    },
+    {
+      "expect": "62:05",
+      "fn": "format_clock",
+      "input": {
+        "seconds": 3725.5
+      },
+      "name": "format_clock 3725.5"
+    },
+    {
+      "expect": "0:00",
+      "fn": "format_clock",
+      "input": {
+        "seconds": -5
+      },
+      "name": "format_clock -5"
+    },
+    {
+      "expect": "0:42",
+      "fn": "format_clock",
+      "input": {
+        "seconds": "42"
+      },
+      "name": "format_clock \"42\""
+    },
+    {
+      "expect": "0:00",
+      "fn": "format_clock",
+      "input": [],
+      "name": "format_clock of nothing"
+    },
+    {
+      "expect": "0:07.2",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 7.2
+      },
+      "name": "format_duration 7.2"
+    },
+    {
+      "expect": "2:05.9",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 125.9
+      },
+      "name": "format_duration 125.9"
+    },
+    {
+      "expect": "0:00.0",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 0
+      },
+      "name": "format_duration 0"
+    },
+    {
+      "expect": "0:00.1",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 0.05
+      },
+      "name": "format_duration 0.05"
+    },
+    {
+      "expect": "0:00.3",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 0.25
+      },
+      "name": "format_duration 0.25"
+    },
+    {
+      "expect": "0:07.3",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 7.25
+      },
+      "name": "format_duration 7.25"
+    },
+    {
+      "expect": "0:12.8",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 12.75
+      },
+      "name": "format_duration 12.75"
+    },
+    {
+      "expect": "0:59.9",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 59.94
+      },
+      "name": "format_duration 59.94"
+    },
+    {
+      "expect": "0:60.0",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 59.96
+      },
+      "name": "format_duration 59.96"
+    },
+    {
+      "expect": "10:00.0",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 600
+      },
+      "name": "format_duration 600"
+    },
+    {
+      "expect": "59:60.0",
+      "fn": "format_duration",
+      "input": {
+        "seconds": 3599.99
+      },
+      "name": "format_duration 3599.99"
+    },
+    {
+      "expect": "-1:55.0",
+      "fn": "format_duration",
+      "input": {
+        "seconds": -5
+      },
+      "name": "format_duration -5"
+    },
+    {
+      "expect": "0:07.2",
+      "fn": "format_duration",
+      "input": {
+        "seconds": "7.2"
+      },
+      "name": "format_duration \"7.2\""
+    },
+    {
+      "expect": "0:00.0",
+      "fn": "format_duration",
+      "input": [],
+      "name": "format_duration of nothing"
+    }
+  ],
+  "source": "src/higgs/util.lua"
+}

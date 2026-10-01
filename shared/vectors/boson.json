@@ -1,0 +1,2514 @@
+{
+  "about": "Boson API: requests, error wording, timestamped responses, retries, voice names; base64.",
+  "cases": [
+    {
+      "expect": "https://api.boson.ai/v1",
+      "fn": "BASE_URL",
+      "input": {
+        "none": true
+      },
+      "name": "constant BASE_URL"
+    },
+    {
+      "expect": "higgs-tts-3",
+      "fn": "MODEL",
+      "input": {
+        "none": true
+      },
+      "name": "constant MODEL"
+    },
+    {
+      "expect": 5000,
+      "fn": "MAX_INPUT_CHARS",
+      "input": {
+        "none": true
+      },
+      "name": "constant MAX_INPUT_CHARS"
+    },
+    {
+      "expect": 0.015,
+      "fn": "PRICE_PER_1K_CHARS",
+      "input": {
+        "none": true
+      },
+      "name": "constant PRICE_PER_1K_CHARS"
+    },
+    {
+      "expect": [
+        {
+          "id": "nora",
+          "label": "Nora — calm narrative (f)"
+        },
+        {
+          "id": "eleanor",
+          "label": "Eleanor — professional, educational (f)"
+        },
+        {
+          "id": "chloe",
+          "label": "Chloe — friendly, standard American (f)"
+        },
+        {
+          "id": "marcus",
+          "label": "Marcus — confident, professorial (m)"
+        },
+        {
+          "id": "oliver",
+          "label": "Oliver — thoughtful, reflective (m)"
+        },
+        {
+          "id": "jake",
+          "label": "Jake — energetic (m)"
+        },
+        {
+          "id": "default",
+          "label": "Default"
+        }
+      ],
+      "fn": "PRESET_VOICES",
+      "input": {
+        "none": true
+      },
+      "name": "constant PRESET_VOICES"
+    },
+    {
+      "expect": 3,
+      "fn": "REF_MIN_SECONDS",
+      "input": {
+        "none": true
+      },
+      "name": "constant REF_MIN_SECONDS"
+    },
+    {
+      "expect": 30,
+      "fn": "REF_MAX_SECONDS",
+      "input": {
+        "none": true
+      },
+      "name": "constant REF_MAX_SECONDS"
+    },
+    {
+      "expect": 10485760,
+      "fn": "REF_MAX_BYTES",
+      "input": {
+        "none": true
+      },
+      "name": "constant REF_MAX_BYTES"
+    },
+    {
+      "expect": [2, 5, 10],
+      "fn": "RETRY_DELAYS",
+      "input": {
+        "none": true
+      },
+      "name": "constant RETRY_DELAYS"
+    },
+    {
+      "expect": 0,
+      "fn": "cost_for",
+      "input": {
+        "chars": 0
+      },
+      "name": "cost_for 0"
+    },
+    {
+      "expect": 1.5e-05,
+      "fn": "cost_for",
+      "input": {
+        "chars": 1
+      },
+      "name": "cost_for 1"
+    },
+    {
+      "expect": 0.015,
+      "fn": "cost_for",
+      "input": {
+        "chars": 1000
+      },
+      "name": "cost_for 1000"
+    },
+    {
+      "expect": 0.01851,
+      "fn": "cost_for",
+      "input": {
+        "chars": 1234
+      },
+      "name": "cost_for 1234"
+    },
+    {
+      "expect": 0.075,
+      "fn": "cost_for",
+      "input": {
+        "chars": 5000
+      },
+      "name": "cost_for 5000"
+    },
+    {
+      "expect": 15,
+      "fn": "cost_for",
+      "input": {
+        "chars": 1000000
+      },
+      "name": "cost_for 1000000"
+    },
+    {
+      "expect": 0,
+      "fn": "cost_for",
+      "input": {
+        "none": true
+      },
+      "name": "cost_for nothing"
+    },
+    {
+      "expect": 0.03,
+      "fn": "cost_for",
+      "input": {
+        "chars": "2000"
+      },
+      "name": "cost_for text"
+    },
+    {
+      "expect": "$0.0000",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0
+      },
+      "name": "format_cost 0"
+    },
+    {
+      "expect": "$0.0000",
+      "fn": "format_cost",
+      "input": {
+        "usd": 1.5e-05
+      },
+      "name": "format_cost 1.5e-05"
+    },
+    {
+      "expect": "$0.0001",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0.00015
+      },
+      "name": "format_cost 0.00015"
+    },
+    {
+      "expect": "$0.0099",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0.0099
+      },
+      "name": "format_cost 0.0099"
+    },
+    {
+      "expect": "$0.0100",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0.00999
+      },
+      "name": "format_cost 0.00999"
+    },
+    {
+      "expect": "$0.01",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0.01
+      },
+      "name": "format_cost 0.01"
+    },
+    {
+      "expect": "$0.01",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0.015
+      },
+      "name": "format_cost 0.015"
+    },
+    {
+      "expect": "$0.13",
+      "fn": "format_cost",
+      "input": {
+        "usd": 0.125
+      },
+      "name": "format_cost 0.125"
+    },
+    {
+      "expect": "$1.23",
+      "fn": "format_cost",
+      "input": {
+        "usd": 1.234
+      },
+      "name": "format_cost 1.234"
+    },
+    {
+      "expect": "$75.00",
+      "fn": "format_cost",
+      "input": {
+        "usd": 75
+      },
+      "name": "format_cost 75"
+    },
+    {
+      "expect": "https://api.boson.ai/v1/audio/speech",
+      "fn": "short_url",
+      "input": {
+        "url": "https://api.boson.ai/v1/audio/speech"
+      },
+      "name": "short_url https://api.boson.ai/v1/audio/speech"
+    },
+    {
+      "expect": "https://x.test/a",
+      "fn": "short_url",
+      "input": {
+        "url": "https://x.test/a?key=secret&b=2"
+      },
+      "name": "short_url https://x.test/a?key=secret&b=2"
+    },
+    {
+      "expect": "",
+      "fn": "short_url",
+      "input": {
+        "url": ""
+      },
+      "name": "short_url "
+    },
+    {
+      "expect": "",
+      "fn": "short_url",
+      "input": {
+        "url": "?only"
+      },
+      "name": "short_url ?only"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "nora"
+      },
+      "name": "is_preset nora"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "eleanor"
+      },
+      "name": "is_preset eleanor"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "chloe"
+      },
+      "name": "is_preset chloe"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "marcus"
+      },
+      "name": "is_preset marcus"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "oliver"
+      },
+      "name": "is_preset oliver"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "jake"
+      },
+      "name": "is_preset jake"
+    },
+    {
+      "expect": true,
+      "fn": "is_preset",
+      "input": {
+        "id": "default"
+      },
+      "name": "is_preset default"
+    },
+    {
+      "expect": false,
+      "fn": "is_preset",
+      "input": {
+        "id": "Nora"
+      },
+      "name": "is_preset Nora"
+    },
+    {
+      "expect": false,
+      "fn": "is_preset",
+      "input": {
+        "id": "voice_abc"
+      },
+      "name": "is_preset voice_abc"
+    },
+    {
+      "expect": false,
+      "fn": "is_preset",
+      "input": {
+        "id": ""
+      },
+      "name": "is_preset "
+    },
+    {
+      "expect": false,
+      "fn": "is_preset",
+      "input": {
+        "none": true
+      },
+      "name": "is_preset nothing"
+    },
+    {
+      "expect": "Alex — narration",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "description": "Alex — narration",
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: the description is the name"
+    },
+    {
+      "expect": "Alex",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "description": "  Alex \n",
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: a padded description is trimmed"
+    },
+    {
+      "expect": "Old name",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "name": "Old name",
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: a name when there is no description"
+    },
+    {
+      "expect": "Alex",
+      "fn": "voice_label",
+      "input": {
+        "existing": "Alex",
+        "voice": {
+          "description": "  ",
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: a local name survives a blank description"
+    },
+    {
+      "expect": "Alex",
+      "fn": "voice_label",
+      "input": {
+        "existing": "Alex",
+        "voice": {
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: a local name survives no description"
+    },
+    {
+      "expect": "Cloned voice · Sep 17, 2026",
+      "fn": "voice_label",
+      "input": {
+        "existing": "voice_ab",
+        "voice": {
+          "created_at": "2026-09-17T01:02:03Z",
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: a local name that is only the id does not"
+    },
+    {
+      "expect": "Cloned voice · Jan 5, 2026",
+      "fn": "voice_label",
+      "input": {
+        "existing": "",
+        "voice": {
+          "created_at": "2026-01-05",
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: an empty local name does not"
+    },
+    {
+      "expect": "Cloned voice · Mar 9, 2025",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "created_at": "2025-03-09T00:00:00Z"
+        }
+      },
+      "name": "voice_label: the date drops a leading zero"
+    },
+    {
+      "expect": "Cloned voice · 13 1, 2026",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "created_at": "2026-13-01"
+        }
+      },
+      "name": "voice_label: an impossible month is shown as written"
+    },
+    {
+      "expect": "Cloned voice",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "created_at": "yesterday"
+        }
+      },
+      "name": "voice_label: a date it cannot read"
+    },
+    {
+      "expect": "Cloned voice",
+      "fn": "voice_label",
+      "input": {
+        "voice": {
+          "voice": "voice_ab"
+        }
+      },
+      "name": "voice_label: never the raw id"
+    },
+    {
+      "expect": "Couldn't reach Boson. Check your internet connection.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "",
+        "raw": ""
+      },
+      "name": "friendly_error none \"\""
+    },
+    {
+      "expect": "Couldn't reach Boson. Check your internet connection.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "",
+        "raw": "curl: (6) Could not resolve host: api.boson.ai"
+      },
+      "name": "friendly_error none \"curl: (6) Could not resolve host: api.boson.ai\""
+    },
+    {
+      "expect": "Boson took too long to answer. Try again.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "",
+        "raw": "curl: (28) Operation timed out after 300000 milliseconds"
+      },
+      "name": "friendly_error none \"curl: (28) Operation timed out after 300000 milliseconds\""
+    },
+    {
+      "expect": "Boson took too long to answer. Try again.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "",
+        "raw": "Operation too slow"
+      },
+      "name": "friendly_error none \"Operation too slow\""
+    },
+    {
+      "expect": "Boson took too long to answer. Try again.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "",
+        "raw": "TIMEOUT"
+      },
+      "name": "friendly_error none \"TIMEOUT\""
+    },
+    {
+      "expect": "That API key was rejected. Check it in Settings.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "401",
+        "raw": "Invalid API key"
+      },
+      "name": "friendly_error 401 \"Invalid API key\""
+    },
+    {
+      "expect": "Payment required",
+      "fn": "friendly_error",
+      "input": {
+        "code": "402",
+        "raw": "Payment required"
+      },
+      "name": "friendly_error 402 \"Payment required\""
+    },
+    {
+      "expect": "Boson returned an unexpected response (402).",
+      "fn": "friendly_error",
+      "input": {
+        "code": "402",
+        "raw": ""
+      },
+      "name": "friendly_error 402 \"\""
+    },
+    {
+      "expect": "This key can't use Higgs TTS. Check your plan at boson.ai.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "403",
+        "raw": "Forbidden"
+      },
+      "name": "friendly_error 403 \"Forbidden\""
+    },
+    {
+      "expect": "Your Boson account is out of credit. Top up at boson.ai.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "403",
+        "raw": "Insufficient BALANCE"
+      },
+      "name": "friendly_error 403 \"Insufficient BALANCE\""
+    },
+    {
+      "expect": "Your Boson account is out of credit. Top up at boson.ai.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "403",
+        "raw": "quota exceeded"
+      },
+      "name": "friendly_error 403 \"quota exceeded\""
+    },
+    {
+      "expect": "That voice is no longer on your account. Pick another voice.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "404",
+        "raw": "Voice not found"
+      },
+      "name": "friendly_error 404 \"Voice not found\""
+    },
+    {
+      "expect": "Boson couldn't find what the request asked for.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "404",
+        "raw": "Not Found"
+      },
+      "name": "friendly_error 404 \"Not Found\""
+    },
+    {
+      "expect": "That line is too long for one request. Break it into shorter lines.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "413",
+        "raw": "Payload too large"
+      },
+      "name": "friendly_error 413 \"Payload too large\""
+    },
+    {
+      "expect": "Boson didn't accept that voice. Pick another voice.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "422",
+        "raw": "Invalid voice id"
+      },
+      "name": "friendly_error 422 \"Invalid voice id\""
+    },
+    {
+      "expect": "Boson rejected the request: input: must be at most 5000 characters",
+      "fn": "friendly_error",
+      "input": {
+        "code": "422",
+        "raw": "input:\n  must be  at most 5000 characters"
+      },
+      "name": "friendly_error 422 \"input:\\\n  must be  at most 5000 characters\""
+    },
+    {
+      "expect": "Boson rejected the request.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "422",
+        "raw": ""
+      },
+      "name": "friendly_error 422 \"\""
+    },
+    {
+      "expect": "Boson rejected the request:  ",
+      "fn": "friendly_error",
+      "input": {
+        "code": "422",
+        "raw": "   "
+      },
+      "name": "friendly_error 422 \"   \""
+    },
+    {
+      "expect": "Boson rejected the request: The request body could not be validated because field after field field after field field after field field after field ",
+      "fn": "friendly_error",
+      "input": {
+        "code": "422",
+        "raw": "The request body could not be validated because field after field field after field field after field field after field field after field field after field field after field field after field field after field field after field "
+      },
+      "name": "friendly_error 422 \"The request body could not be validated because field after field field after field field after field field after field field after field field after field field after field field after field field after field field after field \""
+    },
+    {
+      "expect": "Boson rejected the request: timestamps_streaming_unsupported",
+      "fn": "friendly_error",
+      "input": {
+        "code": "400",
+        "raw": "timestamps_streaming_unsupported"
+      },
+      "name": "friendly_error 400 \"timestamps_streaming_unsupported\""
+    },
+    {
+      "expect": "Boson didn't accept that voice. Pick another voice.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "400",
+        "raw": "unknown VOICE"
+      },
+      "name": "friendly_error 400 \"unknown VOICE\""
+    },
+    {
+      "expect": "Too many requests at once. Wait a few seconds and try again.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "429",
+        "raw": "Too many requests"
+      },
+      "name": "friendly_error 429 \"Too many requests\""
+    },
+    {
+      "expect": "Your Boson account is out of credit. Top up at boson.ai.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "429",
+        "raw": "insufficient credit balance"
+      },
+      "name": "friendly_error 429 \"insufficient credit balance\""
+    },
+    {
+      "expect": "Your Boson account is out of credit. Top up at boson.ai.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "429",
+        "raw": "Quota"
+      },
+      "name": "friendly_error 429 \"Quota\""
+    },
+    {
+      "expect": "Boson's service is having trouble. Try again in a moment.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "500",
+        "raw": "Internal Server Error"
+      },
+      "name": "friendly_error 500 \"Internal Server Error\""
+    },
+    {
+      "expect": "Boson's service is having trouble. Try again in a moment.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "502",
+        "raw": "<html>Bad Gateway</html>"
+      },
+      "name": "friendly_error 502 \"<html>Bad Gateway</html>\""
+    },
+    {
+      "expect": "Boson's service is having trouble. Try again in a moment.",
+      "fn": "friendly_error",
+      "input": {
+        "code": "503",
+        "raw": ""
+      },
+      "name": "friendly_error 503 \"\""
+    },
+    {
+      "expect": "I'm a teapot",
+      "fn": "friendly_error",
+      "input": {
+        "code": "418",
+        "raw": "I'm a teapot"
+      },
+      "name": "friendly_error 418 \"I'm a teapot\""
+    },
+    {
+      "expect": "Boson returned an unexpected response (418).",
+      "fn": "friendly_error",
+      "input": {
+        "code": "418",
+        "raw": ""
+      },
+      "name": "friendly_error 418 \"\""
+    },
+    {
+      "expect": "Boson returned an unexpected response (000).",
+      "fn": "friendly_error",
+      "input": {
+        "code": "000",
+        "raw": ""
+      },
+      "name": "friendly_error 000 \"\""
+    },
+    {
+      "expect": " moved here ",
+      "fn": "friendly_error",
+      "input": {
+        "code": "302",
+        "raw": "  moved\n\there "
+      },
+      "name": "friendly_error 302 \"  moved\\\n\\9here \""
+    },
+    {
+      "expect": "Boson rejected the request: Ungültige Stimme: «nora»",
+      "fn": "friendly_error",
+      "input": {
+        "code": "422",
+        "raw": "Ungültige Stimme: «nora»"
+      },
+      "name": "friendly_error 422 \"Ungültige Stimme: «nora»\""
+    },
+    {
+      "expect": "Boson returned an unexpected response (418).",
+      "fn": "friendly_error",
+      "input": {
+        "code": "418"
+      },
+      "name": "friendly_error with no text"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Couldn't reach Boson. Check your internet connection.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "",
+        "code": "000",
+        "err": "curl: (6) Could not resolve host: api.boson.ai",
+        "expect": "binary"
+      },
+      "name": "interpret: no answer at all (000) reads as no connection"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Couldn't reach Boson. Check your internet connection.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "expect": "json"
+      },
+      "name": "interpret: no status at all"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Boson took too long to answer. Try again.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "code": "000",
+        "err": "curl: (28) Operation timed out after 300000 milliseconds\n",
+        "expect": "binary"
+      },
+      "name": "interpret: a timeout"
+    },
+    {
+      "expect": {
+        "code": "200",
+        "data": {
+          "data": [
+            {
+              "description": "A",
+              "voice": "voice_1"
+            }
+          ],
+          "object": "list"
+        },
+        "ok": true
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"data\":[{\"voice\":\"voice_1\",\"description\":\"A\"}],\"object\":\"list\"}",
+        "code": " 200\n",
+        "expect": "json"
+      },
+      "name": "interpret: a status with stray whitespace"
+    },
+    {
+      "expect": {
+        "code": "200",
+        "error": "Boson sent a response Higgs VoiceOver couldn't read.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "<html>ok</html>",
+        "code": "200",
+        "expect": "json"
+      },
+      "name": "interpret: JSON that is not JSON"
+    },
+    {
+      "expect": {
+        "code": "201",
+        "data": [1, 2, 3],
+        "ok": true
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "[1,2,3]",
+        "code": "201",
+        "expect": "json"
+      },
+      "name": "interpret: a JSON list is still JSON"
+    },
+    {
+      "expect": {
+        "code": "200",
+        "error": "Boson sent a response Higgs VoiceOver couldn't read.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "",
+        "code": "200",
+        "expect": "json"
+      },
+      "name": "interpret: an empty JSON body"
+    },
+    {
+      "expect": {
+        "audio": "UklGRnh4eHhXQVZF",
+        "code": "200",
+        "ok": true
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "RIFFxxxxWAVE",
+        "code": "200",
+        "expect": "binary"
+      },
+      "name": "interpret: speech audio"
+    },
+    {
+      "expect": {
+        "audio": "UEsDBHppcA==",
+        "code": "200",
+        "ok": true
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "PK\u0003\u0004zip",
+        "code": "200",
+        "expect": "file"
+      },
+      "name": "interpret: a downloaded file"
+    },
+    {
+      "expect": {
+        "code": "200",
+        "error": "Boson returned no audio for that line.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "",
+        "code": "200",
+        "expect": "binary"
+      },
+      "name": "interpret: no audio"
+    },
+    {
+      "expect": {
+        "audio": "UklGRmRhdGE=",
+        "code": "200",
+        "ok": true,
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.08,
+            "word": "Hi"
+          },
+          {
+            "end": 0.7,
+            "start": 0.32,
+            "word": "there"
+          }
+        ]
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"audio\":\"UklGRmRhdGE=\",\"response_format\":\"wav\",\"input\":\"Hi there.\",\"timestamps\":[{\"word\":\"Hi\",\"start\":0.08,\"end\":0.3},{\"word\":\"there\",\"start\":0.32,\"end\":0.7}]}",
+        "code": "200",
+        "expect": "speech_json"
+      },
+      "name": "interpret: timestamped speech"
+    },
+    {
+      "expect": {
+        "audio": "UklGRg==",
+        "code": "200",
+        "ok": true
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"audio\":\"UklGRg==\",\"timestamps\":null}",
+        "code": "200",
+        "expect": "speech_json"
+      },
+      "name": "interpret: timestamped speech without alignment"
+    },
+    {
+      "expect": {
+        "code": "200",
+        "error": "Boson returned no audio for that line.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":\"x\"}",
+        "code": "200",
+        "expect": "speech_json"
+      },
+      "name": "interpret: timestamped speech without audio"
+    },
+    {
+      "expect": {
+        "code": "200",
+        "error": "Boson returned no audio for that line.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"audio\":\"\",\"timestamps\":[]}",
+        "code": "200",
+        "expect": "speech_json"
+      },
+      "name": "interpret: timestamped speech with empty audio"
+    },
+    {
+      "expect": {
+        "code": "401",
+        "error": "That API key was rejected. Check it in Settings.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":{\"message\":\"Invalid API key\",\"type\":\"auth\"}}",
+        "code": "401",
+        "expect": "binary"
+      },
+      "name": "interpret: a rejected key"
+    },
+    {
+      "expect": {
+        "code": "402",
+        "error": "Payment required",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":\"Payment required\"}",
+        "code": "402",
+        "expect": "binary"
+      },
+      "name": "interpret: payment required"
+    },
+    {
+      "expect": {
+        "code": "402",
+        "error": "Boson returned an unexpected response (402).",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "",
+        "code": "402",
+        "expect": "binary"
+      },
+      "name": "interpret: payment required with no body"
+    },
+    {
+      "expect": {
+        "code": "403",
+        "error": "Your Boson account is out of credit. Top up at boson.ai.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"message\":\"insufficient credit\"}",
+        "code": "403",
+        "expect": "binary"
+      },
+      "name": "interpret: out of credit in a message field"
+    },
+    {
+      "expect": {
+        "code": "403",
+        "error": "This key can't use Higgs TTS. Check your plan at boson.ai.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":{\"message\":\"forbidden\"}}",
+        "code": "403",
+        "expect": "binary"
+      },
+      "name": "interpret: a plan without TTS"
+    },
+    {
+      "expect": {
+        "code": "404",
+        "error": "That voice is no longer on your account. Pick another voice.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":\"voice not found\"}",
+        "code": "404",
+        "expect": "binary"
+      },
+      "name": "interpret: a missing voice says what to do"
+    },
+    {
+      "expect": {
+        "code": "413",
+        "error": "That line is too long for one request. Break it into shorter lines.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "<html><body>413 Request Entity Too Large</body></html>",
+        "code": "413",
+        "expect": "binary"
+      },
+      "name": "interpret: too long"
+    },
+    {
+      "expect": {
+        "code": "422",
+        "error": "Boson rejected the request: {\"detail\":[{\"loc\":[\"body\",\"input\"],\"msg\":\"String should have at most 5000 characters\",\"type\":\"string_too_long\"}]}",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"detail\":[{\"loc\":[\"body\",\"input\"],\"msg\":\"String should have at most 5000 characters\",\"type\":\"string_too_long\"}]}",
+        "code": "422",
+        "expect": "binary"
+      },
+      "name": "interpret: a validation error in FastAPI's shape"
+    },
+    {
+      "expect": {
+        "code": "422",
+        "error": "Boson didn't accept that voice. Pick another voice.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":{\"message\":\"Invalid voice id\"}}",
+        "code": "422",
+        "expect": "binary"
+      },
+      "name": "interpret: a voice the service would not take"
+    },
+    {
+      "expect": {
+        "code": "400",
+        "error": "Boson rejected the request: {\"error\":{\"code\":5}}",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":{\"code\":5}}",
+        "code": "400",
+        "expect": "binary"
+      },
+      "name": "interpret: an error object without a message"
+    },
+    {
+      "expect": {
+        "code": "400",
+        "error": "Boson rejected the request: {\"error\":\"\",\"message\":\"x\"}",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":\"\",\"message\":\"x\"}",
+        "code": "400",
+        "expect": "binary"
+      },
+      "name": "interpret: an empty message falls back to the body"
+    },
+    {
+      "expect": {
+        "code": "429",
+        "error": "Too many requests at once. Wait a few seconds and try again.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":\"Too many requests\"}",
+        "code": "429",
+        "expect": "binary"
+      },
+      "name": "interpret: too many requests"
+    },
+    {
+      "expect": {
+        "code": "429",
+        "error": "Your Boson account is out of credit. Top up at boson.ai.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "{\"error\":\"insufficient credit balance\"}",
+        "code": "429",
+        "expect": "binary"
+      },
+      "name": "interpret: out of credit is not a rate limit"
+    },
+    {
+      "expect": {
+        "code": "500",
+        "error": "Boson's service is having trouble. Try again in a moment.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "Internal Server Error",
+        "code": "500",
+        "expect": "binary"
+      },
+      "name": "interpret: a server error"
+    },
+    {
+      "expect": {
+        "code": "502",
+        "error": "Boson's service is having trouble. Try again in a moment.",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "<html>\n<head><title>502 Bad Gateway</title></head>\n</html>",
+        "code": "502",
+        "expect": "speech_json"
+      },
+      "name": "interpret: a gateway error page"
+    },
+    {
+      "expect": {
+        "code": "418",
+        "error": "teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot t",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot teapot ",
+        "code": "418",
+        "expect": "binary"
+      },
+      "name": "interpret: an unknown status with a long body"
+    },
+    {
+      "expect": {
+        "code": "418",
+        "error": "Boson returned an unexpected response (418).",
+        "ok": false
+      },
+      "fn": "interpret",
+      "input": {
+        "body": "",
+        "code": "418",
+        "expect": "json"
+      },
+      "name": "interpret: an unknown status with nothing"
+    },
+    {
+      "expect": {
+        "audio": "UklGRmRhdGE=",
+        "words": [
+          {
+            "end": 0.3,
+            "start": 0.08,
+            "word": "Hi"
+          },
+          {
+            "end": 0.7,
+            "start": 0.32,
+            "word": "there"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"UklGRmRhdGE=\",\"response_format\":\"wav\",\"input\":\"Hi there.\",\"timestamps\":[{\"word\":\"Hi\",\"start\":0.08,\"end\":0.3},{\"word\":\"there\",\"start\":0.32,\"end\":0.7}]}"
+      },
+      "name": "unpack_timed: audio and words"
+    },
+    {
+      "expect": {
+        "audio": "eA=="
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"eA==\",\"timestamps\":null}"
+      },
+      "name": "unpack_timed: no alignment is nil, not empty"
+    },
+    {
+      "expect": {
+        "audio": "eA=="
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"eA==\",\"timestamps\":[]}"
+      },
+      "name": "unpack_timed: an empty list is nil too"
+    },
+    {
+      "expect": {
+        "audio": "eHl6"
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"eHl6\"}"
+      },
+      "name": "unpack_timed: no timestamps field"
+    },
+    {
+      "expect": {
+        "audio": "TW/u"
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"input\":\"x\",\"audio\":\"TW\\/u\"}"
+      },
+      "name": "unpack_timed: escaped slashes in the audio are undone"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 1,
+            "start": 0,
+            "word": "a"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{ \"audio\" :\n \"TWFu\" , \"timestamps\" : [ {\"word\":\"a\",\"start\":0,\"end\":1} ] }"
+      },
+      "name": "unpack_timed: spaces around the colon"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 0.2,
+            "start": 0.1,
+            "word": "Hi"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"timestamps\":[{\"word\":\"Hi\",\"start\":0.1,\"end\":0.2}],\"audio\":\"TWFu\"}"
+      },
+      "name": "unpack_timed: audio last"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 1.25,
+            "start": 0.5,
+            "word": "x"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"word\":\"x\",\"start\":\"0.5\",\"end\":\"1.25\"}]}"
+      },
+      "name": "unpack_timed: times given as text"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 2,
+            "start": 1,
+            "word": "b"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"word\":\"a\"},{\"word\":\"b\",\"start\":1,\"end\":2}]}"
+      },
+      "name": "unpack_timed: a word without times is skipped"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 3,
+            "start": 2,
+            "word": "c"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"start\":1,\"end\":2},{\"word\":\"c\",\"start\":2,\"end\":3}]}"
+      },
+      "name": "unpack_timed: a time without a word is skipped"
+    },
+    {
+      "expect": {
+        "audio": "TWFu"
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"word\":\"a\"},{\"start\":1}]}"
+      },
+      "name": "unpack_timed: nothing usable is nil"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 2,
+            "start": 1,
+            "word": "5"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"word\":5,\"start\":1,\"end\":2}]}"
+      },
+      "name": "unpack_timed: a number as a word"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 0.2,
+            "start": 0,
+            "word": "你"
+          },
+          {
+            "end": 0.4,
+            "start": 0.2,
+            "word": "好"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"word\":\"你\",\"start\":0,\"end\":0.2},{\"word\":\"好\",\"start\":0.2,\"end\":0.4}]}"
+      },
+      "name": "unpack_timed: CJK words, one per character"
+    },
+    {
+      "expect": {
+        "audio": "TWFu",
+        "words": [
+          {
+            "end": 1,
+            "start": 0,
+            "word": "d"
+          }
+        ]
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[null,{\"word\":\"d\",\"start\":0,\"end\":1}]}"
+      },
+      "name": "unpack_timed: a null entry is skipped"
+    },
+    {
+      "expect": {
+        "audio": "TWFu"
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":{\"word\":\"a\",\"start\":0,\"end\":1}}"
+      },
+      "name": "unpack_timed: timestamps that are not a list"
+    },
+    {
+      "expect": {
+        "audio": "TWFu"
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu\",\"timestamps\":[{\"word\":\"a\",\"sta"
+      },
+      "name": "unpack_timed: a cut-off envelope still gives its audio"
+    },
+    {
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"error\":\"x\"}"
+      },
+      "name": "unpack_timed: no audio field is nil"
+    },
+    {
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TWFu"
+      },
+      "name": "unpack_timed: an unclosed audio string is nil"
+    },
+    {
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "RIFF....WAVE"
+      },
+      "name": "unpack_timed: not JSON at all"
+    },
+    {
+      "expect": {
+        "audio": "TWnFurnTWA=="
+      },
+      "fn": "unpack_timed",
+      "input": {
+        "raw": "{\"audio\":\"TW\\nFu\\r\\nTWE=\"}"
+      },
+      "name": "unpack_timed: base64 with line breaks"
+    },
+    {
+      "expect": true,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "429",
+          "error": "Too many requests at once. Wait a few seconds and try again.",
+          "ok": false
+        },
+        "retries": 0
+      },
+      "name": "should_retry: a rate limit is retried"
+    },
+    {
+      "expect": true,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "429",
+          "error": "Too many requests",
+          "ok": false
+        },
+        "retries": 1
+      },
+      "name": "should_retry: the second time too"
+    },
+    {
+      "expect": true,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "429",
+          "error": "Too many requests",
+          "ok": false
+        },
+        "retries": 2
+      },
+      "name": "should_retry: and the third"
+    },
+    {
+      "expect": false,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "429",
+          "error": "Too many requests",
+          "ok": false
+        },
+        "retries": 3
+      },
+      "name": "should_retry: but not a fourth"
+    },
+    {
+      "expect": false,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "429",
+          "error": "Your Boson account is out of credit. Top up at boson.ai.",
+          "ok": false
+        },
+        "retries": 0
+      },
+      "name": "should_retry: out of credit is not retried"
+    },
+    {
+      "expect": false,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "500",
+          "error": "x",
+          "ok": false
+        },
+        "retries": 0
+      },
+      "name": "should_retry: other failures are not retried"
+    },
+    {
+      "expect": false,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "",
+          "error": "x",
+          "ok": false
+        },
+        "retries": 0
+      },
+      "name": "should_retry: no connection is not retried"
+    },
+    {
+      "expect": false,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "200",
+          "ok": true
+        },
+        "retries": 0
+      },
+      "name": "should_retry: success is not retried"
+    },
+    {
+      "expect": true,
+      "fn": "should_retry",
+      "input": {
+        "res": {
+          "code": "429",
+          "error": "slow down",
+          "ok": false
+        }
+      },
+      "name": "should_retry: no count yet is the first try"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "Hello there.",
+            "model": "higgs-tts-3",
+            "response_format": "wav",
+            "voice": "nora"
+          },
+          "expect": "binary",
+          "label": "speech",
+          "meta": {
+            "chars": 12,
+            "format": "wav",
+            "timestamps": 0,
+            "voice": "nora"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "text": "Hello there.",
+        "voice": "nora"
+      },
+      "name": "speech: a plain line"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "Hi.",
+            "model": "higgs-tts-3",
+            "response_format": "wav",
+            "voice": "default"
+          },
+          "expect": "binary",
+          "label": "speech",
+          "meta": {
+            "chars": 3,
+            "format": "wav",
+            "timestamps": 0,
+            "voice": "cloned"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "text": "Hi."
+      },
+      "name": "speech: with no voice the body says default and the log says cloned"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "Hi.",
+            "model": "higgs-tts-3",
+            "response_format": "wav",
+            "voice": "voice_0123abcd"
+          },
+          "expect": "binary",
+          "label": "speech",
+          "meta": {
+            "chars": 3,
+            "format": "wav",
+            "timestamps": 0,
+            "voice": "cloned"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "text": "Hi.",
+        "voice": "voice_0123abcd"
+      },
+      "name": "speech: a cloned voice is not named in the log"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "Hi.",
+            "model": "higgs-tts-3",
+            "response_format": "wav",
+            "timestamps": true,
+            "voice": "jake"
+          },
+          "expect": "speech_json",
+          "label": "speech",
+          "meta": {
+            "chars": 3,
+            "format": "wav",
+            "timestamps": 1,
+            "voice": "jake"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "text": "Hi.",
+        "timestamps": true,
+        "voice": "jake"
+      },
+      "name": "speech: word timings ask for JSON"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "Hi.",
+            "model": "higgs-tts-3",
+            "response_format": "mp3",
+            "voice": "default"
+          },
+          "expect": "binary",
+          "label": "speech 3/12",
+          "meta": {
+            "chars": 3,
+            "format": "mp3",
+            "timestamps": 0,
+            "voice": "default"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "format": "mp3",
+        "label": "speech 3/12",
+        "text": "Hi.",
+        "voice": "default"
+      },
+      "name": "speech: another format and a label"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Nothing to generate — this line is empty.",
+        "ok": false
+      },
+      "fn": "speech",
+      "input": {
+        "text": "",
+        "voice": "nora"
+      },
+      "name": "speech: an empty line"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Nothing to generate — this line is empty.",
+        "ok": false
+      },
+      "fn": "speech",
+      "input": {
+        "text": "  \n\t",
+        "voice": "nora"
+      },
+      "name": "speech: a line of spaces"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Nothing to generate — this line is empty.",
+        "ok": false
+      },
+      "fn": "speech",
+      "input": {
+        "voice": "nora"
+      },
+      "name": "speech: no text at all"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "This line is 5001 characters; the limit is 5000. Break it into shorter lines.",
+        "ok": false
+      },
+      "fn": "speech",
+      "input": {
+        "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "name": "speech: one over the limit"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你",
+            "model": "higgs-tts-3",
+            "response_format": "wav",
+            "voice": "default"
+          },
+          "expect": "binary",
+          "label": "speech",
+          "meta": {
+            "chars": 2000,
+            "format": "wav",
+            "timestamps": 0,
+            "voice": "cloned"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "text": "你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你你"
+      },
+      "name": "speech: characters, not bytes, count"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "input": "<|emotion:awe|> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "model": "higgs-tts-3",
+            "response_format": "wav",
+            "voice": "default"
+          },
+          "expect": "binary",
+          "label": "speech",
+          "meta": {
+            "chars": 5000,
+            "format": "wav",
+            "timestamps": 0,
+            "voice": "cloned"
+          },
+          "method": "POST",
+          "path": "/audio/speech",
+          "url": "https://api.boson.ai/v1/audio/speech"
+        }
+      },
+      "fn": "speech",
+      "input": {
+        "text": "<|emotion:awe|> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "name": "speech: tags count as characters"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "description": "Alex — narration",
+            "ref_audio": "UklGRgABAgNXQVZF",
+            "ref_text": "Hello, this is me."
+          },
+          "expect": "json",
+          "label": "create voice",
+          "method": "POST",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio": "UklGRgABAgNXQVZF",
+        "name": "Alex — narration",
+        "ref_text": "Hello, this is me."
+      },
+      "name": "create_voice: name and transcript"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "description": "Voice",
+            "ref_audio": "UklGRmFiYw==",
+            "ref_text": "Hi."
+          },
+          "expect": "json",
+          "label": "create voice",
+          "method": "POST",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio": "UklGRmFiYw==",
+        "ref_text": "Hi."
+      },
+      "name": "create_voice: no name is Voice"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "description": "A",
+            "ref_audio": "UklGRmFiYw==",
+            "ref_text": "."
+          },
+          "expect": "json",
+          "label": "create voice",
+          "method": "POST",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio": "UklGRmFiYw==",
+        "name": "A"
+      },
+      "name": "create_voice: no transcript is a single stop"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "description": "A",
+            "ref_audio": "UklGRmFiYw==",
+            "ref_text": "."
+          },
+          "expect": "json",
+          "label": "create voice",
+          "method": "POST",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio": "UklGRmFiYw==",
+        "name": "A",
+        "ref_text": "  \n"
+      },
+      "name": "create_voice: a blank transcript too"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "description": "A",
+            "ref_audio": "UklGRmFiYw==",
+            "ref_text": "  spaced  "
+          },
+          "expect": "json",
+          "label": "create voice",
+          "method": "POST",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio": "UklGRmFiYw==",
+        "name": "A",
+        "ref_text": "  spaced  "
+      },
+      "name": "create_voice: a transcript keeps its own spacing"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "Could not read the reference recording.",
+        "ok": false
+      },
+      "fn": "create_voice",
+      "input": {
+        "name": "A"
+      },
+      "name": "create_voice: a missing recording"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "The reference is 10.0 MB; the limit is 10 MB.",
+        "ok": false
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio_zeros": 10485761,
+        "name": "A"
+      },
+      "name": "create_voice: just over the size limit"
+    },
+    {
+      "expect": {
+        "code": "",
+        "error": "The reference is 11.8 MB; the limit is 10 MB.",
+        "ok": false
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio_zeros": 12345678,
+        "name": "A"
+      },
+      "name": "create_voice: well over it"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "body": {
+            "description": "A",
+            "ref_audio": "<13981016 base64 characters>",
+            "ref_text": "."
+          },
+          "expect": "json",
+          "label": "create voice",
+          "method": "POST",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "create_voice",
+      "input": {
+        "audio_zeros": 10485760,
+        "name": "A"
+      },
+      "name": "create_voice: exactly at the limit is fine"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "expect": "json",
+          "label": "list voices",
+          "method": "GET",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "list_voices",
+      "input": {
+        "none": true
+      },
+      "name": "list_voices"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "request": {
+          "expect": "json",
+          "label": "test connection",
+          "method": "GET",
+          "path": "/audio/voices",
+          "url": "https://api.boson.ai/v1/audio/voices"
+        }
+      },
+      "fn": "test",
+      "input": {
+        "none": true
+      },
+      "name": "test"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "voices": 3
+      },
+      "fn": "test_outcome",
+      "input": {
+        "res": {
+          "code": "200",
+          "data": {
+            "data": [
+              {
+                "voice": "a"
+              },
+              {
+                "voice": "b"
+              },
+              {
+                "voice": "c"
+              }
+            ]
+          },
+          "ok": true
+        }
+      },
+      "name": "test outcome: voices in a data list"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "voices": 1
+      },
+      "fn": "test_outcome",
+      "input": {
+        "res": {
+          "code": "200",
+          "data": {
+            "voices": [
+              {
+                "voice": "a"
+              }
+            ]
+          },
+          "ok": true
+        }
+      },
+      "name": "test outcome: voices in a voices list"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "voices": 2
+      },
+      "fn": "test_outcome",
+      "input": {
+        "res": {
+          "code": "200",
+          "data": [
+            {
+              "voice": "a"
+            },
+            {
+              "voice": "b"
+            }
+          ],
+          "ok": true
+        }
+      },
+      "name": "test outcome: a bare list"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "voices": 0
+      },
+      "fn": "test_outcome",
+      "input": {
+        "res": {
+          "code": "200",
+          "data": {
+            "object": "list"
+          },
+          "ok": true
+        }
+      },
+      "name": "test outcome: a record with no list"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "voices": 0
+      },
+      "fn": "test_outcome",
+      "input": {
+        "res": {
+          "code": "200",
+          "data": {
+            "data": "none"
+          },
+          "ok": true
+        }
+      },
+      "name": "test outcome: a list that is not a list"
+    },
+    {
+      "expect": {
+        "code": "401",
+        "error": "That API key was rejected. Check it in Settings.",
+        "ok": false
+      },
+      "fn": "test_outcome",
+      "input": {
+        "res": {
+          "code": "401",
+          "error": "That API key was rejected. Check it in Settings.",
+          "ok": false
+        }
+      },
+      "name": "test outcome: a failure"
+    },
+    {
+      "expect": {
+        "follow_redirects": false,
+        "headers": {
+          "Authorization": "Bearer bai-test-0000-fake",
+          "User-Agent": "HiggsVoiceOver/1.2.3"
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": false,
+        "key": "bai-test-0000-fake",
+        "no_auth": false,
+        "version": "1.2.3"
+      },
+      "name": "transport: a Boson request carries the key"
+    },
+    {
+      "expect": {
+        "follow_redirects": false,
+        "headers": {
+          "Authorization": "Bearer bai-test-0000-fake",
+          "Content-Type": "application/json",
+          "User-Agent": "HiggsVoiceOver/1.2.3"
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": true,
+        "key": "bai-test-0000-fake",
+        "no_auth": false,
+        "version": "1.2.3"
+      },
+      "name": "transport: a body adds its type"
+    },
+    {
+      "expect": {
+        "follow_redirects": false,
+        "headers": {
+          "Authorization": "Bearer bai-testfake",
+          "User-Agent": "HiggsVoiceOver/1.2.3"
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": false,
+        "key": "bai-te\"st\\fake",
+        "no_auth": false,
+        "version": "1.2.3"
+      },
+      "name": "transport: quotes and backslashes never reach the header"
+    },
+    {
+      "expect": {
+        "follow_redirects": true,
+        "headers": {
+          "User-Agent": "HiggsVoiceOver/1.2.3"
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": false,
+        "key": "bai-test-0000-fake",
+        "no_auth": true,
+        "version": "1.2.3"
+      },
+      "name": "transport: a public request never carries it and follows redirects"
+    },
+    {
+      "expect": {
+        "follow_redirects": false,
+        "headers": {
+          "Authorization": "Bearer bai-test-0000-fake",
+          "User-Agent": "HiggsVoiceOver/dev"
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": false,
+        "key": "bai-test-0000-fake",
+        "no_auth": false
+      },
+      "name": "transport: without a version it is dev"
+    },
+    {
+      "expect": {
+        "refused": {
+          "code": "nokey",
+          "error": "Add your Boson API key in Settings first.",
+          "ok": false
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": false,
+        "key": "",
+        "no_auth": false,
+        "version": "1.2.3"
+      },
+      "name": "transport: no key, no request"
+    },
+    {
+      "expect": {
+        "follow_redirects": true,
+        "headers": {
+          "User-Agent": "HiggsVoiceOver/1.2.3"
+        }
+      },
+      "fn": "transport",
+      "input": {
+        "has_body": false,
+        "key": "",
+        "no_auth": true,
+        "version": "1.2.3"
+      },
+      "name": "transport: no key is fine for a public request"
+    },
+    {
+      "expect": "",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": []
+      },
+      "name": "b64_encode of 0 bytes"
+    },
+    {
+      "expect": "TQ==",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [77]
+      },
+      "name": "b64_encode of 1 bytes"
+    },
+    {
+      "expect": "TWE=",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [77, 97]
+      },
+      "name": "b64_encode of 2 bytes"
+    },
+    {
+      "expect": "TWFu",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [77, 97, 110]
+      },
+      "name": "b64_encode of 3 bytes"
+    },
+    {
+      "expect": "TWFueQ==",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [77, 97, 110, 121]
+      },
+      "name": "b64_encode of 4 bytes"
+    },
+    {
+      "expect": "UklGRgD/gAcJ",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [82, 73, 70, 70, 0, 255, 128, 7, 9]
+      },
+      "name": "b64_encode of 9 bytes"
+    },
+    {
+      "expect": "AAAA",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [0, 0, 0]
+      },
+      "name": "b64_encode of 3 bytes"
+    },
+    {
+      "expect": "+/+/",
+      "fn": "b64_encode",
+      "input": {
+        "bytes": [251, 255, 191]
+      },
+      "name": "b64_encode of 3 bytes"
+    },
+    {
+      "expect": [77, 97, 110],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TWFu"
+      },
+      "name": "b64_decode TWFu"
+    },
+    {
+      "expect": [77, 97],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TWE="
+      },
+      "name": "b64_decode TWE="
+    },
+    {
+      "expect": [77],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TQ=="
+      },
+      "name": "b64_decode TQ=="
+    },
+    {
+      "expect": [77],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TQ"
+      },
+      "name": "b64_decode TQ"
+    },
+    {
+      "expect": [77, 97],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TWE"
+      },
+      "name": "b64_decode TWE"
+    },
+    {
+      "expect": [],
+      "fn": "b64_decode",
+      "input": {
+        "s": "T"
+      },
+      "name": "b64_decode T"
+    },
+    {
+      "expect": [],
+      "fn": "b64_decode",
+      "input": {
+        "s": ""
+      },
+      "name": "b64_decode "
+    },
+    {
+      "expect": [77, 97, 110],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TW\nFu"
+      },
+      "name": "b64_decode TW~Fu"
+    },
+    {
+      "expect": [77, 97, 110],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TW Fu\r\n"
+      },
+      "name": "b64_decode TW Fu~~"
+    },
+    {
+      "expect": [77, 97, 110],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TW!!Fu"
+      },
+      "name": "b64_decode TW!!Fu"
+    },
+    {
+      "expect": [0, 255, 128, 255],
+      "fn": "b64_decode",
+      "input": {
+        "s": "AP+A/w=="
+      },
+      "name": "b64_decode AP+A/w=="
+    },
+    {
+      "expect": [77, 4, 214, 22],
+      "fn": "b64_decode",
+      "input": {
+        "s": "TQ==TWFu"
+      },
+      "name": "b64_decode TQ==TWFu"
+    },
+    {
+      "expect": [255, 255, 255],
+      "fn": "b64_decode",
+      "input": {
+        "s": "////"
+      },
+      "name": "b64_decode ////"
+    },
+    {
+      "expect": [],
+      "fn": "b64_decode",
+      "input": {
+        "s": "="
+      },
+      "name": "b64_decode ="
+    },
+    {
+      "expect": [226, 156, 147, 32, 195, 160, 32, 108, 97, 32, 109, 111, 100, 101],
+      "fn": "b64_decode",
+      "input": {
+        "s": "4pyTIMOgIGxhIG1vZGU="
+      },
+      "name": "b64_decode 4pyTIMOgIGxhIG1vZGU="
+    }
+  ],
+  "source": "src/higgs/api.lua"
+}

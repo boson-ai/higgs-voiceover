@@ -1,0 +1,1511 @@
+{
+  "about": "Settings: defaults, schema migrations, loading, the stored key and the voice library.",
+  "cases": [
+    {
+      "expect": 5,
+      "fn": "SCHEMA",
+      "input": {
+        "none": true
+      },
+      "name": "SCHEMA"
+    },
+    {
+      "expect": "Higgs VoiceOver",
+      "fn": "APP_NAME",
+      "input": {
+        "none": true
+      },
+      "name": "APP_NAME"
+    },
+    {
+      "expect": {
+        "api_key_b64": "",
+        "auto_place": true,
+        "auto_preview": true,
+        "auto_subtitles": false,
+        "check_updates": true,
+        "clip_name": {
+          "date": false,
+          "take": false,
+          "time": false,
+          "words": true
+        },
+        "default_voice": "nora",
+        "gap_seconds": 0.35,
+        "last_update_check": 0,
+        "manual_subtitles": false,
+        "output_dir": "",
+        "output_format": "wav",
+        "pause_enabled": true,
+        "pause_ms": 400,
+        "recent_files": [],
+        "replace_mode": "adopt",
+        "schema": 5,
+        "subtitle_split": "short",
+        "update_state": "",
+        "vo_track_name": "Higgs VO",
+        "voices": []
+      },
+      "fn": "DEFAULTS",
+      "input": {
+        "none": true
+      },
+      "name": "DEFAULTS"
+    },
+    {
+      "expect": {
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "pause_ms": 900
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: no schema is 0 and is stamped"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "pause_ms": 400,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 0
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 0 on every old default"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Volumes/Work/VO",
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": true,
+          "output_dir": "/Volumes/Work/VO",
+          "pause_ms": 900,
+          "schema": 0
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 0 with the user's own choices"
+    },
+    {
+      "expect": {
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "output_dir": "",
+          "schema": 0
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 0 with an empty folder"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "pause_ms": 400,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 1
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 1 on every old default"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Volumes/Work/VO",
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": true,
+          "output_dir": "/Volumes/Work/VO",
+          "pause_ms": 900,
+          "schema": 1
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 1 with the user's own choices"
+    },
+    {
+      "expect": {
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "output_dir": "",
+          "schema": 1
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 1 with an empty folder"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "pause_ms": 400,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 2
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 2 on every old default"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Volumes/Work/VO",
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": true,
+          "output_dir": "/Volumes/Work/VO",
+          "pause_ms": 900,
+          "schema": 2
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 2 with the user's own choices"
+    },
+    {
+      "expect": {
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "output_dir": "",
+          "schema": 2
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 2 with an empty folder"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+        "pause_ms": 400,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 3
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 3 on every old default"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Volumes/Work/VO",
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": true,
+          "output_dir": "/Volumes/Work/VO",
+          "pause_ms": 900,
+          "schema": 3
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 3 with the user's own choices"
+    },
+    {
+      "expect": {
+        "output_dir": "",
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "output_dir": "",
+          "schema": 3
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 3 with an empty folder"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+        "pause_ms": 240,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 4
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 4 on every old default"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Volumes/Work/VO",
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": true,
+          "output_dir": "/Volumes/Work/VO",
+          "pause_ms": 900,
+          "schema": 4
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 4 with the user's own choices"
+    },
+    {
+      "expect": {
+        "output_dir": "",
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "output_dir": "",
+          "schema": 4
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 4 with an empty folder"
+    },
+    {
+      "expect": {
+        "auto_place": false,
+        "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+        "pause_ms": 240,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 5
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 5 on every old default"
+    },
+    {
+      "expect": {
+        "auto_place": true,
+        "output_dir": "/Volumes/Work/VO",
+        "pause_ms": 900,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": true,
+          "output_dir": "/Volumes/Work/VO",
+          "pause_ms": 900,
+          "schema": 5
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 5 with the user's own choices"
+    },
+    {
+      "expect": {
+        "output_dir": "",
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "output_dir": "",
+          "schema": 5
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: schema 5 with an empty folder"
+    },
+    {
+      "expect": {
+        "pause_ms": 400,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "pause_ms": 400,
+          "schema": 1
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: the old 400 ms default stays 400"
+    },
+    {
+      "expect": {
+        "pause_ms": 400,
+        "schema": 5
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "pause_ms": 240,
+          "schema": 3
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: the 240 ms default of schema 2–3 follows back to 400"
+    },
+    {
+      "expect": {
+        "auto_place": false,
+        "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+        "pause_ms": 240,
+        "schema": 99
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/Users/test/Library/Application Support/Higgs VO/takes",
+          "pause_ms": 240,
+          "schema": 99
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: a newer schema is left untouched"
+    },
+    {
+      "expect": {
+        "future_thing": "x",
+        "schema": 5,
+        "voices": [
+          {
+            "created": 1700000000,
+            "id": "voice_1",
+            "name": "Me"
+          }
+        ]
+      },
+      "fn": "migrate",
+      "input": {
+        "cfg": {
+          "future_thing": "x",
+          "schema": 2,
+          "voices": [
+            {
+              "created": 1700000000,
+              "id": "voice_1",
+              "name": "Me"
+            }
+          ]
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "migrate: unknown keys are kept"
+    },
+    {
+      "expect": {
+        "api_key_b64": "",
+        "auto_place": true,
+        "auto_preview": true,
+        "auto_subtitles": false,
+        "check_updates": true,
+        "clip_name": [],
+        "default_voice": "nora",
+        "gap_seconds": 0.35,
+        "last_update_check": 0,
+        "manual_subtitles": false,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "output_format": "wav",
+        "pause_enabled": true,
+        "pause_ms": 400,
+        "recent_files": [],
+        "replace_mode": "adopt",
+        "schema": 5,
+        "subtitle_split": "short",
+        "update_state": "",
+        "vo_track_name": "Higgs VO",
+        "voices": []
+      },
+      "fn": "apply_defaults",
+      "input": {
+        "cfg": [],
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "apply_defaults: an empty config is all defaults"
+    },
+    {
+      "expect": {
+        "api_key_b64": "",
+        "auto_place": false,
+        "auto_preview": true,
+        "auto_subtitles": false,
+        "check_updates": true,
+        "clip_name": [],
+        "default_voice": "nora",
+        "gap_seconds": 0.35,
+        "last_update_check": 0,
+        "manual_subtitles": false,
+        "output_dir": "/x",
+        "output_format": "mp3",
+        "pause_enabled": true,
+        "pause_ms": 900,
+        "recent_files": [],
+        "replace_mode": "adopt",
+        "schema": 5,
+        "subtitle_split": "short",
+        "update_state": "",
+        "vo_track_name": "Higgs VO",
+        "voices": []
+      },
+      "fn": "apply_defaults",
+      "input": {
+        "cfg": {
+          "auto_place": false,
+          "output_dir": "/x",
+          "output_format": "mp3",
+          "pause_ms": 900
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "apply_defaults: set values are kept"
+    },
+    {
+      "expect": {
+        "api_key_b64": "",
+        "auto_place": true,
+        "auto_preview": true,
+        "auto_subtitles": false,
+        "check_updates": true,
+        "clip_name": [],
+        "default_voice": "nora",
+        "gap_seconds": 0.35,
+        "last_update_check": 0,
+        "manual_subtitles": false,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "output_format": "wav",
+        "pause_enabled": true,
+        "pause_ms": 400,
+        "recent_files": [],
+        "replace_mode": "adopt",
+        "schema": 5,
+        "subtitle_split": "short",
+        "update_state": "",
+        "vo_track_name": "Higgs VO",
+        "voices": []
+      },
+      "fn": "apply_defaults",
+      "input": {
+        "cfg": {
+          "output_dir": ""
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "apply_defaults: an empty folder becomes the default one"
+    },
+    {
+      "expect": {
+        "api_key_b64": "",
+        "auto_place": true,
+        "auto_preview": true,
+        "auto_subtitles": false,
+        "check_updates": true,
+        "clip_name": {
+          "date": true,
+          "words": false
+        },
+        "default_voice": "nora",
+        "gap_seconds": 0.35,
+        "last_update_check": 0,
+        "manual_subtitles": false,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "output_format": "wav",
+        "pause_enabled": true,
+        "pause_ms": 400,
+        "recent_files": [],
+        "replace_mode": "adopt",
+        "schema": 5,
+        "subtitle_split": "short",
+        "update_state": "",
+        "vo_track_name": "Higgs VO",
+        "voices": []
+      },
+      "fn": "apply_defaults",
+      "input": {
+        "cfg": {
+          "clip_name": {
+            "date": true,
+            "words": false
+          }
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "apply_defaults: a clip name record is kept"
+    },
+    {
+      "expect": {
+        "api_key_b64": "",
+        "auto_place": true,
+        "auto_preview": true,
+        "auto_subtitles": false,
+        "check_updates": true,
+        "clip_name": [],
+        "default_voice": "nora",
+        "gap_seconds": 0.35,
+        "last_update_check": 0,
+        "manual_subtitles": false,
+        "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+        "output_format": "wav",
+        "pause_enabled": true,
+        "pause_ms": 400,
+        "recent_files": [],
+        "replace_mode": "adopt",
+        "schema": 5,
+        "subtitle_split": "short",
+        "update_state": "",
+        "vo_track_name": "Higgs VO",
+        "voices": [
+          {
+            "created": 1,
+            "id": "voice_2",
+            "name": "Narrator"
+          }
+        ]
+      },
+      "fn": "apply_defaults",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_2",
+              "name": "Narrator"
+            }
+          ]
+        },
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "apply_defaults: voices are kept"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": false,
+        "warned": false
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        }
+      },
+      "name": "load: no file is the defaults"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": false,
+        "warned": false
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": ""
+      },
+      "name": "load: an empty file is the defaults"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": true,
+        "warned": true
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "{bad"
+      },
+      "name": "load: a broken file is kept aside"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": true,
+        "warned": true
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "null"
+      },
+      "name": "load: a file of null"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": true,
+        "warned": true
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "42"
+      },
+      "name": "load: a file of a number"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_1",
+              "name": "A"
+            }
+          ]
+        },
+        "kept_bad": false,
+        "warned": false
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "{\"schema\":2,\"pause_ms\":240,\"output_dir\":\"/Users/test/Library/Application Support/Higgs VO/takes\",\"voices\":[{\"id\":\"voice_1\",\"name\":\"A\",\"created\":1}],\"auto_place\":false}"
+      },
+      "name": "load: an old file is migrated"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": false,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": {
+            "date": true,
+            "words": false
+          },
+          "default_voice": "voice_9",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/Volumes/Work",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": false,
+        "warned": false
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "{\"schema\":5,\"auto_place\":false,\"clip_name\":{\"words\":false,\"date\":true},\"default_voice\":\"voice_9\",\"output_dir\":\"/Volumes/Work\"}"
+      },
+      "name": "load: a current file is kept"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "output_dir": "/x",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 400,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 5,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": false,
+        "warned": false
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "{\"schema\":5,\"pause_ms\":null,\"output_dir\":\"/x\"}"
+      },
+      "name": "load: a null value takes its default"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "api_key_b64": "",
+          "auto_place": true,
+          "auto_preview": true,
+          "auto_subtitles": false,
+          "check_updates": true,
+          "clip_name": [],
+          "default_voice": "nora",
+          "gap_seconds": 0.35,
+          "last_update_check": 0,
+          "manual_subtitles": false,
+          "new_key": true,
+          "output_dir": "/Users/test/Movies/Higgs VoiceOver",
+          "output_format": "wav",
+          "pause_enabled": true,
+          "pause_ms": 240,
+          "recent_files": [],
+          "replace_mode": "adopt",
+          "schema": 7,
+          "subtitle_split": "short",
+          "update_state": "",
+          "vo_track_name": "Higgs VO",
+          "voices": []
+        },
+        "kept_bad": false,
+        "warned": false
+      },
+      "fn": "load",
+      "input": {
+        "dirs": {
+          "defaultOutputDir": "/Users/test/Movies/Higgs VoiceOver",
+          "takesDir": "/Users/test/Library/Application Support/Higgs VO/takes"
+        },
+        "raw": "{\"schema\":7,\"pause_ms\":240,\"output_dir\":\"\",\"new_key\":true}"
+      },
+      "name": "load: a newer file is left as it is"
+    },
+    {
+      "expect": "YmFpLXRlc3QtMDAwMA==",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YmFpLXRlc3QtMDAwMA=="
+      },
+      "name": "b64_decode YmFpLXRlc3QtMDAwMA=="
+    },
+    {
+      "expect": "YmFp",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YmFp"
+      },
+      "name": "b64_decode YmFp"
+    },
+    {
+      "expect": "YWI=",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YWI="
+      },
+      "name": "b64_decode YWI="
+    },
+    {
+      "expect": "YQ==",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YQ=="
+      },
+      "name": "b64_decode YQ=="
+    },
+    {
+      "expect": "YmFpLXRlc3Q=",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YmFpLXRl\nc3Q="
+      },
+      "name": "b64_decode YmFpLXRl\\nc3Q="
+    },
+    {
+      "expect": "",
+      "fn": "b64_decode",
+      "input": {
+        "s": "@@@@"
+      },
+      "name": "b64_decode @@@@"
+    },
+    {
+      "expect": "",
+      "fn": "b64_decode",
+      "input": {
+        "s": ""
+      },
+      "name": "b64_decode "
+    },
+    {
+      "fn": "b64_decode",
+      "input": {
+        "s": "=AAA"
+      },
+      "name": "b64_decode =AAA"
+    },
+    {
+      "fn": "b64_decode",
+      "input": {
+        "s": "Y=AA"
+      },
+      "name": "b64_decode Y=AA"
+    },
+    {
+      "expect": "YWJhaQ==",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YQ==YmFp"
+      },
+      "name": "b64_decode YQ==YmFp"
+    },
+    {
+      "expect": "YWJj",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YWJj"
+      },
+      "name": "b64_decode YWJj"
+    },
+    {
+      "expect": "",
+      "fn": "b64_decode",
+      "input": {
+        "s": "YW"
+      },
+      "name": "b64_decode YW"
+    },
+    {
+      "expect": "YmFpLXRlc3QtMDAwMC1mYWtl",
+      "fn": "set_api_key",
+      "input": {
+        "key": "bai-test-0000-fake"
+      },
+      "name": "set_api_key bai-test-0000-fake"
+    },
+    {
+      "expect": "bai-test-0000-fake",
+      "fn": "get_api_key",
+      "input": {
+        "cfg": {
+          "api_key_b64": "YmFpLXRlc3QtMDAwMC1mYWtl"
+        }
+      },
+      "name": "get_api_key bai-test-0000-fake"
+    },
+    {
+      "expect": "",
+      "fn": "set_api_key",
+      "input": {
+        "key": ""
+      },
+      "name": "set_api_key "
+    },
+    {
+      "expect": "",
+      "fn": "get_api_key",
+      "input": {
+        "cfg": {
+          "api_key_b64": ""
+        }
+      },
+      "name": "get_api_key "
+    },
+    {
+      "expect": "YmFpLdC60LvRjtGHLWZha2U=",
+      "fn": "set_api_key",
+      "input": {
+        "key": "bai-ключ-fake"
+      },
+      "name": "set_api_key bai-ключ-fake"
+    },
+    {
+      "expect": "bai-ключ-fake",
+      "fn": "get_api_key",
+      "input": {
+        "cfg": {
+          "api_key_b64": "YmFpLdC60LvRjtGHLWZha2U="
+        }
+      },
+      "name": "get_api_key bai-ключ-fake"
+    },
+    {
+      "expect": "YmFpLXF1b3RlImFuZFxzbGFzaA==",
+      "fn": "set_api_key",
+      "input": {
+        "key": "bai-quote\"and\\slash"
+      },
+      "name": "set_api_key bai-quote\"and\\slash"
+    },
+    {
+      "expect": "bai-quote\"and\\slash",
+      "fn": "get_api_key",
+      "input": {
+        "cfg": {
+          "api_key_b64": "YmFpLXF1b3RlImFuZFxzbGFzaA=="
+        }
+      },
+      "name": "get_api_key bai-quote\"and\\slash"
+    },
+    {
+      "expect": "",
+      "fn": "get_api_key",
+      "input": {
+        "cfg": {
+          "schema": 5
+        }
+      },
+      "name": "get_api_key with nothing stored"
+    },
+    {
+      "expect": "",
+      "fn": "get_api_key",
+      "input": {
+        "cfg": {
+          "api_key_b64": "=AAA"
+        }
+      },
+      "name": "get_api_key from unreadable text"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            },
+            {
+              "created": 1700000000,
+              "id": "voice_c",
+              "name": "Cleo"
+            }
+          ]
+        },
+        "entry": {
+          "created": 1700000000,
+          "id": "voice_c",
+          "name": "Cleo"
+        }
+      },
+      "fn": "add_voice",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "id": "voice_c",
+        "name": "Cleo",
+        "now": 1700000000
+      },
+      "name": "add_voice adds a new one"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex 2"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "entry": {
+          "created": 1,
+          "id": "voice_a",
+          "name": "Alex 2"
+        }
+      },
+      "fn": "add_voice",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "id": "voice_a",
+        "name": "Alex 2",
+        "now": 1700000000
+      },
+      "name": "add_voice renames one already there"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1700000000,
+              "id": "voice_x",
+              "name": "X"
+            }
+          ]
+        },
+        "entry": {
+          "created": 1700000000,
+          "id": "voice_x",
+          "name": "X"
+        }
+      },
+      "fn": "add_voice",
+      "input": {
+        "cfg": {
+          "voices": []
+        },
+        "id": "voice_x",
+        "name": "X",
+        "now": 1700000000
+      },
+      "name": "add_voice to an empty library"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            }
+          ]
+        },
+        "removed": true
+      },
+      "fn": "remove_voice",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "id": "voice_b"
+      },
+      "name": "remove_voice voice_b"
+    },
+    {
+      "expect": {
+        "created": 2,
+        "id": "voice_b",
+        "name": "Bo"
+      },
+      "fn": "find_voice",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "id": "voice_b"
+      },
+      "name": "find_voice voice_b"
+    },
+    {
+      "expect": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "removed": false
+      },
+      "fn": "remove_voice",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "id": "voice_z"
+      },
+      "name": "remove_voice voice_z"
+    },
+    {
+      "fn": "find_voice",
+      "input": {
+        "cfg": {
+          "voices": [
+            {
+              "created": 1,
+              "id": "voice_a",
+              "name": "Alex"
+            },
+            {
+              "created": 2,
+              "id": "voice_b",
+              "name": "Bo"
+            }
+          ]
+        },
+        "id": "voice_z"
+      },
+      "name": "find_voice voice_z"
+    }
+  ],
+  "source": "src/higgs/config.lua"
+}

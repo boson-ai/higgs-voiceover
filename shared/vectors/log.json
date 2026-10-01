@@ -1,0 +1,676 @@
+{
+  "about": "The log: marking user content, fields, metrics, line layout, kept files, redaction.",
+  "cases": [
+    {
+      "expect": 10,
+      "fn": "KEEP",
+      "input": {
+        "none": true
+      },
+      "name": "KEEP"
+    },
+    {
+      "expect": "‹My Project›",
+      "fn": "q",
+      "input": {
+        "s": "My Project"
+      },
+      "name": "q: user content is marked"
+    },
+    {
+      "expect": "‹ab›",
+      "fn": "q",
+      "input": {
+        "s": "a›b"
+      },
+      "name": "q: marks inside content cannot close it early"
+    },
+    {
+      "expect": "‹x and y›",
+      "fn": "q",
+      "input": {
+        "s": "‹x› and ‹y›"
+      },
+      "name": "q: nor open it twice"
+    },
+    {
+      "expect": "‹配音›",
+      "fn": "q",
+      "input": {
+        "s": "配音"
+      },
+      "name": "q: CJK inside marks"
+    },
+    {
+      "expect": "‹›",
+      "fn": "q",
+      "input": {
+        "s": ""
+      },
+      "name": "q: empty"
+    },
+    {
+      "expect": "‹42›",
+      "fn": "q",
+      "input": {
+        "s": 42
+      },
+      "name": "q: a number"
+    },
+    {
+      "expect": "‹›",
+      "fn": "q",
+      "input": {
+        "none": true
+      },
+      "name": "q: nothing"
+    },
+    {
+      "expect": "~/Movies/Higgs VoiceOver/a.wav",
+      "fn": "path_safe",
+      "input": {
+        "home": "/Users/alex",
+        "p": "/Users/alex/Movies/Higgs VoiceOver/a.wav"
+      },
+      "name": "path_safe: a home path is written as ~"
+    },
+    {
+      "expect": "~",
+      "fn": "path_safe",
+      "input": {
+        "home": "/Users/alex",
+        "p": "/Users/alex"
+      },
+      "name": "path_safe: the home folder itself"
+    },
+    {
+      "expect": "/Volumes/Work/VO/a.wav",
+      "fn": "path_safe",
+      "input": {
+        "home": "/Users/alex",
+        "p": "/Volumes/Work/VO/a.wav"
+      },
+      "name": "path_safe: a path elsewhere is left alone"
+    },
+    {
+      "expect": "~ander/x.wav",
+      "fn": "path_safe",
+      "input": {
+        "home": "/Users/alex",
+        "p": "/Users/alexander/x.wav"
+      },
+      "name": "path_safe: a longer name sharing the prefix is cut too"
+    },
+    {
+      "expect": "/Users/alex/x",
+      "fn": "path_safe",
+      "input": {
+        "p": "/Users/alex/x"
+      },
+      "name": "path_safe: no home known"
+    },
+    {
+      "expect": "/Users/alex/x",
+      "fn": "path_safe",
+      "input": {
+        "home": "",
+        "p": "/Users/alex/x"
+      },
+      "name": "path_safe: an empty home"
+    },
+    {
+      "expect": "~\\Videos\\a.wav",
+      "fn": "path_safe",
+      "input": {
+        "home": "C:\\Users\\Alex",
+        "p": "C:\\Users\\Alex\\Videos\\a.wav"
+      },
+      "name": "path_safe: a Windows home"
+    },
+    {
+      "expect": "",
+      "fn": "path_safe",
+      "input": {
+        "home": "/Users/alex"
+      },
+      "name": "path_safe: nothing"
+    },
+    {
+      "expect": "a=\"x y\" b=2",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "a": "x y",
+          "b": 2
+        }
+      },
+      "name": "fields: sorted and quoted"
+    },
+    {
+      "expect": "s=1.5",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": 1.5
+        }
+      },
+      "name": "fields: fractions are trimmed"
+    },
+    {
+      "expect": "ms=12 r=0.667 t=0.3",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "ms": 12.0004,
+          "r": 0.666666666667,
+          "t": 0.3
+        }
+      },
+      "name": "fields: to three places"
+    },
+    {
+      "expect": "neg=-1.25 tiny=0 up=100",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "neg": -1.25,
+          "tiny": 0.0004,
+          "up": 99.9996
+        }
+      },
+      "name": "fields: a fraction that rounds away"
+    },
+    {
+      "expect": "a=0.063 b=2.001",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "a": 0.0625,
+          "b": 2.0005
+        }
+      },
+      "name": "fields: an exact tie rounds up"
+    },
+    {
+      "expect": "big=1e+15 bigger=1.2345678901235e+14 huge=1e+20 n=100 neg=-7 z=0",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "big": 1000000000000000,
+          "bigger": 123456789012345,
+          "huge": 1e+20,
+          "n": 100,
+          "neg": -7,
+          "z": 0
+        }
+      },
+      "name": "fields: whole numbers as Lua writes them"
+    },
+    {
+      "expect": "f=false t=true",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "f": false,
+          "t": true
+        }
+      },
+      "name": "fields: booleans"
+    },
+    {
+      "expect": "s=\"a=b\"",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "a=b"
+        }
+      },
+      "name": "fields: an equals sign is quoted"
+    },
+    {
+      "expect": "s=\"say 'hi' now\"",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "say \"hi\" now"
+        }
+      },
+      "name": "fields: double quotes become single inside quotes"
+    },
+    {
+      "expect": "s=\"x\"",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "\"x\""
+        }
+      },
+      "name": "fields: double quotes alone are not quoted"
+    },
+    {
+      "expect": "s=‹a b›",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "‹a b›"
+        }
+      },
+      "name": "fields: marked content is never quoted"
+    },
+    {
+      "expect": "s=\"tab\there\"",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "tab\there"
+        }
+      },
+      "name": "fields: a tab is whitespace"
+    },
+    {
+      "expect": "s=\"two\nlines\"",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "two\nlines"
+        }
+      },
+      "name": "fields: a line break is whitespace"
+    },
+    {
+      "expect": "s=a b",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": "a b"
+        }
+      },
+      "name": "fields: a no-break space is not"
+    },
+    {
+      "expect": "s=",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "s": ""
+        }
+      },
+      "name": "fields: empty text"
+    },
+    {
+      "expect": "",
+      "fn": "fields",
+      "input": {
+        "t": []
+      },
+      "name": "fields: nothing"
+    },
+    {
+      "expect": "1=4 B=1 _=3 a=2",
+      "fn": "fields",
+      "input": {
+        "t": {
+          "1": 4,
+          "B": 1,
+          "_": 3,
+          "a": 2
+        }
+      },
+      "name": "fields: keys sort as bytes"
+    },
+    {
+      "expect": {
+        "level": "info",
+        "message": "placed  clips=2"
+      },
+      "fn": "entry",
+      "input": {
+        "level": "info",
+        "message": "placed",
+        "t": {
+          "clips": 2
+        }
+      },
+      "name": "entry: info placed"
+    },
+    {
+      "expect": {
+        "level": "warn",
+        "message": "slow  ms=1234.568"
+      },
+      "fn": "entry",
+      "input": {
+        "level": "warn",
+        "message": "slow",
+        "t": {
+          "ms": 1234.5678
+        }
+      },
+      "name": "entry: warn slow"
+    },
+    {
+      "expect": {
+        "level": "error",
+        "message": "failed"
+      },
+      "fn": "entry",
+      "input": {
+        "level": "error",
+        "message": "failed"
+      },
+      "name": "entry: error failed"
+    },
+    {
+      "expect": {
+        "level": "ui",
+        "message": "click  button=Generate where=‹Tab one›"
+      },
+      "fn": "entry",
+      "input": {
+        "level": "ui",
+        "message": "click",
+        "t": {
+          "button": "Generate",
+          "where": "‹Tab one›"
+        }
+      },
+      "name": "entry: ui click"
+    },
+    {
+      "expect": {
+        "counts": {
+          "speech": 3,
+          "voice.use": 1
+        },
+        "lines": [
+          "speech  ms=100 ok=1 voice=nora",
+          "speech  failed=1 ms=50.5 ok=0",
+          "voice.use  voice=cloned",
+          "speech  "
+        ],
+        "sums": {
+          "speech.failed": 1,
+          "speech.ms": 150.5,
+          "speech.ok": 1
+        }
+      },
+      "fn": "metric",
+      "input": {
+        "steps": [
+          {
+            "name": "speech",
+            "t": {
+              "ms": 100,
+              "ok": 1,
+              "voice": "nora"
+            }
+          },
+          {
+            "name": "speech",
+            "t": {
+              "failed": 1,
+              "ms": 50.5,
+              "ok": 0
+            }
+          },
+          {
+            "name": "voice.use",
+            "t": {
+              "voice": "cloned"
+            }
+          },
+          {
+            "name": "speech"
+          }
+        ]
+      },
+      "name": "metric: counted and summed"
+    },
+    {
+      "expect": "info   hello\n",
+      "fn": "line",
+      "input": {
+        "level": "info",
+        "message": "hello"
+      },
+      "name": "line: info"
+    },
+    {
+      "expect": "metric speech  ms=12\n",
+      "fn": "line",
+      "input": {
+        "level": "metric",
+        "message": "speech  ms=12"
+      },
+      "name": "line: metric"
+    },
+    {
+      "expect": "ui     line one line two line three\n",
+      "fn": "line",
+      "input": {
+        "level": "ui",
+        "message": "line one\nline two\r\n\nline three"
+      },
+      "name": "line: ui"
+    },
+    {
+      "expect": "warn   careful\n",
+      "fn": "line",
+      "input": {
+        "level": "warn",
+        "message": "careful"
+      },
+      "name": "line: warn"
+    },
+    {
+      "expect": "verbose a level longer than six\n",
+      "fn": "line",
+      "input": {
+        "level": "verbose",
+        "message": "a level longer than six"
+      },
+      "name": "line: verbose"
+    },
+    {
+      "expect": "       no level\n",
+      "fn": "line",
+      "input": {
+        "level": "",
+        "message": "no level"
+      },
+      "name": "line: "
+    },
+    {
+      "expect": ["higgs-vo-20260901-120000.log", "higgs-vo-20260902-120000.log", "higgs-vo-20260903-120000.log"],
+      "fn": "logs_to_remove",
+      "input": {
+        "names": [
+          "higgs-vo-20260912-120000.log",
+          "higgs-vo-20260911-120000.log",
+          "higgs-vo-20260910-120000.log",
+          "higgs-vo-20260909-120000.log",
+          "higgs-vo-20260908-120000.log",
+          "higgs-vo-20260907-120000.log",
+          "higgs-vo-20260906-120000.log",
+          "higgs-vo-20260905-120000.log",
+          "higgs-vo-20260904-120000.log",
+          "higgs-vo-20260903-120000.log",
+          "higgs-vo-20260902-120000.log",
+          "higgs-vo-20260901-120000.log"
+        ]
+      },
+      "name": "logs_to_remove: twelve old logs leave nine for the new one"
+    },
+    {
+      "expect": [],
+      "fn": "logs_to_remove",
+      "input": {
+        "names": [
+          "higgs-vo-20260901-090000.log",
+          "higgs-vo-20260902-090000.log",
+          "higgs-vo-20260903-090000.log",
+          "higgs-vo-20260904-090000.log",
+          "higgs-vo-20260905-090000.log",
+          "higgs-vo-20260906-090000.log",
+          "higgs-vo-20260907-090000.log",
+          "higgs-vo-20260908-090000.log",
+          "higgs-vo-20260909-090000.log"
+        ]
+      },
+      "name": "logs_to_remove: nine old logs are all kept"
+    },
+    {
+      "expect": ["higgs-vo-20260801-235959.log"],
+      "fn": "logs_to_remove",
+      "input": {
+        "names": [
+          "higgs-vo.log",
+          "notes.txt",
+          "higgs-vo-20260101-000000.log.bak",
+          "HIGGS-VO-20260101-000000.log",
+          "higgs-vo-x-1.log",
+          "higgs-vo-20260801-235959.log",
+          "higgs-vo-20260802-235959.log",
+          "higgs-vo-20260803-235959.log",
+          "higgs-vo-20260804-235959.log",
+          "higgs-vo-20260805-235959.log",
+          "higgs-vo-20260806-235959.log",
+          "higgs-vo-20260807-235959.log",
+          "higgs-vo-20260808-235959.log",
+          "higgs-vo-20260809-235959.log",
+          "higgs-vo-20260810-235959.log"
+        ]
+      },
+      "name": "logs_to_remove: only this app's logs count"
+    },
+    {
+      "expect": [],
+      "fn": "logs_to_remove",
+      "input": {
+        "names": []
+      },
+      "name": "logs_to_remove: no logs"
+    },
+    {
+      "expect": "project=‹› tracks=2",
+      "fn": "redact",
+      "input": {
+        "text": "project=‹Secret Film› tracks=2"
+      },
+      "name": "redact: marked content is removed"
+    },
+    {
+      "expect": "a=‹› b=‹› c=3",
+      "fn": "redact",
+      "input": {
+        "text": "a=‹one› b=‹two words› c=3"
+      },
+      "name": "redact: every mark"
+    },
+    {
+      "expect": "a=‹open and b=2",
+      "fn": "redact",
+      "input": {
+        "text": "a=‹open and b=2"
+      },
+      "name": "redact: an unclosed mark is left"
+    },
+    {
+      "expect": "a=x› b",
+      "fn": "redact",
+      "input": {
+        "text": "a=x› b"
+      },
+      "name": "redact: a close mark alone is left"
+    },
+    {
+      "expect": "‹› c›",
+      "fn": "redact",
+      "input": {
+        "text": "‹a ‹b› c›"
+      },
+      "name": "redact: nested marks close at the first"
+    },
+    {
+      "expect": "Deleted “” from your list.",
+      "fn": "redact",
+      "input": {
+        "text": "Deleted “Alex — zh” from your list."
+      },
+      "name": "redact: a name in curly quotes is removed"
+    },
+    {
+      "expect": "“” and “”",
+      "fn": "redact",
+      "input": {
+        "text": "“a” and “b”"
+      },
+      "name": "redact: every quoted name"
+    },
+    {
+      "expect": "“” after",
+      "fn": "redact",
+      "input": {
+        "text": "“first\nsecond” after"
+      },
+      "name": "redact: quotes across a line"
+    },
+    {
+      "expect": "folder /Users/~/Movies/x",
+      "fn": "redact",
+      "input": {
+        "text": "folder /Users/alex/Movies/x"
+      },
+      "name": "redact: a home path loses the user name"
+    },
+    {
+      "expect": "/Users/~ Chen/Movies",
+      "fn": "redact",
+      "input": {
+        "text": "/Users/Alex Chen/Movies"
+      },
+      "name": "redact: the user name stops at a space"
+    },
+    {
+      "expect": "/home/~/.config/x and /home/~",
+      "fn": "redact",
+      "input": {
+        "text": "/home/bob/.config/x and /home/carol"
+      },
+      "name": "redact: a Linux home"
+    },
+    {
+      "expect": "project=‹› ok",
+      "fn": "redact",
+      "input": {
+        "text": "project=‹配音› ok"
+      },
+      "name": "redact: CJK inside marks"
+    },
+    {
+      "expect": "a — b ‹› d",
+      "fn": "redact",
+      "input": {
+        "text": "a — b ‹c› d"
+      },
+      "name": "redact: text around a mark is untouched"
+    },
+    {
+      "expect": "10:00:00.000 info   a  p=‹›\n10:00:01.000 warn   /Users/~/y\n",
+      "fn": "redact",
+      "input": {
+        "text": "10:00:00.000 info   a  p=‹x›\n10:00:01.000 warn   /Users/al/y\n"
+      },
+      "name": "redact: several lines"
+    },
+    {
+      "expect": "",
+      "fn": "redact",
+      "input": {
+        "text": ""
+      },
+      "name": "redact: nothing"
+    }
+  ],
+  "source": "src/higgs/log.lua"
+}

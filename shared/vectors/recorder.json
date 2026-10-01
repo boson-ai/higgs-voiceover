@@ -1,0 +1,1121 @@
+{
+  "about": "Judging a recorded voice reference: meter, verdict and wording, live coaching.",
+  "cases": [
+    {
+      "expect": 3,
+      "fn": "MIN_SECONDS",
+      "input": {
+        "none": true
+      },
+      "name": "constant MIN_SECONDS"
+    },
+    {
+      "expect": 5,
+      "fn": "GOOD_MIN",
+      "input": {
+        "none": true
+      },
+      "name": "constant GOOD_MIN"
+    },
+    {
+      "expect": 30,
+      "fn": "GOOD_MAX",
+      "input": {
+        "none": true
+      },
+      "name": "constant GOOD_MAX"
+    },
+    {
+      "expect": 20,
+      "fn": "IDEAL",
+      "input": {
+        "none": true
+      },
+      "name": "constant IDEAL"
+    },
+    {
+      "expect": 0.0178,
+      "fn": "QUIET_RMS",
+      "input": {
+        "none": true
+      },
+      "name": "constant QUIET_RMS"
+    },
+    {
+      "expect": 0.98,
+      "fn": "HOT_PEAK",
+      "input": {
+        "none": true
+      },
+      "name": "constant HOT_PEAK"
+    },
+    {
+      "expect": 0.005,
+      "fn": "HOT_RATIO",
+      "input": {
+        "none": true
+      },
+      "name": "constant HOT_RATIO"
+    },
+    {
+      "expect": 1.8,
+      "fn": "SLOW_WPS",
+      "input": {
+        "none": true
+      },
+      "name": "constant SLOW_WPS"
+    },
+    {
+      "expect": 4,
+      "fn": "FAST_WPS",
+      "input": {
+        "none": true
+      },
+      "name": "constant FAST_WPS"
+    },
+    {
+      "expect": [
+        "I have been cutting video for about ten years now, and the part I still like best is the hour before anyone else is awake. No messages, no notes, nothing but the timeline. Does that sound strange? Maybe it does. But that is when the work actually happens, and honestly, nothing else in my day comes close to it.",
+        "Here is the thing nobody tells you about narration: the writing matters more than the voice. You can have the warmest voice in the world and still lose people in the second sentence. So do I read the script out loud first? Every single time. And wherever I stumble, that is the line I go back and rewrite.",
+        "We shot the whole thing in one afternoon, which I would not recommend to anybody. The light kept changing, the battery died twice, and somebody's phone went off right in the middle of the best take we had. Would I do it again? Probably, yes. It is still the one people write to me about, years later."
+      ],
+      "fn": "PASSAGES",
+      "input": {
+        "none": true
+      },
+      "name": "constant PASSAGES"
+    },
+    {
+      "expect": 0,
+      "fn": "meter",
+      "input": {
+        "peak": 0
+      },
+      "name": "meter at 0"
+    },
+    {
+      "expect": 0,
+      "fn": "meter",
+      "input": {
+        "peak": -0.5
+      },
+      "name": "meter at -0.5"
+    },
+    {
+      "expect": 0,
+      "fn": "meter",
+      "input": {
+        "peak": 0.001
+      },
+      "name": "meter at 0.001"
+    },
+    {
+      "expect": 1.84214783345e-15,
+      "fn": "meter",
+      "input": {
+        "peak": 0.00199526231497
+      },
+      "name": "meter at 0.0019952623149689"
+    },
+    {
+      "expect": 0.000381479875549,
+      "fn": "meter",
+      "input": {
+        "peak": 0.002
+      },
+      "name": "meter at 0.002"
+    },
+    {
+      "expect": 0.259259259259,
+      "fn": "meter",
+      "input": {
+        "peak": 0.01
+      },
+      "name": "meter at 0.01"
+    },
+    {
+      "expect": 0.62962962963,
+      "fn": "meter",
+      "input": {
+        "peak": 0.1
+      },
+      "name": "meter at 0.1"
+    },
+    {
+      "expect": 0.777014818027,
+      "fn": "meter",
+      "input": {
+        "peak": 0.25
+      },
+      "name": "meter at 0.25"
+    },
+    {
+      "expect": 0.888507409013,
+      "fn": "meter",
+      "input": {
+        "peak": 0.5
+      },
+      "name": "meter at 0.5"
+    },
+    {
+      "expect": 0.999839069713,
+      "fn": "meter",
+      "input": {
+        "peak": 0.999
+      },
+      "name": "meter at 0.999"
+    },
+    {
+      "expect": 1,
+      "fn": "meter",
+      "input": {
+        "peak": 1
+      },
+      "name": "meter at 1"
+    },
+    {
+      "expect": 1,
+      "fn": "meter",
+      "input": {
+        "peak": 1.5
+      },
+      "name": "meter at 1.5"
+    },
+    {
+      "expect": 0.888507409013,
+      "fn": "meter",
+      "input": {
+        "peak": "0.5"
+      },
+      "name": "meter at 0.5"
+    },
+    {
+      "expect": 0,
+      "fn": "meter",
+      "input": {
+        "none": true
+      },
+      "name": "meter with nothing"
+    },
+    {
+      "expect": 3,
+      "fn": "word_count",
+      "input": {
+        "text": "  one   two\nthree "
+      },
+      "name": "word_count: runs of space"
+    },
+    {
+      "expect": 0,
+      "fn": "word_count",
+      "input": {
+        "text": ""
+      },
+      "name": "word_count: empty"
+    },
+    {
+      "expect": 3,
+      "fn": "word_count",
+      "input": {
+        "text": "a\tb\r\nc"
+      },
+      "name": "word_count: tabs and returns"
+    },
+    {
+      "expect": 1,
+      "fn": "word_count",
+      "input": {
+        "text": "你好世界"
+      },
+      "name": "word_count: Chinese without spaces is one word"
+    },
+    {
+      "expect": 2,
+      "fn": "word_count",
+      "input": {
+        "text": "你好 世界"
+      },
+      "name": "word_count: Chinese with spaces"
+    },
+    {
+      "expect": 3,
+      "fn": "word_count",
+      "input": {
+        "text": "wait — what"
+      },
+      "name": "word_count: punctuation alone counts"
+    },
+    {
+      "expect": 0,
+      "fn": "word_count",
+      "input": {
+        "none": true
+      },
+      "name": "word_count: nothing"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Only 2.4 seconds — Boson needs at least 3. Around 20 is about right.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.8,
+          "rms": 0.1,
+          "seconds": 2.4
+        },
+        "transcript": "word word word word word word "
+      },
+      "name": "judge: under Boson's floor is refused"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Only 3.0 seconds — Boson needs at least 3. Around 20 is about right.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.8,
+          "rms": 0.1,
+          "seconds": 2.99
+        },
+        "transcript": "word word word word word word word word "
+      },
+      "name": "judge: just under the floor"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Only 2.3 seconds — Boson needs at least 3. Around 20 is about right.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.8,
+          "rms": 0.1,
+          "seconds": 2.25
+        },
+        "transcript": "word word word word word word "
+      },
+      "name": "judge: a tenth that rounds up in the message"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "3.0 seconds will work, but around 20 gives Boson more to go on.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.8,
+          "rms": 0.1,
+          "seconds": 3
+        },
+        "transcript": "word word word word word word word word "
+      },
+      "name": "judge: exactly at the floor is not refused"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Only 0.0 seconds — Boson needs at least 3. Around 20 is about right.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.8,
+          "rms": 0.1,
+          "seconds": 0
+        },
+        "transcript": ""
+      },
+      "name": "judge: no length at all"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Only 0.0 seconds — Boson needs at least 3. Around 20 is about right.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "transcript": "words"
+      },
+      "name": "judge: no take at all"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Nothing reached the microphone.",
+        "ok": false,
+        "silent": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0,
+          "rms": 0,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: silence is refused and flagged"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Nothing reached the microphone.",
+        "ok": false,
+        "silent": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.0005,
+          "rms": 0.1,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: a peak at the silence line is silence"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 10 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.0006,
+          "rms": 0.1,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: just over the silence line"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Too quiet to clone from. Move closer to the microphone, or turn its input up, and record again.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.08,
+          "rms": 0.01,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: too quiet is refused"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Too quiet to clone from. Move closer to the microphone, or turn its input up, and record again.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.1416,
+          "rms": 0.0177,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: just under the quiet line"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 10 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.1424,
+          "rms": 0.0178,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: exactly at the quiet line"
+    },
+    {
+      "expect": {
+        "kind": "error",
+        "message": "Too quiet to clone from. Move closer to the microphone, or turn its input up, and record again.",
+        "ok": false
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 0.9,
+          "rms": 0.005,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: quiet is judged on the average, not one loud knock"
+    },
+    {
+      "expect": {
+        "clipped": true,
+        "kind": "warn",
+        "message": "Loud enough to distort in places. Turning the input down and recording again will give a cleaner voice.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0.05,
+          "peak": 1,
+          "rms": 0.3,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: clipping warns but still sends"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 10 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0.005,
+          "peak": 1,
+          "rms": 0.3,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: exactly at the clipping ratio is not clipping"
+    },
+    {
+      "expect": {
+        "clipped": true,
+        "kind": "warn",
+        "message": "Loud enough to distort in places. Turning the input down and recording again will give a cleaner voice.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0.0051,
+          "peak": 1,
+          "rms": 0.3,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: just over the clipping ratio"
+    },
+    {
+      "expect": {
+        "clipped": true,
+        "kind": "warn",
+        "message": "Loud enough to distort in places. Turning the input down and recording again will give a cleaner voice.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0.05,
+          "peak": 1,
+          "rms": 0.3,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: clipping outranks pace"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 10 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0.001,
+          "peak": 1,
+          "rms": 0.3,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: an occasional peak is not clipping"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 12 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 12
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: a good take is good"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 23 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 22.5
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: a good take rounds its seconds"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "4.0 seconds will work, but around 20 gives Boson more to go on.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 4
+        },
+        "transcript": "word word word word word word word word word word word "
+      },
+      "name": "judge: a usable but short take is a warning"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "5.0 seconds will work, but around 20 gives Boson more to go on.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 4.99
+        },
+        "transcript": "word word word word word word word word word word word word word "
+      },
+      "name": "judge: just under the good minimum"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 5 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 5
+        },
+        "transcript": "word word word word word word word word word word word word word word "
+      },
+      "name": "judge: exactly at the good minimum"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 30 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 30
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: a long take is still good"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "That was read quickly, and the voice will copy the pace. Reading it the way you would say it gives a better clone.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: fifty words in ten seconds is rushed"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "That was read slowly, and the voice will copy the pace. Reading it the way you would say it gives a better clone.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 20
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: twenty words in twenty seconds is laboured"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 20 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 20
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: fifty-six words in twenty seconds is natural"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 10 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: exactly at the fast edge is still natural"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "That was read quickly, and the voice will copy the pace. Reading it the way you would say it gives a better clone.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: just over the fast edge"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 10 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: exactly at the slow edge is still natural"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "That was read slowly, and the voice will copy the pace. Reading it the way you would say it gives a better clone.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 10
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: just under the slow edge"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 20 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 20
+        },
+        "transcript": ""
+      },
+      "name": "judge: no transcript means no pace verdict"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 20 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 20
+        }
+      },
+      "name": "judge: a missing transcript too"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "That was read quickly, and the voice will copy the pace. Reading it the way you would say it gives a better clone.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": 0,
+          "peak": 1,
+          "rms": 0.2,
+          "seconds": 4
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: pace outranks a short take"
+    },
+    {
+      "expect": {
+        "good": true,
+        "kind": "ok",
+        "message": "Good — 12 seconds at a clear level.",
+        "ok": true
+      },
+      "fn": "judge",
+      "input": {
+        "take": {
+          "hot_ratio": "0",
+          "peak": "0.5",
+          "rms": "0.2",
+          "seconds": "12"
+        },
+        "transcript": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "name": "judge: numbers given as text"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "Too loud — move back a little."
+      },
+      "fn": "level_note",
+      "input": {
+        "peak": 1
+      },
+      "name": "level_note at 1"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "Too loud — move back a little."
+      },
+      "fn": "level_note",
+      "input": {
+        "peak": 0.98
+      },
+      "name": "level_note at 0.98"
+    },
+    {
+      "fn": "level_note",
+      "input": {
+        "peak": 0.979
+      },
+      "name": "level_note at 0.979"
+    },
+    {
+      "fn": "level_note",
+      "input": {
+        "peak": 0.5
+      },
+      "name": "level_note at 0.5"
+    },
+    {
+      "fn": "level_note",
+      "input": {
+        "peak": 0.02
+      },
+      "name": "level_note at 0.02"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "Very quiet — move closer to the microphone."
+      },
+      "fn": "level_note",
+      "input": {
+        "peak": 0.0199
+      },
+      "name": "level_note at 0.0199"
+    },
+    {
+      "expect": {
+        "kind": "warn",
+        "message": "Very quiet — move closer to the microphone."
+      },
+      "fn": "level_note",
+      "input": {
+        "peak": 0.001
+      },
+      "name": "level_note at 0.001"
+    },
+    {
+      "fn": "level_note",
+      "input": {
+        "peak": 0
+      },
+      "name": "level_note at 0"
+    },
+    {
+      "fn": "level_note",
+      "input": {
+        "peak": -0.1
+      },
+      "name": "level_note at -0.1"
+    },
+    {
+      "expect": "Keep going — 3 seconds is the minimum, 20 is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 0
+      },
+      "name": "coach at 0 of 30"
+    },
+    {
+      "expect": "Keep going — 3 seconds is the minimum, 20 is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 1.5
+      },
+      "name": "coach at 1.5 of 30"
+    },
+    {
+      "expect": "Keep going — 3 seconds is the minimum, 20 is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 2.99
+      },
+      "name": "coach at 2.99 of 30"
+    },
+    {
+      "expect": "Around 20 seconds is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 3
+      },
+      "name": "coach at 3 of 30"
+    },
+    {
+      "expect": "Around 20 seconds is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 4
+      },
+      "name": "coach at 4 of 30"
+    },
+    {
+      "expect": "Around 20 seconds is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 17.9
+      },
+      "name": "coach at 17.9 of 30"
+    },
+    {
+      "expect": "That is enough — stop whenever you reach the end.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 18
+      },
+      "name": "coach at 18 of 30"
+    },
+    {
+      "expect": "That is enough — stop whenever you reach the end.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 19
+      },
+      "name": "coach at 19 of 30"
+    },
+    {
+      "expect": "That is enough — stop whenever you reach the end.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 24.9
+      },
+      "name": "coach at 24.9 of 30"
+    },
+    {
+      "expect": "Recording stops at 30 seconds.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 25
+      },
+      "name": "coach at 25 of 30"
+    },
+    {
+      "expect": "Recording stops at 30 seconds.",
+      "fn": "coach",
+      "input": {
+        "limit": 30,
+        "seconds": 26
+      },
+      "name": "coach at 26 of 30"
+    },
+    {
+      "expect": "Recording stops at 20 seconds.",
+      "fn": "coach",
+      "input": {
+        "limit": 20,
+        "seconds": 16
+      },
+      "name": "coach at 16 of 20"
+    },
+    {
+      "expect": "Around 20 seconds is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 20,
+        "seconds": 14
+      },
+      "name": "coach at 14 of 20"
+    },
+    {
+      "expect": "Around 20 seconds is ideal.",
+      "fn": "coach",
+      "input": {
+        "limit": 29.5,
+        "seconds": 10
+      },
+      "name": "coach at 10 of 29.5"
+    },
+    {
+      "expect": "Around 20 seconds is ideal.",
+      "fn": "coach",
+      "input": {
+        "seconds": 3
+      },
+      "name": "coach at 3 of nil"
+    },
+    {
+      "expect": "Recording stops at 30 seconds.",
+      "fn": "coach",
+      "input": {
+        "seconds": 25
+      },
+      "name": "coach at 25 of nil"
+    }
+  ],
+  "source": "src/higgs/recorder.lua"
+}
