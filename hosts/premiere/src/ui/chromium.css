@@ -13,6 +13,7 @@ input[type="checkbox"] { accent-color: var(--accent); }
 textarea, input, select, button { outline: none; }
 button:focus-visible { outline: 1px solid var(--accent-text); outline-offset: 1px; }
 ::placeholder { color: var(--placeholder); }
+textarea:disabled::placeholder { color: var(--text-3); }
 /* The panel behind a dialog steps back. */
 dialog::backdrop { background-color: rgba(0, 0, 0, 0.55); }
 body.theme-light dialog::backdrop { background-color: rgba(0, 0, 0, 0.28); }
@@ -42,5 +43,6 @@ body.theme-light dialog::backdrop { background-color: rgba(0, 0, 0, 0.28); }
 }
 .editor.highlight #text:focus { border-color: var(--accent-text); }
 .editor.highlight #text::placeholder { color: var(--placeholder); }
+textarea:disabled::placeholder { color: var(--text-3); }
 .editor.highlight #text::selection { background: rgba(120, 160, 255, 0.35); color: transparent; }
 .k-other { color: var(--text-2); }

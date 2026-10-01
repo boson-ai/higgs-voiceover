@@ -16,7 +16,7 @@ body {
   --field: #141414;
   --hover: #3a3a3a;
   --border: #333333;
-  --border-strong: #4a4a4a;
+  --border-strong: #5a5a5a;
   --border-field: #5a5a5a;
   --row-hover: #2a2a2a;
   --placeholder: #808080;
@@ -62,7 +62,7 @@ body.theme-dark {
   --field: #1c1c1c;
   --hover: #444444;
   --border: #3c3c3c;
-  --border-strong: #545454;
+  --border-strong: #626262;
   --border-field: #626262;
   --row-hover: #2e2e2e;
   --placeholder: #868686;
@@ -74,7 +74,7 @@ body.theme-light {
   --field: #ffffff;
   --hover: #d9d9d9;
   --border: #d3d3d3;
-  --border-strong: #a8a8a8;
+  --border-strong: #a0a0a0;
   --border-field: #a0a0a0;
   --row-hover: #f2f2f2;
   --placeholder: #707070;
@@ -299,7 +299,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   flex: 1 1 0;
   min-height: 96px;
   overflow-y: auto;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-field);
   border-radius: 6px;
   background-color: var(--field);
 }
@@ -495,7 +495,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
    from Support, on the column's right edge. */
 .settings-actions {
   display: flex; flex-direction: row; align-items: center;
-  margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+  margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border);
 }
 .settings-actions > button { margin-left: 8px; }
 .srow {
@@ -582,11 +582,14 @@ dialog {
 .seg-item:hover { color: var(--text); }
 .seg-item.active { background-color: var(--hover); color: var(--text); }
 .bar-fill.live { background-color: var(--error); }
+/* Nothing to play yet: the transport steps back; the hint stays readable. */
+.card.empty .dim { opacity: 0.4; }
 
 /* Add a voice keeps one size whatever is chosen (as in Resolve): the source
    area holds the taller page's height, the transcript keeps its room when
    folded away, and the result line is always reserved. */
-.av-source { display: flex; flex-direction: column; }
+.av-source { display: flex; flex-direction: column; margin-top: 12px; }
+.dialog .av-source .card { margin-top: 0; }
 .dialog .actions #av-result { margin-left: 0; margin-right: 12px; }
 
 [hidden] { display: none; }

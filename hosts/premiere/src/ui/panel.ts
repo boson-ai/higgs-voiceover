@@ -826,6 +826,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     area("av-text").value = "";
     input("av-consent").checked = false;
     say("av-file", "No file chosen");
+    $("av-file").classList.add("secondary");
     say("av-result", "");
     show("av-tabs", !!recorder);
     if (recorder) void recorder.device().then((name) => say("av-mic", name || "the system default input"));
@@ -996,6 +997,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     if (size !== null && size > Boson.REF_MAX_BYTES) { say("av-result", `That file is ${(size / 1048576).toFixed(1)} MB; the limit is 10 MB.`, "error"); return; }
     av.path = path;
     say("av-file", files.basename(path));
+    $("av-file").classList.remove("secondary");
     say("av-result", "");
     refreshAddVoice();
   });

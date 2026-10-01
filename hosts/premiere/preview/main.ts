@@ -54,6 +54,7 @@ async function main() {
   }
   if (state === "addvoice") click("voice-add");
   if (q.get("tab") === "file") click("av-tab-file");
+  if (q.get("transcript")) click("av-has-text");
   if (q.get("record") === "take") {
     click("av-rec");
     await wait(3400);
