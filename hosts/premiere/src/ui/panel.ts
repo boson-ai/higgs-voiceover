@@ -159,6 +159,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     }
     const picked = voiceEntries().find((v) => v.id === st.pickedVoice);
     enable("voice-delete", !!picked?.own);
+    // Live only when it would change something.
+    enable("voice-use", !!picked && picked.id !== currentVoice());
     $("voice-delete").title = picked?.own ? "Remove this voice from your list. It stays on your Boson account."
       : picked ? "Built-in voices cannot be deleted." : "Pick a voice in the list first.";
     say("voice-preview", st.previewing ? "Stop" : "Preview");
@@ -387,8 +389,6 @@ export function startPanel({ host, log, store, client }: Deps): void {
     }
     say("status", text, kind === "run" ? "warn" : kind);
     $("status").title = text;
-    // Numbers in the counter line up as figures; messages read as text.
-    $("status").classList.toggle("mono", !kind && !st.note);
     refreshPlayer();
   }
 
@@ -825,7 +825,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     input("av-has-text").checked = false;
     area("av-text").value = "";
     input("av-consent").checked = false;
-    say("av-file", "3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB");
+    say("av-file", "No file chosen");
     say("av-result", "");
     show("av-tabs", !!recorder);
     if (recorder) void recorder.device().then((name) => say("av-mic", name || "the system default input"));
@@ -851,8 +851,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     $("av-tab-file").classList.toggle("active", av.source === "file");
     show("av-page-record", av.source === "record");
     show("av-page-file", av.source === "file");
-    $("av-text").classList.toggle("reserve", !input("av-has-text").checked);
-    area("av-text").readOnly = recording;
+    // The transcript box is always there (the dialog keeps one size); ticking the box opens it.
+    area("av-text").disabled = !input("av-has-text").checked || recording;
 
     say("av-rec", av.state === "counting" ? `Starting in ${av.countLeft}…` : av.state === "recording" ? "Stop" : av.take ? "Record again" : "Record");
     $("av-rec").title = av.state === "counting" ? "Cancel" : "";

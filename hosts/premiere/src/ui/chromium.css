@@ -8,8 +8,15 @@
 body { color-scheme: dark; }
 body.theme-light { color-scheme: light; }
 input[type="checkbox"] { accent-color: var(--accent); }
+/* One focus treatment, keyboard only: fields show it on their border
+   (styles.css), buttons with a ring. */
 textarea, input, select, button { outline: none; }
-input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 1px solid var(--accent-text); outline-offset: 1px; }
+button:focus-visible { outline: 1px solid var(--accent-text); outline-offset: 1px; }
+::placeholder { color: var(--placeholder); }
+/* The panel behind a dialog steps back. */
+dialog::backdrop { background-color: rgba(0, 0, 0, 0.55); }
+body.theme-light dialog::backdrop { background-color: rgba(0, 0, 0, 0.28); }
+#text, .dialog textarea { resize: none; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; border: 2px solid transparent; background-clip: padding-box; }
@@ -22,7 +29,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .editor.highlight { position: relative; background-color: var(--field); border-radius: 6px; }
 .editor.highlight .editor-mirror, .editor.highlight #text {
   font-family: var(--ui); font-size: 13px; line-height: 1.5; letter-spacing: normal;
-  padding: 10px 12px; border: 1px solid transparent; margin: 0; box-sizing: border-box;
+  padding: 10px; border: 1px solid transparent; margin: 0; box-sizing: border-box;
   white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4;
 }
 .editor.highlight .editor-mirror {
@@ -31,9 +38,9 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 }
 .editor.highlight #text {
   position: relative; background: transparent; color: transparent; caret-color: var(--text);
-  border-color: var(--border); resize: none;
+  border-color: var(--border-field); resize: none;
 }
-.editor.highlight #text:focus { border-color: var(--border-strong); }
-.editor.highlight #text::placeholder { color: var(--text-3); }
+.editor.highlight #text:focus { border-color: var(--accent-text); }
+.editor.highlight #text::placeholder { color: var(--placeholder); }
 .editor.highlight #text::selection { background: rgba(120, 160, 255, 0.35); color: transparent; }
 .k-other { color: var(--text-2); }

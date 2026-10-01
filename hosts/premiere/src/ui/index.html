@@ -18,6 +18,7 @@
   <!-- First run: no key yet. -->
   <div class="page" id="page-setup" hidden>
     <div class="center">
+      <div style="flex: 2 1 0"></div>
       <div class="setup">
         <div class="hero">Connect your Boson account</div>
         <div class="body">Higgs VoiceOver runs on Boson's Higgs TTS 3. To use it, get an API key from your Boson Workspace. New accounts include $10 of free credit, about 650,000 characters (roughly 12 hours of audio).</div>
@@ -33,6 +34,7 @@
         </div>
         <div class="result meta" id="setup-result"></div>
       </div>
+      <div style="flex: 3 1 0"></div>
     </div>
   </div>
 
@@ -71,8 +73,8 @@
           <div class="row dim">
             <span class="pill" id="take-index" hidden></span>
             <span class="meta ellipsis spacer" id="take-name">Nothing to preview yet — Generate to hear your lines.</span>
-            <button class="icon" id="take-prev" title="Previous line"><span class="g g-prev"></span></button>
-            <button class="icon" id="take-next" title="Next line"><span class="g g-next"></span></button>
+            <button class="icon" id="take-prev" title="Previous line"><span class="g g-bar"></span><span class="g g-prev"></span></button>
+            <button class="icon" id="take-next" title="Next line"><span class="g g-next"></span><span class="g g-bar"></span></button>
           </div>
           <div class="row dim">
             <span class="mono" id="time-now" style="width: 34px">0:00</span>
@@ -83,11 +85,11 @@
           </div>
           <div class="row split">
             <div class="row group">
-            <label class="check wide" title="Start the audio preview as soon as generation finishes."><input type="checkbox" id="auto-preview">Play audio when done</label>
-            <label class="check" title="When you place clips with these buttons, add their subtitles too. Set how they are split in Settings."><input type="checkbox" id="preview-subs">Add subtitles</label>
+            <label class="check" title="Start the audio preview as soon as generation finishes."><input type="checkbox" id="auto-preview">Play audio when done</label>
             </div>
             <div class="spacer"></div>
             <div class="row group">
+            <label class="check wide" title="When you place clips with these buttons, add their subtitles too. Set how they are split in Settings."><input type="checkbox" id="preview-subs">Add subtitles</label>
             <button id="place-one" hidden>Place this clip</button>
             <button id="place-all">Place on timeline</button>
             </div>
@@ -145,7 +147,7 @@
     <div class="section">
       <div class="title">Audio output</div>
       <div class="srow"><div class="label">Format</div><div class="field">
-        <select id="set-format" style="width: 110px">
+        <select id="set-format" style="width: 150px">
           <option value="wav">wav</option><option value="mp3">mp3</option><option value="aac">aac</option><option value="flac">flac</option>
         </select>
       </div></div>
@@ -173,7 +175,7 @@
     <div class="section">
       <div class="title">Timeline</div>
       <div class="srow"><div class="label">Add clips to track</div><div class="field">
-        <input type="text" id="set-track" class="grow">
+        <input type="text" id="set-track" style="width: 240px">
       </div></div>
       <div class="srow"><div class="label">Subtitles</div><div class="field">
         <select id="set-split" style="width: 150px">
@@ -181,7 +183,7 @@
         </select>
         <span class="meta grow" id="set-split-hint"></span>
       </div></div>
-      <div class="srow"><div class="label"></div><div class="field">
+      <div class="srow hint"><div class="label"></div><div class="field">
         <span class="meta">Only English, Chinese and Spanish subtitles are split. Other languages show one subtitle per line.</span>
       </div></div>
     </div>
@@ -198,13 +200,14 @@
         <label class="check"><input type="checkbox" id="set-auto-update">Check for updates when Higgs VoiceOver opens</label>
       </div></div>
       <div class="srow"><div class="label">Logs</div><div class="field">
-        <span class="grow ellipsis" id="set-log"></span>
+        <span class="ellipsis" id="set-log" style="min-width: 0"></span>
         <button id="set-open-log" title="One log per session; the ten most recent are kept. Attach the latest when reporting a problem.">Open log folder</button>
       </div></div>
     </div>
     <!-- Nothing applies until Save; Reset fills in the defaults (the key is kept). -->
     <div class="settings-actions">
-      <span class="meta spacer" id="set-status"></span>
+      <div class="spacer"></div>
+      <span class="meta" id="set-status" style="margin-right: 4px"></span>
       <button id="set-reset" title="Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save.">Reset to default</button>
       <button class="primary" id="set-save">Save</button>
     </div>
@@ -221,43 +224,42 @@
       </div>
 
       <div class="av-source" id="av-source">
-      <div class="col" id="av-page-record">
-        <div class="card">
-          <div class="row">
-            <button class="pair" id="av-rec" style="min-width: 128px">Record</button>
-            <div class="spacer"></div>
-          </div>
-          <div class="row">
-            <button class="icon" id="av-play" title="Play"><span class="g g-play" id="av-play-glyph"></span></button>
-            <button class="icon" id="av-stop" title="Stop"><span class="g g-stop"></span></button>
-            <span class="mono" id="av-t-now" style="width: 34px; margin-left: 4px">0:00</span>
-            <div class="bar"><div class="bar-fill" id="av-bar-fill"></div></div>
-            <span class="mono secondary" id="av-t-total" style="width: 40px; text-align: right">0:30</span>
-          </div>
-          <div class="row"><span class="meta spacer" id="av-hint">Speak normally, in the language you want this voice to generate.</span></div>
+      <div class="card src-card" id="av-page-record">
+        <div class="row">
+          <button id="av-rec" style="min-width: 128px">Record</button>
+          <div class="spacer"></div>
         </div>
-        <div class="row gap-s">
-          <span class="secondary">Microphone</span>
+        <div class="row">
+          <button class="icon" id="av-play" title="Play"><span class="g g-play" id="av-play-glyph"></span></button>
+          <button class="icon" id="av-stop" title="Stop"><span class="g g-stop"></span></button>
+          <span class="mono" id="av-t-now" style="width: 34px; margin-left: 4px">0:00</span>
+          <div class="bar"><div class="bar-fill" id="av-bar-fill"></div></div>
+          <span class="mono secondary" id="av-t-total" style="width: 40px; text-align: right">0:30</span>
+        </div>
+        <div class="row"><span class="meta spacer" id="av-hint">Speak normally, in the language you want this voice to generate.</span></div>
+        <div class="row">
+          <span class="secondary" style="width: 84px">Microphone</span>
           <span class="ellipsis spacer" id="av-mic">the system default input</span>
         </div>
       </div>
 
-      <div class="col" id="av-page-file" hidden>
-        <div class="secondary gap-m">Use a clear recording of one person speaking, 3 to 30 seconds long.</div>
-        <div class="row gap-s">
-          <button id="av-pick">Choose a file…</button>
-          <span class="meta ellipsis spacer" id="av-file">3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span>
+      <div class="card src-card" id="av-page-file" hidden>
+        <div class="row">
+          <button id="av-pick" style="min-width: 128px">Choose a file…</button>
+          <div class="spacer"></div>
         </div>
+        <div class="row"><span class="ellipsis spacer" id="av-file">No file chosen</span></div>
+        <div class="row"><span class="meta spacer">A clear recording of one person speaking · 3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span></div>
       </div>
       </div>
 
       <div class="secondary gap-m">Voice name</div>
-      <input type="text" id="av-name" class="gap-s" placeholder="e.g. Alex — narration">
+      <input type="text" id="av-name" class="gap-s" autofocus placeholder="e.g. Alex — narration">
       <label class="check gap-m"><input type="checkbox" id="av-has-text">Include transcript (optional)</label>
-      <textarea id="av-text" class="gap-s reserve" placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate."></textarea>
+      <textarea id="av-text" class="gap-s" disabled placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate."></textarea>
       <label class="check wrap gap-m"><input type="checkbox" id="av-consent">This is my own voice, or I have the speaker's permission to make a synthetic copy of it.</label>
-      <div class="meta gap-s" id="av-result"></div>
       <div class="actions">
+        <span class="meta spacer" id="av-result"></span>
         <button id="av-cancel">Cancel</button>
         <button class="primary" id="av-create">Create voice</button>
       </div>

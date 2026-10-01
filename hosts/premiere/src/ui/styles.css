@@ -17,6 +17,9 @@ body {
   --hover: #3a3a3a;
   --border: #333333;
   --border-strong: #4a4a4a;
+  --border-field: #5a5a5a;
+  --row-hover: #2a2a2a;
+  --placeholder: #808080;
   --text: #e6e6e6;
   --text-2: #a3a3a3;
   --text-3: #6b6b6b;
@@ -25,8 +28,9 @@ body {
   --accent: #1d7028;
   --accent-hover: #23862f;
   --accent-text: #22ad2e;
-  --accent-dim: #1a3d20;
-  --accent-dim-text: #82b48a;
+  /* Disabled primary: still green, clearly not ready (≈3:1 label). */
+  --accent-dim: #1c2e1f;
+  --accent-dim-text: #5a7a5f;
   --on-accent: #ffffff;
   --selected: #1d3322;
   --ok: #5cb46f;
@@ -59,15 +63,21 @@ body.theme-dark {
   --hover: #444444;
   --border: #3c3c3c;
   --border-strong: #545454;
+  --border-field: #626262;
+  --row-hover: #2e2e2e;
+  --placeholder: #868686;
 }
 
 body.theme-light {
   --bg: #efefef;
   --surface: #ffffff;
   --field: #ffffff;
-  --hover: #e2e2e2;
+  --hover: #d9d9d9;
   --border: #d3d3d3;
   --border-strong: #a8a8a8;
+  --border-field: #a0a0a0;
+  --row-hover: #f2f2f2;
+  --placeholder: #707070;
   --text: #1e1e1e;
   --text-2: #5a5a5a;
   --text-3: #8e8e8e;
@@ -81,13 +91,13 @@ body.theme-light {
   --warn: #a8640f;
   --error: #d1373f;
   --error-tint: #fbe4e4;
-  --tag-emotion: #b3348c;
-  --tag-style: #6a4fd6;
-  --tag-speed: #1f78c1;
-  --tag-pitch: #198a7c;
-  --tag-expressive: #8a6d00;
-  --tag-pause: #6b6b6b;
-  --tag-sfx: #c2541b;
+  --tag-emotion: #a12f7e;
+  --tag-style: #5b42c8;
+  --tag-speed: #19659f;
+  --tag-pitch: #0f6a5f;
+  --tag-expressive: #6f5800;
+  --tag-pause: #5f5f5f;
+  --tag-sfx: #a3430f;
 }
 
 /* ------------------------------------------------------------- frame */
@@ -239,12 +249,16 @@ button.icon:disabled, button.icon:disabled:hover { background-color: transparent
 
 /* Transport glyphs, drawn with borders so play, pause and stop are the same
    size whatever the font (text glyphs differed wildly). 10 × 12 box. */
+.row > button.icon:first-child { margin-left: -8px; }
+.row > button.icon:last-child { margin-right: -8px; }
 .g { width: 0; height: 0; }
 .g-play { border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 10px solid var(--g); margin-left: 2px; }
 .g-pause { width: 3px; height: 12px; border-left: 3px solid var(--g); border-right: 3px solid var(--g); }
 .g-stop { width: 10px; height: 10px; background-color: var(--g); border-radius: 1px; }
-.g-prev { border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 7px solid var(--g); }
-.g-next { border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid var(--g); }
+/* Skip previous / next: a triangle and a bar, 10 × 12 like play. */
+.g-prev { border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 7px solid var(--g); }
+.g-next { border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 7px solid var(--g); }
+.g-bar { width: 2px; height: 12px; background-color: var(--g); margin: 0 1px; }
 
 /* Two buttons offered as a pair (Connect / Skip for now) share a width. */
 button.pair { min-width: 96px; }
@@ -252,16 +266,18 @@ button.pair { min-width: 96px; }
 input[type="text"], input[type="password"], textarea, select {
   background-color: var(--field);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-field);
   border-radius: 6px;
   font-family: var(--ui);
   font-size: 12px;
 }
+/* 24 + the 1 px border each side = 26, the height of every button and select. */
 input[type="text"], input[type="password"] {
-  height: 26px;
-  padding: 0 8px;
+  height: 24px;
+  padding: 0 10px;
 }
-input:focus, textarea:focus { border-color: var(--border-strong); }
+input:focus, textarea:focus, select:focus { border-color: var(--accent-text); }
+textarea:disabled { background-color: transparent; color: var(--text-3); border-color: var(--border); }
 select { height: 26px; }
 
 label.check {
@@ -293,7 +309,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   height: 24px;
   align-items: center;
   padding: 0 10px;
-  color: var(--text-3);
+  color: var(--text-2);
   font-size: 11px;
   border-bottom: 1px solid var(--border);
 }
@@ -306,7 +322,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   padding: 0 10px;
   color: var(--text);
 }
-.item:hover { background-color: var(--hover); }
+.item:hover { background-color: var(--row-hover); }
 .item.selected { background-color: var(--selected); }
 .item .star { width: 16px; color: var(--accent-text); }
 .item.in-use .name { color: var(--accent-text); }
@@ -368,12 +384,12 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   flex-direction: column;
   flex: 1 1 0;
   min-height: 140px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 #text {
   flex: 1 1 0;
   min-height: 140px;
-  padding: 10px 12px;
+  padding: 10px;
   font-size: 13px;
 }
 /* Only Chromium builds draw it (chromium.css); UXP leaves the box plain. */
@@ -386,9 +402,8 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   padding: 16px 18px;
   margin-top: 24px;
 }
-.card .row { margin-top: 14px; }
-.card .row:first-child { margin-top: 0; }
-.card.empty .dim { opacity: 0.4; }
+.card > .row { margin-top: 14px; }
+.card > .row:first-child { margin-top: 0; }
 
 .pill {
   display: flex;
@@ -406,7 +421,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   flex: 1 1 0;
   height: 4px;
   border-radius: 2px;
-  background-color: var(--border);
+  background-color: var(--border-strong);
   overflow: hidden;
   margin: 0 10px;
 }
@@ -434,7 +449,7 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .split > .group { margin-top: 6px; flex-shrink: 0; }
 /* The buttons keep to the right edge, also on a line of their own. */
 .split > .group:last-child { flex: 1 0 auto; justify-content: flex-end; }
-.card .row.split { margin-top: 8px; }
+.card > .row.split { margin-top: 8px; }
 
 /* A docked panel is often narrow: one column that scrolls, the text first. */
 @media (max-width: 720px) {
@@ -442,8 +457,8 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   .right { flex: 0 0 auto; }
   .editor { flex: 0 0 auto; height: 170px; }
   .left { width: auto; margin-right: 0; margin-top: 20px; flex: 0 0 auto; }
-  #voice-list { flex: 0 0 auto; height: 150px; }
-  #tag-box { flex: 0 0 auto; height: 220px; }
+  #voice-list { flex: 0 0 auto; height: 162px; }
+  #tag-box { flex: 0 0 auto; height: 232px; }
 }
 
 /* ------------------------------------------------------------- setup */
@@ -452,7 +467,6 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   flex: 1 1 0;
 }
 .setup {
@@ -477,7 +491,12 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 /* Titles sit in a 26 px row, as on the Generate tab, so both tabs start on the same line. */
 .section .title { display: flex; align-items: center; height: 26px; margin-bottom: 8px; }
 /* Save and Reset follow the last section, one section gap below it, on the column's right edge. */
-.settings-actions { display: flex; flex-direction: row; align-items: center; }
+/* Save and Reset close the page: a rule and a section gap set them apart
+   from Support, on the column's right edge. */
+.settings-actions {
+  display: flex; flex-direction: row; align-items: center;
+  margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+}
 .settings-actions > button { margin-left: 8px; }
 .srow {
   display: flex;
@@ -501,12 +520,15 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .field > * { margin-right: 8px; }
 .field > *:last-child { margin-right: 0; }
 .field .grow { flex: 1 1 0; min-width: 0; }
+.field > .wide { margin-right: 20px; }
+/* A note under a row belongs to it. */
+.srow.hint { min-height: 0; margin-top: -4px; }
 /* ------------------------------------------------------------- dialog */
 
 dialog {
   background-color: var(--surface);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 10px;
   padding: 0;
 }
@@ -522,8 +544,10 @@ dialog {
 .dialog .actions {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: flex-end;
-  margin-top: 20px;
+  height: 32px;
+  margin-top: 16px;
 }
 .dialog .actions > button { margin-left: 8px; }
 .notice {
@@ -535,6 +559,8 @@ dialog {
 }
 
 .dialog .card { margin-top: 12px; }
+/* Both source cards fill the same box, so switching tabs moves nothing. */
+.av-source .src-card { flex: 1 0 auto; }
 
 /* Two-way switch (Record | Use a file). */
 .seg {
@@ -561,7 +587,6 @@ dialog {
    area holds the taller page's height, the transcript keeps its room when
    folded away, and the result line is always reserved. */
 .av-source { display: flex; flex-direction: column; }
-.reserve { visibility: hidden; }
-#av-result { height: 32px; overflow: hidden; }
+.dialog .actions #av-result { margin-left: 0; margin-right: 12px; }
 
 [hidden] { display: none; }
