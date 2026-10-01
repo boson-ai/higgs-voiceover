@@ -131,3 +131,11 @@ test("files already in the bin are not imported twice", () => {
   const bin = (p.app.project.rootItem.children as unknown as Record<string, { kids: unknown[] }>)["0"];
   assert.equal(bin.kids.length, 2);
 });
+
+test("a script error comes back as a message the panel can show", () => {
+  const p = premiere();
+  (p.app.project as unknown as { importFiles: () => never }).importFiles = () => { throw new Error("boom"); };
+  const r = p.call("importToBin", { paths: ["/m/x.wav"], bin: "Higgs VoiceOver" });
+  assert.equal(r.ok, false);
+  assert.match(r.error, /^Premiere stopped with an error: Error: boom/);
+});

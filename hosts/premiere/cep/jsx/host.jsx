@@ -87,6 +87,8 @@ var HiggsVO = (function () {
         var q = qe.project.getActiveSequence();
         // (video tracks, after video #, audio tracks, audio type 1 = stereo, after audio #, submixes, submix type)
         q.addTracks(0, 0, 1, 1, before, 0, 0);
+        // DOM objects can go stale across a QE edit; read the sequence again.
+        seq = app.project.activeSequence;
         if (seq.audioTracks.numTracks <= before) return null;
         var track = seq.audioTracks[seq.audioTracks.numTracks - 1];
         try { track.name = name; } catch (e) { /* older versions: the name stays Premiere's */ }
@@ -102,7 +104,15 @@ var HiggsVO = (function () {
         return out;
     }
 
-    return {
+    function guarded(fn) {
+        return function (a) {
+            try { return fn(a); } catch (e) {
+                return hvJson({ ok: false, placed: 0, starts: [], ends: [], error: "Premiere stopped with an error: " + e.toString() + (e.line ? " (line " + e.line + ")" : "") });
+            }
+        };
+    }
+
+    var api = {
         info: function () {
             var p = app.project;
             var has = !!(p && p.activeSequence);
@@ -180,4 +190,6 @@ var HiggsVO = (function () {
             return hvJson(made || after > before ? { ok: true } : { ok: false, error: "Premiere did not make the captions." });
         }
     };
+    for (var name in api) if (api.hasOwnProperty(name)) api[name] = guarded(api[name]);
+    return api;
 }());
