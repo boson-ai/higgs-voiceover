@@ -825,11 +825,11 @@ export function startPanel({ host, log, store, client }: Deps): void {
     input("av-has-text").checked = false;
     area("av-text").value = "";
     input("av-consent").checked = false;
-    say("av-file", "No file chosen");
-    $("av-file").classList.add("secondary");
+    say("av-file", "");
+    show("av-file-row", false);
     say("av-result", "");
     show("av-tabs", !!recorder);
-    if (recorder) void recorder.device().then((name) => say("av-mic", name || "the system default input"));
+    if (recorder) void fillMics();
     refreshAddVoice();
     dlg.showModal();
     // One size for both tabs: the source area holds the taller page.
@@ -844,7 +844,37 @@ export function startPanel({ host, log, store, client }: Deps): void {
     }
     if (recorder) { show("av-page-record", av.source === "record"); show("av-page-file", av.source === "file"); }
     source.style.minHeight = `${tallest}px`;
+    // One height for the dialog: the tallest state, transcript open. When it is
+    // folded the consent line moves up and the space gathers above the buttons.
+    const box = $("add-voice").querySelector(".dialog") as HTMLElement;
+    box.style.height = "";
+    show("av-text", true);
+    box.style.height = `${box.offsetHeight}px`;
+    show("av-text", input("av-has-text").checked);
   }
+
+  /** The inputs to record from, the one chosen last time selected. */
+  async function fillMics() {
+    if (!recorder) return;
+    const list = await recorder.inputs();
+    const want = String(cfg().mic_id ?? "default");
+    const pick = list.some((d) => d.id === want) ? want : "default";
+    const sel = select("av-mic");
+    sel.textContent = "";
+    for (const d of list) { const o = el("option", undefined, d.label) as HTMLOptionElement; o.value = d.id; sel.appendChild(o); }
+    setChoice("av-mic", pick);
+    recorder.use(pick);
+  }
+  on("av-mic", "change", () => {
+    const id = select("av-mic").value || "default";
+    recorder?.use(id);
+    cfg().mic_id = id;
+    void store.save();
+    log.ui("microphone chosen", { system_default: id === "default" ? 1 : 0 });
+  });
+  show("av-mic-settings", !!host.shell.openSoundSettings);
+  on("av-mic-settings", "click", () => { log.ui("open sound settings"); void host.shell.openSoundSettings?.(); });
+  navigator.mediaDevices?.addEventListener?.("devicechange", () => { if (dlg.open) void fillMics(); });
 
   function refreshAddVoice() {
     const recording = av.state !== "idle";
@@ -852,8 +882,10 @@ export function startPanel({ host, log, store, client }: Deps): void {
     $("av-tab-file").classList.toggle("active", av.source === "file");
     show("av-page-record", av.source === "record");
     show("av-page-file", av.source === "file");
-    // The transcript box is always there (the dialog keeps one size); ticking the box opens it.
-    area("av-text").disabled = !input("av-has-text").checked || recording;
+    // The transcript box opens when ticked and pushes the consent line down.
+    show("av-text", input("av-has-text").checked);
+    area("av-text").readOnly = recording;
+    enable("av-mic", !recording);
 
     say("av-rec", av.state === "counting" ? `Starting in ${av.countLeft}…` : av.state === "recording" ? "Stop" : av.take ? "Record again" : "Record");
     $("av-rec").title = av.state === "counting" ? "Cancel" : "";
@@ -997,7 +1029,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     if (size !== null && size > Boson.REF_MAX_BYTES) { say("av-result", `That file is ${(size / 1048576).toFixed(1)} MB; the limit is 10 MB.`, "error"); return; }
     av.path = path;
     say("av-file", files.basename(path));
-    $("av-file").classList.remove("secondary");
+    show("av-file-row", true);
     say("av-result", "");
     refreshAddVoice();
   });

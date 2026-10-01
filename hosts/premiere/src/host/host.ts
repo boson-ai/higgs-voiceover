@@ -56,6 +56,8 @@ export interface Secrets {
 export interface Shell {
   openUrl(url: string): Promise<boolean>;
   openFolder(path: string): Promise<boolean>;
+  /** The system's sound input settings, where the host can open them. */
+  openSoundSettings?(): Promise<boolean>;
 }
 
 export type PlayerState = "empty" | "stopped" | "playing" | "paused";
@@ -120,8 +122,11 @@ export interface Timeline {
  * format core/wav.ts and core/recorder.ts work in.
  */
 export interface Recorder {
-  /** The input that will be used, by name ("" if unknown). */
-  device(): Promise<string>;
+  /** Audio inputs, the system default first. Labels may be "" until the
+   * microphone has been allowed once. */
+  inputs(): Promise<{ id: string; label: string }[]>;
+  /** Which input to record from ("default" = the system's choice). */
+  use(id: string): void;
   /** Open the input; capture starts at `begin()`, so a count-in records nothing. */
   open(): Promise<{ ok: boolean; error?: string }>;
   begin(): void;

@@ -112,6 +112,14 @@ export const secrets: Secrets = {
 
 export const shell: Shell = {
   async openUrl(url) { return window.cep?.util.openURLInDefaultBrowser(url) === 0; },
+  // macOS Sound settings on the Input tab; Windows Sound settings.
+  async openSoundSettings() {
+    try {
+      const target = windows ? "ms-settings:sound" : "x-apple.systempreferences:com.apple.Sound-Settings.extension?input";
+      childProcess.spawn(windows ? "explorer" : "open", [target], { detached: true, stdio: "ignore" }).unref();
+      return true;
+    } catch { return false; }
+  },
   async openFolder(p) {
     try {
       childProcess.spawn(windows ? "explorer" : "open", [p], { detached: true, stdio: "ignore" }).unref();

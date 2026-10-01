@@ -48,7 +48,12 @@ function mockRecorder(): Recorder {
   let started = 0, capturing = false;
   const seconds = () => (capturing ? (Date.now() - started) / 1000 : 0);
   return {
-    device: async () => "MacBook Pro Microphone (preview)",
+    inputs: async () => [
+      { id: "default", label: "System default" },
+      { id: "mbp", label: "MacBook Pro Microphone" },
+      { id: "usb", label: "Insta360 Link 2C Pro" },
+    ],
+    use() {},
     open: async () => ({ ok: true }),
     begin() { started = Date.now(); capturing = true; },
     level: () => (capturing ? 0.35 + 0.3 * Math.abs(Math.sin(Date.now() / 180)) : 0.02),
@@ -139,6 +144,7 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
     shell: {
       openUrl: async (u) => { console.log("[preview] open", u); return true; },
       openFolder: async (p) => { console.log("[preview] show folder", p); return true; },
+      openSoundSettings: async () => { console.log("[preview] sound settings"); return true; },
     },
     player: createMediaPlayer(media, (path) => {
       if (!urls.has(path)) urls.set(path, URL.createObjectURL(new Blob([(fs.get(path) ?? new Uint8Array(0)) as BlobPart], { type: "audio/wav" })));

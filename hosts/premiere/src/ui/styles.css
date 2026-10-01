@@ -547,7 +547,8 @@ dialog {
   align-items: center;
   justify-content: flex-end;
   height: 32px;
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 16px;
 }
 .dialog .actions > button { margin-left: 8px; }
 .notice {
@@ -562,8 +563,6 @@ dialog {
 /* Both source cards fill the same box, so switching tabs moves nothing. */
 .av-source .src-card { flex: 1 0 auto; display: flex; flex-direction: column; }
 .av-source .src-card[hidden] { display: none; }
-/* The last row sits on the card's bottom edge in both cards. */
-.av-source .src-card > .row:last-child { margin-top: auto; padding-top: 14px; }
 
 /* Two-way switch (Record | Use a file). */
 .seg {

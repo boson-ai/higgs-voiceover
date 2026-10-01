@@ -239,7 +239,8 @@
         <div class="row"><span class="meta spacer" id="av-hint">Speak normally, in the language you want this voice to generate.</span></div>
         <div class="row">
           <span class="secondary">Microphone</span>
-          <span class="ellipsis spacer" id="av-mic">the system default input</span>
+          <select id="av-mic" class="spacer" style="min-width: 0"></select>
+          <button id="av-mic-settings" title="Open the system's sound input settings.">Audio settings…</button>
         </div>
       </div>
 
@@ -248,7 +249,7 @@
           <button id="av-pick" style="min-width: 128px">Choose a file…</button>
           <div class="spacer"></div>
         </div>
-        <div class="row"><span class="ellipsis spacer secondary" id="av-file">No file chosen</span></div>
+        <div class="row" id="av-file-row" hidden><span class="ellipsis spacer" id="av-file"></span></div>
         <div class="row"><span class="meta spacer">A clear recording of one person speaking · 3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span></div>
       </div>
       </div>
@@ -256,7 +257,7 @@
       <div class="secondary gap-m">Voice name</div>
       <input type="text" id="av-name" class="gap-s" autofocus placeholder="e.g. Alex — narration">
       <label class="check gap-m"><input type="checkbox" id="av-has-text">Include transcript (optional)</label>
-      <textarea id="av-text" class="gap-s" disabled placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate."></textarea>
+      <textarea id="av-text" class="gap-s" hidden placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate."></textarea>
       <label class="check wrap gap-m"><input type="checkbox" id="av-consent">This is my own voice, or I have the speaker's permission to make a synthetic copy of it.</label>
       <div class="actions">
         <span class="meta spacer" id="av-result"></span>

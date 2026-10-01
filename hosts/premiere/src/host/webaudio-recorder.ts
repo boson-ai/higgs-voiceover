@@ -18,6 +18,7 @@ export function createWebAudioRecorder(): Recorder {
   let total = 0;
   let peak = 0;
   let rate = 48000;
+  let deviceId = "default";
 
   function close() {
     capturing = false;
@@ -28,19 +29,26 @@ export function createWebAudioRecorder(): Recorder {
   }
 
   return {
-    async device() {
+    async inputs() {
       try {
-        const list = await navigator.mediaDevices.enumerateDevices();
-        const input = list.find((d) => d.kind === "audioinput" && d.deviceId === "default") ?? list.find((d) => d.kind === "audioinput");
-        return (input?.label ?? "").replace(/^Default - /, "");
-      } catch { return ""; }
+        const list = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === "audioinput");
+        // Chromium lists the default twice ("default" plus the device itself);
+        // it is offered once, as "System default", which follows the system.
+        const rest = list.filter((d) => d.deviceId !== "default" && d.deviceId !== "communications");
+        return [
+          { id: "default", label: "System default" },
+          ...rest.map((d, i) => ({ id: d.deviceId, label: d.label || `Microphone ${i + 1}` })),
+        ];
+      } catch { return [{ id: "default", label: "System default" }]; }
     },
+    use(id) { deviceId = id || "default"; },
     async open() {
       close();
       chunks = []; total = 0; peak = 0;
       try {
         // Raw voice: the browser's processing would colour the reference.
-        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+        const pick = deviceId === "default" ? {} : { deviceId: { exact: deviceId } };
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { ...pick, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
       } catch (e) {
         return { ok: false, error: String((e as Error)?.name ?? e) };
       }
