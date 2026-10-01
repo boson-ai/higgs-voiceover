@@ -32,7 +32,10 @@ const chrome = spawn(CHROME, [
 const until = Date.now() + 30_000;
 while (Date.now() < until && !(existsSync(out) && statSync(out).size > 0)) await new Promise((r) => setTimeout(r, 300));
 await new Promise((r) => setTimeout(r, 400));
+// Let Chrome close before its profile is removed.
+const closed = new Promise((r) => chrome.once("exit", r));
 chrome.kill();
-rmSync(profile, { recursive: true, force: true });
+await Promise.race([closed, new Promise((r) => setTimeout(r, 3000))]);
+rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
 if (!existsSync(out)) { console.error("no screenshot — is `npm run preview` running?"); process.exit(1); }
 console.log(out);
