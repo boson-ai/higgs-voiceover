@@ -1,0 +1,39 @@
+{
+  "id": "ai.boson.higgs-voiceover",
+  "name": "Higgs VoiceOver",
+  "version": "__VERSION__",
+  "main": "index.html",
+  "manifestVersion": 5,
+  "host": {
+    "app": "premierepro",
+    "minVersion": "26.3.0"
+  },
+  "requiredPermissions": {
+    "network": {
+      "domains": ["https://api.boson.ai", "https://api.github.com", "https://github.com", "https://www.boson.ai"]
+    },
+    "localFileSystem": "fullAccess",
+    "launchProcess": {
+      "schemes": ["https"],
+      "extensions": [""]
+    }
+  },
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "main",
+      "label": { "default": "Higgs VoiceOver" },
+      "minimumSize": { "width": 360, "height": 420 },
+      "maximumSize": { "width": 2400, "height": 2400 },
+      "preferredDockedSize": { "width": 880, "height": 620 },
+      "preferredFloatingSize": { "width": 960, "height": 720 },
+      "icons": [
+        { "width": 23, "height": 23, "path": "icons/panel-dark.png", "scale": [1, 2], "theme": ["darkest", "dark", "medium"] },
+        { "width": 23, "height": 23, "path": "icons/panel-light.png", "scale": [1, 2], "theme": ["lightest", "light"] }
+      ]
+    }
+  ],
+  "icons": [
+    { "width": 48, "height": 48, "path": "icons/plugin.png", "scale": [1, 2], "theme": ["all"], "species": ["pluginList"] }
+  ]
+}

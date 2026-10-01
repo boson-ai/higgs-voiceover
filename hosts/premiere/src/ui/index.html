@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="styles.css">
+  <script src="main.js"></script>
+</head>
+<body class="theme-darkest">
+<div id="app">
+
+  <div class="topbar">
+    <div class="tab active" id="tab-generate">Generate</div>
+    <div class="tab" id="tab-settings">Settings</div>
+    <div class="spacer"></div>
+    <div class="chip" id="conn"><div class="dot"></div><span id="conn-text">No API key</span></div>
+  </div>
+
+  <!-- First run: no key yet. -->
+  <div class="page" id="page-setup" hidden>
+    <div class="center">
+      <div class="setup">
+        <div class="hero">Connect your Boson account</div>
+        <div class="body">Higgs VoiceOver runs on Boson's Higgs TTS 3. To use it, get an API key from your Boson Workspace. New accounts include $10 of free credit, about 650,000 characters (roughly 12 hours of audio).</div>
+        <div class="row gap-s"><button class="link" id="setup-get-key">Get a key at boson.ai</button></div>
+        <div class="secondary gap-l">API key</div>
+        <div class="row gap-s">
+          <input type="password" id="setup-key" class="spacer" placeholder="Paste your Boson API key">
+          <label class="check"><input type="checkbox" id="setup-show">Show</label>
+        </div>
+        <div class="row gap-m">
+          <button class="primary" id="setup-connect">Connect</button>
+          <button id="setup-skip" title="Look around first. You'll need a key before you can generate.">Skip for now</button>
+        </div>
+        <div class="result meta" id="setup-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="page" id="page-generate" hidden>
+    <div class="cols">
+      <div class="right">
+        <div class="head">
+          <div class="title">Text</div>
+          <button class="ghost" id="text-clear" title="Empty the text box.">Clear</button>
+          <button class="ghost" id="text-import">Import from file…</button>
+          <button class="ghost" id="text-export">Save as .txt…</button>
+        </div>
+        <textarea id="text" placeholder="Type or paste what you want said. Each line becomes its own clip."></textarea>
+        <div class="row split">
+          <div class="row group">
+          <label class="check wide" title="Put every clip from the run on the timeline at the playhead as soon as generation finishes."><input type="checkbox" id="auto-place">Place on timeline</label>
+          <label class="check" title="When clips go on the timeline automatically, add their subtitles too. Set how they are split in Settings."><input type="checkbox" id="auto-subs">Add subtitles</label>
+          </div>
+          <div class="spacer"></div>
+          <div class="row group">
+          <button class="ghost" id="stop">Stop</button>
+          <button class="primary" id="generate" style="min-width: 120px">Generate</button>
+          </div>
+        </div>
+
+        <div class="card empty" id="preview">
+          <div class="row">
+            <div class="title">Audio preview</div>
+            <div class="spacer"></div>
+            <div class="meta ellipsis" id="preview-where"></div>
+          </div>
+          <div class="row dim">
+            <span class="pill" id="take-index" hidden></span>
+            <span class="meta ellipsis spacer" id="take-name">Nothing to preview yet — Generate to hear your lines.</span>
+            <button class="icon" id="take-prev" title="Previous line">‹</button>
+            <button class="icon" id="take-next" title="Next line">›</button>
+          </div>
+          <div class="row dim">
+            <span class="mono" id="time-now" style="width: 34px">0:00</span>
+            <div class="bar" id="bar" title="Click to move within the take"><div class="bar-fill" id="bar-fill"></div></div>
+            <span class="mono secondary" id="time-total" style="width: 34px; text-align: right">0:00</span>
+            <button class="icon" id="play" title="Play">▶</button>
+            <button class="icon" id="pause-stop" title="Stop">■</button>
+          </div>
+          <div class="row split">
+            <div class="row group">
+            <label class="check wide" title="Start the audio preview as soon as generation finishes."><input type="checkbox" id="auto-preview">Play audio when done</label>
+            <label class="check" title="When you place clips with these buttons, add their subtitles too. Set how they are split in Settings."><input type="checkbox" id="preview-subs">Add subtitles</label>
+            </div>
+            <div class="spacer"></div>
+            <div class="row group">
+            <button class="ghost" id="place-one" hidden>Place this clip</button>
+            <button id="place-all">Place on timeline</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="left">
+        <div class="head"><div class="title">Voice</div></div>
+        <div class="list" id="voice-list" title="Double-click a voice to use it."></div>
+        <div class="row block" style="margin-top: 8px">
+          <button class="ghost" id="voice-add">Add voice…</button>
+          <button class="ghost" id="voice-preview">Preview</button>
+          <button class="ghost danger" id="voice-delete">Delete</button>
+          <div class="spacer"></div>
+          <button id="voice-use">Use this voice</button>
+        </div>
+
+        <div class="head section-gap"><div class="title">Tags</div></div>
+        <div class="row block">
+          <input type="text" id="tag-search" class="spacer" placeholder="Search tags">
+          <select id="tag-type" style="width: 120px"></select>
+          <button id="tag-insert">Insert</button>
+        </div>
+        <div class="list col" id="tag-box">
+          <div class="list-head"><span class="spacer">Tag</span><span style="width: 104px">Type</span></div>
+          <div class="col spacer" id="tag-list" style="overflow-y: auto" title="Double-click a tag to insert it where the cursor is."></div>
+          <div class="list-foot" id="tag-foot" hidden></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="status ellipsis" id="status"></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="page settings" id="page-settings" hidden>
+    <div class="section">
+      <div class="title">Boson account</div>
+      <div class="srow"><div class="label">API key</div><div class="field">
+        <input type="password" id="set-key" class="grow" placeholder="Paste your Boson API key">
+        <label class="check"><input type="checkbox" id="set-show">Show</label>
+      </div></div>
+      <div class="srow"><div class="label"></div><div class="field">
+        <button id="set-test">Test connection</button>
+        <button class="link" id="set-get-key">Get a key at boson.ai</button>
+        <span class="meta grow ellipsis" id="set-key-result"></span>
+      </div></div>
+    </div>
+    <div class="section">
+      <div class="title">Audio output</div>
+      <div class="srow"><div class="label">Format</div><div class="field">
+        <select id="set-format" style="width: 110px">
+          <option value="wav">wav</option><option value="mp3">mp3</option><option value="aac">aac</option><option value="flac">flac</option>
+        </select>
+      </div></div>
+      <div class="srow"><div class="label">Pause after each clip</div><div class="field">
+        <label class="check"><input type="checkbox" id="set-pause">Add silence at the end of every clip</label>
+        <input type="text" id="set-pause-ms" style="width: 56px">
+        <span class="secondary">ms</span>
+        <span class="meta">wav only</span>
+      </div></div>
+    </div>
+    <div class="section">
+      <div class="title">Files</div>
+      <div class="srow"><div class="label">Save clips in</div><div class="field">
+        <input type="text" id="set-out-dir" class="grow">
+        <span class="secondary ellipsis" id="set-out-project" style="max-width: 160px"></span>
+        <button class="ghost" id="set-browse">Browse…</button>
+      </div></div>
+      <div class="srow"><div class="label">Add to the name</div><div class="field">
+        <label class="check wide"><input type="checkbox" id="set-name-words">First words</label>
+        <label class="check wide"><input type="checkbox" id="set-name-date">Date</label>
+        <label class="check wide"><input type="checkbox" id="set-name-time">Time</label>
+        <span class="meta grow ellipsis" id="set-name-preview"></span>
+      </div></div>
+    </div>
+    <div class="section">
+      <div class="title">Timeline</div>
+      <div class="srow"><div class="label">Add clips to track</div><div class="field">
+        <input type="text" id="set-track" class="grow">
+      </div></div>
+      <div class="srow"><div class="label">Subtitles</div><div class="field">
+        <select id="set-split" style="width: 150px">
+          <option value="short">Short phrases</option><option value="sentence">Whole sentences</option>
+        </select>
+        <span class="meta grow" id="set-split-hint"></span>
+      </div></div>
+      <div class="srow"><div class="label"></div><div class="field">
+        <span class="meta">Only English, Chinese and Spanish subtitles are split. Other languages show one subtitle per line.</span>
+      </div></div>
+    </div>
+    <div class="section">
+      <div class="title">Support</div>
+      <div class="srow"><div class="label">Version</div><div class="field">
+        <span id="set-version"></span>
+        <button class="ghost" id="set-check">Check for updates</button>
+        <button class="primary" id="set-download" hidden>Download</button>
+        <span class="secondary ellipsis" id="set-update-status"></span>
+        <button class="link" id="set-notes" hidden>Release notes</button>
+      </div></div>
+      <div class="srow"><div class="label"></div><div class="field">
+        <label class="check"><input type="checkbox" id="set-auto-update">Check for updates when Higgs VoiceOver opens</label>
+      </div></div>
+      <div class="srow"><div class="label">Logs</div><div class="field">
+        <span class="grow ellipsis" id="set-log"></span>
+        <button class="ghost" id="set-open-log" title="One log per session; the ten most recent are kept. Attach the latest when reporting a problem.">Open log folder</button>
+      </div></div>
+    </div>
+  </div>
+  <div class="settings-foot" id="settings-foot" hidden>
+    <span class="meta spacer" id="set-status"></span>
+    <button class="ghost" id="set-reset" title="Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save.">Reset to default</button>
+    <button class="primary" id="set-save" style="min-width: 88px">Save</button>
+  </div>
+
+  <!-- Add a voice. Premiere gives panels no microphone, so a voice is made from a file. -->
+  <dialog id="add-voice">
+    <div class="dialog">
+      <div class="hero">Add a voice</div>
+      <div class="secondary gap-s">Use a clear recording of one person speaking, 3 to 30 seconds long.</div>
+      <div class="row gap-m">
+        <button id="av-pick">Choose a file…</button>
+        <span class="meta ellipsis spacer" id="av-file">3 to 30 seconds · wav, mp3, flac, aac or opus · under 10 MB</span>
+      </div>
+      <div class="secondary gap-m">Voice name</div>
+      <input type="text" id="av-name" class="gap-s" placeholder="e.g. Alex — narration">
+      <label class="check gap-m"><input type="checkbox" id="av-has-text">Include transcript (optional)</label>
+      <textarea id="av-text" class="gap-s" placeholder="What is said, word for word." hidden></textarea>
+      <label class="check wrap gap-m"><input type="checkbox" id="av-consent">This is my own voice, or I have the speaker's permission to make a synthetic copy of it.</label>
+      <div class="meta gap-s" id="av-result"></div>
+      <div class="actions">
+        <button id="av-cancel">Cancel</button>
+        <button class="primary" id="av-create">Create voice</button>
+      </div>
+    </div>
+  </dialog>
+
+  <video id="media" hidden></video>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "higgs-voiceover-premiere",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Higgs VoiceOver for Adobe Premiere Pro (UXP panel)",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "lint:css": "node scripts/lint-css.mjs",
+    "check": "npm run typecheck && npm test && npm run lint:css && npm run build && node scripts/check-bundle.mjs",
+    "package": "node scripts/package.mjs",
+    "preview": "node scripts/build.mjs --preview && node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "@adobe/premierepro": "26.5.1",
+    "@types/node": "24.19.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  }
+}

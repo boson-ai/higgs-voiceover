@@ -1,0 +1,518 @@
+/*
+ * Higgs VoiceOver panel for Premiere Pro.
+ *
+ * Premiere's own greys and accent, so the panel reads as part of the app;
+ * quiet, flat surfaces with hairline borders and one filled button per
+ * screen. Every colour is a token, set per Premiere theme (body.theme-*).
+ *
+ * UXP supports a subset of CSS (scripts/lint-css.mjs enforces it): no grid,
+ * no gap, no transitions, no box-shadow, no line-height, no text-transform.
+ * Spacing is margins; layout is flex.
+ */
+
+body {
+  --bg: #1d1d1d;
+  --surface: #252525;
+  --field: #141414;
+  --hover: #2c2c2c;
+  --border: #333333;
+  --border-strong: #4a4a4a;
+  --text: #e6e6e6;
+  --text-2: #a3a3a3;
+  --text-3: #6b6b6b;
+  --accent: #4f7cff;
+  --accent-hover: #6a90ff;
+  --accent-text: #8aa8ff;
+  --on-accent: #ffffff;
+  --selected: #1f2a4a;
+  --ok: #4cc37f;
+  --warn: #e8a33d;
+  --error: #f0645c;
+  --error-tint: #3a2121;
+  --tag-emotion: #e58ac9;
+  --tag-style: #a99bff;
+  --tag-speed: #6fc2ff;
+  --tag-pitch: #5fd0c0;
+  --tag-expressive: #e8c45c;
+  --tag-pause: #9a9a9a;
+  --tag-sfx: #f29a6b;
+  --mono: "SF Mono", Menlo, Consolas, monospace;
+  /* Premiere's own UI face first; the rest only matter in the browser preview. */
+  --ui: "Adobe Clean", "Source Sans 3", -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 12px;
+}
+
+body.theme-dark {
+  --bg: #262626;
+  --surface: #2e2e2e;
+  --field: #1c1c1c;
+  --hover: #353535;
+  --border: #3c3c3c;
+  --border-strong: #545454;
+  --selected: #24304f;
+}
+
+body.theme-light {
+  --bg: #efefef;
+  --surface: #ffffff;
+  --field: #ffffff;
+  --hover: #e4e4e4;
+  --border: #d3d3d3;
+  --border-strong: #a8a8a8;
+  --text: #1e1e1e;
+  --text-2: #5a5a5a;
+  --text-3: #8e8e8e;
+  --accent: #3b63fb;
+  --accent-hover: #2f54e0;
+  --accent-text: #2a4fd6;
+  --selected: #dfe6ff;
+  --ok: #1d8a4c;
+  --warn: #a8640f;
+  --error: #d1373f;
+  --error-tint: #fbe4e4;
+  --tag-emotion: #b3348c;
+  --tag-style: #6a4fd6;
+  --tag-speed: #1f78c1;
+  --tag-pitch: #198a7c;
+  --tag-expressive: #8a6d00;
+  --tag-pause: #6b6b6b;
+  --tag-sfx: #c2541b;
+}
+
+/* ------------------------------------------------------------- frame */
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0 16px;
+}
+
+.topbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  height: 40px;
+  border-bottom: 1px solid var(--border);
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  height: 39px;
+  padding: 0 2px;
+  margin-right: 18px;
+  color: var(--text-2);
+  font-size: 12px;
+  border-bottom: 2px solid transparent;
+}
+.tab:hover { color: var(--text); }
+.tab.active {
+  color: var(--text);
+  font-weight: 600;
+  border-bottom-color: var(--text);
+}
+
+.spacer { flex: 1 1 0; }
+
+.chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--text-2);
+  font-size: 11px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  margin-right: 6px;
+  border: 1px solid var(--text-3);
+}
+.chip.connected .dot { background-color: var(--ok); border-color: var(--ok); }
+.chip.saved .dot { background-color: var(--text-2); border-color: var(--text-2); }
+
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  padding-top: 16px;
+}
+
+/* ------------------------------------------------------------- type */
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.hero {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+.secondary { color: var(--text-2); }
+.meta { color: var(--text-2); font-size: 11px; }
+.faint { color: var(--text-3); }
+.mono { font-family: var(--mono); font-size: 11px; }
+.ok-text { color: var(--ok); }
+.warn-text { color: var(--warn); }
+.error-text { color: var(--error); }
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ------------------------------------------------------------- controls */
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.row > * { margin-right: 8px; }
+.row > *:last-child { margin-right: 0; }
+.row > .wide { margin-right: 20px; }
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 12px;
+  white-space: nowrap;
+}
+button:hover { background-color: var(--hover); }
+button:disabled { color: var(--text-3); border-color: var(--border); background-color: transparent; }
+
+button.primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  min-width: 96px;
+}
+button.primary:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); }
+button.primary:disabled { background-color: var(--hover); border-color: var(--hover); color: var(--text-3); }
+
+button.ghost { border-color: transparent; color: var(--text-2); padding: 0 7px; }
+button.ghost:hover { color: var(--text); background-color: var(--hover); }
+button.ghost:disabled { color: var(--text-3); border-color: transparent; }
+button.danger { color: var(--error); }
+
+button.link {
+  height: 20px;
+  padding: 0;
+  border-width: 0;
+  color: var(--accent-text);
+}
+button.link:hover { background-color: transparent; color: var(--text); }
+
+button.icon {
+  width: 26px;
+  padding: 0;
+  border-color: transparent;
+  color: var(--text-2);
+  font-size: 11px;
+}
+button.icon:hover { color: var(--text); }
+
+input[type="text"], input[type="password"], textarea, select {
+  background-color: var(--field);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--ui);
+  font-size: 12px;
+}
+input[type="text"], input[type="password"] {
+  height: 26px;
+  padding: 0 8px;
+}
+input:focus, textarea:focus { border-color: var(--border-strong); }
+select { height: 26px; }
+
+label.check {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  color: var(--text);
+  white-space: nowrap;
+}
+label.check input { margin: 0 6px 0 0; }
+/* A long statement (the consent) wraps beside its box. */
+label.check.wrap { white-space: normal; align-items: flex-start; }
+label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
+
+/* ------------------------------------------------------------- lists */
+
+.list {
+  flex: 1 1 0;
+  min-height: 96px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--field);
+}
+.list-head {
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+  align-items: center;
+  padding: 0 10px;
+  color: var(--text-3);
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+}
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 10px;
+  color: var(--text);
+}
+.item:hover { background-color: var(--hover); }
+.item.selected { background-color: var(--selected); }
+.item .star { width: 16px; color: var(--accent-text); }
+.item.in-use .name { color: var(--accent-text); }
+.item .name { flex: 1 1 0; }
+.item .kind { width: 104px; font-size: 11px; }
+.list-foot {
+  padding: 8px 10px;
+  color: var(--text-2);
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+}
+
+.k-emotion { color: var(--tag-emotion); }
+.k-style { color: var(--tag-style); }
+.k-speed { color: var(--tag-speed); }
+.k-pitch { color: var(--tag-pitch); }
+.k-expressive { color: var(--tag-expressive); }
+.k-pause { color: var(--tag-pause); }
+.k-sfx { color: var(--tag-sfx); }
+
+/* ------------------------------------------------------------- generate */
+
+/* .right comes first in the markup so a narrow panel shows the text first;
+   row-reverse puts the voice and tag lists back on the left. */
+.cols {
+  display: flex;
+  flex-direction: row-reverse;
+  flex: 1 1 0;
+  min-height: 0;
+}
+.left {
+  display: flex;
+  flex-direction: column;
+  width: 340px;
+  flex-shrink: 0;
+  margin-right: 24px;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 26px;
+  margin-bottom: 8px;
+}
+.head .title { flex: 1 1 0; }
+.block { margin-bottom: 8px; }
+.section-gap { margin-top: 16px; }
+
+#text {
+  flex: 1 1 0;
+  min-height: 140px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--surface);
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+.card .row { margin-top: 8px; }
+.card .row:first-child { margin-top: 0; }
+.card.empty .dim { opacity: 0.4; }
+
+.pill {
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 9px;
+  border: 1px solid var(--border-strong);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.bar {
+  flex: 1 1 0;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--border);
+  overflow: hidden;
+  margin: 0 10px;
+}
+.bar-fill {
+  height: 4px;
+  width: 0;
+  background-color: var(--text);
+}
+
+.status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  height: 30px;
+  margin: 8px -16px 0;
+  padding: 0 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-2);
+}
+
+/* Rows of controls in two groups: when the panel is too narrow for both,
+   the buttons move under the boxes. */
+.split { flex-wrap: wrap; margin-top: -6px; }
+.split > .group { margin-top: 6px; flex-shrink: 0; }
+.card .row.split { margin-top: 2px; }
+
+/* A docked panel is often narrow: one column that scrolls, the text first. */
+@media (max-width: 720px) {
+  .cols { flex-direction: column; overflow-y: auto; }
+  .right { flex: 0 0 auto; }
+  #text { flex: 0 0 auto; height: 170px; }
+  .left { width: auto; margin-right: 0; margin-top: 20px; flex: 0 0 auto; }
+  #voice-list { flex: 0 0 auto; height: 150px; }
+  #tag-box { flex: 0 0 auto; height: 220px; }
+}
+
+/* ------------------------------------------------------------- setup */
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+}
+.setup {
+  display: flex;
+  flex-direction: column;
+  width: 420px;
+  flex-shrink: 1;
+}
+.setup .body { margin-top: 8px; color: var(--text-2); }
+.setup .gap-s { margin-top: 8px; }
+.setup .gap-m { margin-top: 18px; }
+.setup .gap-l { margin-top: 32px; }
+.setup .result { height: 18px; margin-top: 10px; }
+
+/* ------------------------------------------------------------- settings */
+
+.settings { overflow-y: auto; padding-right: 12px; }
+.section { margin-bottom: 24px; max-width: 760px; }
+.section .title { margin-bottom: 10px; }
+.srow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 26px;
+  margin-bottom: 10px;
+}
+.srow > .label {
+  width: 150px;
+  flex-shrink: 0;
+  color: var(--text-2);
+}
+.srow > .field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.field > * { margin-right: 8px; }
+.field > *:last-child { margin-right: 0; }
+.field .grow { flex: 1 1 0; min-width: 0; }
+.settings-foot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  height: 44px;
+  margin: 0 -16px;
+  padding: 0 16px;
+  border-top: 1px solid var(--border);
+}
+.settings-foot > button { margin-left: 8px; }
+
+/* ------------------------------------------------------------- dialog */
+
+dialog {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0;
+}
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: 440px;
+  padding: 20px;
+}
+.dialog .gap-s { margin-top: 8px; }
+.dialog .gap-m { margin-top: 16px; }
+.dialog textarea { height: 72px; padding: 8px; }
+.dialog .actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.dialog .actions > button { margin-left: 8px; }
+.notice {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: var(--error-tint);
+  color: var(--error);
+  border-left: 2px solid var(--error);
+}
+
+[hidden] { display: none; }

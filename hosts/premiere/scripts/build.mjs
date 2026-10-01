@@ -1,0 +1,55 @@
+// Build the plugin folder Premiere loads (build/), or the browser preview
+// (build-preview/, with stand-ins for Premiere — see preview/).
+//
+//   npm run build            build/
+//   npm run build -- --watch rebuild on change (UXP Developer Tool: Load & Watch build/)
+//   npm run preview          build-preview/ and a local server
+
+import * as esbuild from "esbuild";
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const preview = process.argv.includes("--preview");
+const watch = process.argv.includes("--watch");
+const out = join(root, preview ? "build-preview" : "build");
+const version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
+
+rmSync(out, { recursive: true, force: true });
+mkdirSync(out, { recursive: true });
+
+function copyStatic() {
+  // The preview gets a viewport tag so a narrow browser window behaves like a narrow panel.
+  const html = readFileSync(join(root, "src/ui/index.html"), "utf8");
+  writeFileSync(join(out, "index.html"), preview ? html.replace("<head>", '<head>\n  <meta name="viewport" content="width=device-width">') : html);
+  cpSync(join(root, "src/ui/styles.css"), join(out, "styles.css"));
+  if (!preview) {
+    writeFileSync(join(out, "manifest.json"), readFileSync(join(root, "manifest.json"), "utf8").replace("__VERSION__", version));
+    cpSync(join(root, "icons"), join(out, "icons"), { recursive: true });
+  }
+}
+
+const options = {
+  entryPoints: [join(root, preview ? "preview/main.ts" : "src/main.ts")],
+  outfile: join(out, "main.js"),
+  bundle: true,
+  // UXP loads CommonJS and provides these modules itself.
+  format: preview ? "iife" : "cjs",
+  platform: preview ? "browser" : "neutral",
+  external: preview ? [] : ["uxp", "premierepro", "fs", "os"],
+  target: "es2022",
+  sourcemap: preview ? "inline" : false,
+  define: { __VERSION__: JSON.stringify(preview ? version + "-preview" : version) },
+  logLevel: "warning",
+  plugins: [{ name: "static", setup(b) { b.onEnd(copyStatic); } }],
+};
+
+if (watch) {
+  const ctx = await esbuild.context(options);
+  await ctx.watch();
+  console.log(`watching — ${out}`);
+} else {
+  await esbuild.build(options);
+  console.log(`built ${preview ? "preview" : "plugin"} ${version} → ${out}`);
+}
