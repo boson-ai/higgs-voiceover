@@ -8,7 +8,7 @@
 <body class="theme-darkest">
 <div id="app">
 
-  <div class="topbar">
+  <div class="topbar" id="topbar">
     <div class="tab active" id="tab-generate">Generate</div>
     <div class="tab" id="tab-settings">Settings</div>
     <div class="spacer"></div>
@@ -29,7 +29,7 @@
         </div>
         <div class="row gap-m">
           <button class="primary" id="setup-connect">Connect</button>
-          <button id="setup-skip" title="Look around first. You'll need a key before you can generate.">Skip for now</button>
+          <button class="pair" id="setup-skip" title="Look around first. You'll need a key before you can generate.">Skip for now</button>
         </div>
         <div class="result meta" id="setup-result"></div>
       </div>
@@ -55,7 +55,7 @@
           <div class="spacer"></div>
           <div class="row group">
           <button class="ghost" id="stop">Stop</button>
-          <button class="primary" id="generate" style="min-width: 120px">Generate</button>
+          <button class="primary wide-primary" id="generate">Generate</button>
           </div>
         </div>
 
@@ -68,15 +68,15 @@
           <div class="row dim">
             <span class="pill" id="take-index" hidden></span>
             <span class="meta ellipsis spacer" id="take-name">Nothing to preview yet — Generate to hear your lines.</span>
-            <button class="icon" id="take-prev" title="Previous line">‹</button>
-            <button class="icon" id="take-next" title="Next line">›</button>
+            <button class="icon chevron" id="take-prev" title="Previous line">‹</button>
+            <button class="icon chevron" id="take-next" title="Next line">›</button>
           </div>
           <div class="row dim">
             <span class="mono" id="time-now" style="width: 34px">0:00</span>
             <div class="bar" id="bar" title="Click to move within the take"><div class="bar-fill" id="bar-fill"></div></div>
             <span class="mono secondary" id="time-total" style="width: 34px; text-align: right">0:00</span>
             <button class="icon" id="play" title="Play">▶</button>
-            <button class="icon" id="pause-stop" title="Stop">■</button>
+            <button class="icon square" id="pause-stop" title="Stop">■</button>
           </div>
           <div class="row split">
             <div class="row group">
@@ -201,7 +201,7 @@
   <div class="settings-foot" id="settings-foot" hidden>
     <span class="meta spacer" id="set-status"></span>
     <button class="ghost" id="set-reset" title="Put every setting on this page back to its default. Your API key is kept. Nothing changes until you save.">Reset to default</button>
-    <button class="primary" id="set-save" style="min-width: 88px">Save</button>
+    <button class="primary" id="set-save">Save</button>
   </div>
 
   <!-- Add a voice: record (where the host has a microphone) or use a file. -->
@@ -216,12 +216,12 @@
       <div class="col" id="av-page-record">
         <div class="card">
           <div class="row">
-            <button id="av-rec" style="min-width: 128px">Record</button>
+            <button class="pair" id="av-rec" style="min-width: 128px">Record</button>
             <div class="spacer"></div>
           </div>
           <div class="row">
             <button class="icon" id="av-play" title="Play">▶</button>
-            <button class="icon" id="av-stop" title="Stop">■</button>
+            <button class="icon square" id="av-stop" title="Stop">■</button>
             <span class="mono" id="av-t-now" style="width: 34px; margin-left: 4px">0:00</span>
             <div class="bar"><div class="bar-fill" id="av-bar-fill"></div></div>
             <span class="mono secondary" id="av-t-total" style="width: 40px; text-align: right">0:30</span>

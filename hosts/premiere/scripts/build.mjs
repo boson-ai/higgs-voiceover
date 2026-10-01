@@ -23,8 +23,13 @@ mkdirSync(out, { recursive: true });
 function copyStatic() {
   // The preview gets a viewport tag so a narrow browser window behaves like a narrow panel.
   const html = readFileSync(join(root, "src/ui/index.html"), "utf8");
-  writeFileSync(join(out, "index.html"), preview ? html.replace("<head>", '<head>\n  <meta name="viewport" content="width=device-width">\n  <meta name="color-scheme" content="dark light">') : html);
+  // Chromium builds (CEP, preview) also get chromium.css: checkbox and scrollbar colours UXP has no use for.
+  const chromium = preview || cep;
+  let page = chromium ? html.replace('<link rel="stylesheet" href="styles.css">', '<link rel="stylesheet" href="styles.css">\n  <link rel="stylesheet" href="chromium.css">') : html;
+  if (preview) page = page.replace("<head>", '<head>\n  <meta name="viewport" content="width=device-width">\n  <meta name="color-scheme" content="dark light">');
+  writeFileSync(join(out, "index.html"), page);
   cpSync(join(root, "src/ui/styles.css"), join(out, "styles.css"));
+  if (chromium) cpSync(join(root, "src/ui/chromium.css"), join(out, "chromium.css"));
   if (cep) {
     mkdirSync(join(out, "CSXS"), { recursive: true });
     writeFileSync(join(out, "CSXS/manifest.xml"), readFileSync(join(root, "cep/CSXS/manifest.xml"), "utf8").replaceAll("__VERSION__", version));

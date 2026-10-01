@@ -46,7 +46,32 @@ async function main() {
     while (!(document.getElementById("stop") as HTMLButtonElement).disabled) await wait(100);
   }
   if (state === "settings") click("tab-settings");
+  if (q.get("dirty")) {
+    const track = document.getElementById("set-track") as HTMLInputElement;
+    track.value = "Voice-over";
+    track.dispatchEvent(new Event("input"));
+  }
   if (state === "addvoice") click("voice-add");
+  if (q.get("tab") === "file") click("av-tab-file");
+  if (q.get("record") === "take") {
+    click("av-rec");
+    await wait(3400);
+    await wait(2600);
+    click("av-rec");
+    await wait(300);
+  }
+  // Visual checks: hover=<id>,<id> shows those elements as if the pointer were on them.
+  const hover = (q.get("hover") ?? "").split(",").filter(Boolean);
+  if (hover.length) {
+    const rules = [...document.styleSheets].flatMap((sheet) => [...sheet.cssRules])
+      .filter((r) => r instanceof CSSStyleRule && r.selectorText.includes(":hover"))
+      .map((r) => r.cssText.replaceAll(":hover", ".force-hover"));
+    const style = document.createElement("style");
+    style.textContent = rules.join("\n");
+    document.head.appendChild(style);
+    for (const id of hover) document.getElementById(id)?.classList.add("force-hover");
+  }
+  document.body.dataset.ready = "1";
   (window as unknown as { host: unknown }).host = host;
 }
 

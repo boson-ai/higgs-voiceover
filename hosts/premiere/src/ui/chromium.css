@@ -1,0 +1,17 @@
+/*
+ * Only for builds whose panel is Chromium (CEP, and the browser preview):
+ * native checkboxes and scrollbars in the product's colours. UXP draws its
+ * own controls and ignores these, so they live outside styles.css and its
+ * UXP property check.
+ */
+/* Native controls follow the panel's theme, not the browser's. */
+body { color-scheme: dark; }
+body.theme-light { color-scheme: light; }
+input[type="checkbox"] { accent-color: var(--accent); }
+textarea, input, select, button { outline: none; }
+input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 1px solid var(--accent-text); outline-offset: 1px; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }

@@ -74,10 +74,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     show("page-generate", !setup && st.page === "generate");
     show("page-settings", !setup && st.page === "settings");
     show("settings-foot", !setup && st.page === "settings");
-    // First run is one screen: no tabs, no chip.
-    show("tab-generate", !setup);
-    show("tab-settings", !setup);
-    show("conn", !setup);
+    // First run is one screen: no tabs, no chip, no header.
+    show("topbar", !setup);
     $("tab-generate").classList.toggle("active", st.page === "generate");
     $("tab-settings").classList.toggle("active", st.page === "settings");
     if (!setup && st.page === "settings") fillSettings(values(cfg(), store.key), true);

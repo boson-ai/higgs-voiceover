@@ -14,7 +14,7 @@ body {
   --bg: #1d1d1d;
   --surface: #252525;
   --field: #141414;
-  --hover: #2c2c2c;
+  --hover: #3a3a3a;
   --border: #333333;
   --border-strong: #4a4a4a;
   --text: #e6e6e6;
@@ -56,7 +56,7 @@ body.theme-dark {
   --bg: #262626;
   --surface: #2e2e2e;
   --field: #1c1c1c;
-  --hover: #353535;
+  --hover: #444444;
   --border: #3c3c3c;
   --border-strong: #545454;
 }
@@ -65,7 +65,7 @@ body.theme-light {
   --bg: #efefef;
   --surface: #ffffff;
   --field: #ffffff;
-  --hover: #e4e4e4;
+  --hover: #e2e2e2;
   --border: #d3d3d3;
   --border-strong: #a8a8a8;
   --text: #1e1e1e;
@@ -198,8 +198,15 @@ body.theme-light {
   flex-direction: column;
 }
 
+/*
+ * Buttons. Every style has the same box (26 px, 6 px radius, 12 px type)
+ * and spells out its three states — rest, hover, disabled — so a disabled
+ * button never lights up under the pointer and no style borrows another's
+ * hover. One filled (primary) button per screen.
+ */
 button {
   height: 26px;
+  min-width: 0;
   padding: 0 12px;
   border: 1px solid var(--border-strong);
   border-radius: 6px;
@@ -207,42 +214,43 @@ button {
   color: var(--text);
   font-family: var(--ui);
   font-size: 12px;
+  font-weight: 400;
   white-space: nowrap;
 }
-button:hover { background-color: var(--hover); }
-button:disabled { color: var(--text-3); border-color: var(--border); background-color: transparent; }
+button:hover { background-color: var(--hover); border-color: var(--border-strong); color: var(--text); }
+button:disabled, button:disabled:hover { background-color: transparent; border-color: var(--border); color: var(--text-3); }
 
-button.primary {
-  background-color: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-  min-width: 96px;
-}
-button.primary:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); }
-button.primary:disabled { background-color: var(--accent-dim); border-color: var(--accent-dim); color: var(--accent-dim-text); }
+/* Primary: the product green, white label; dim green when it cannot act yet. */
+button.primary { background-color: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; min-width: 96px; }
+button.primary:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+button.primary:disabled, button.primary:disabled:hover { background-color: var(--accent-dim); border-color: var(--accent-dim); color: var(--accent-dim-text); }
+button.wide-primary { min-width: 120px; }
 
-button.ghost { border-color: transparent; color: var(--text-2); padding: 0 7px; }
-button.ghost:hover { color: var(--text); background-color: var(--hover); }
-button.ghost:disabled { color: var(--text-3); border-color: transparent; }
-button.danger { color: var(--error); }
+/* Ghost: no box at rest; the hover fill shows it is a button. */
+button.ghost { border-color: transparent; color: var(--text-2); padding: 0 8px; }
+button.ghost:hover { background-color: var(--hover); border-color: transparent; color: var(--text); }
+button.ghost:disabled, button.ghost:disabled:hover { background-color: transparent; border-color: transparent; color: var(--text-3); }
 
-button.link {
-  height: 20px;
-  padding: 0;
-  border-width: 0;
-  color: var(--accent-text);
-}
-button.link:hover { background-color: transparent; color: var(--text); }
+/* Danger keeps its red under the pointer; grey like the rest when it cannot act. */
+button.ghost.danger { color: var(--error); }
+button.ghost.danger:hover { color: var(--error); background-color: var(--error-tint); }
+button.ghost.danger:disabled, button.ghost.danger:disabled:hover { color: var(--text-3); background-color: transparent; }
 
-button.icon {
-  width: 26px;
-  padding: 0;
-  border-color: transparent;
-  color: var(--text-2);
-  font-size: 11px;
-}
-button.icon:hover { color: var(--text); }
+/* Link: green text, no box. */
+button.link { height: 20px; padding: 0; border-width: 0; border-color: transparent; color: var(--accent-text); }
+button.link:hover { background-color: transparent; border-color: transparent; color: var(--text); }
+button.link:disabled, button.link:disabled:hover { background-color: transparent; border-color: transparent; color: var(--text-3); }
+
+/* Transport glyphs. */
+button.icon { width: 26px; padding: 0; border-color: transparent; color: var(--text-2); font-size: 13px; }
+button.icon.chevron { font-size: 22px; padding-bottom: 3px; }
+/* The square reads smaller than the triangle at one size; this evens them out. */
+button.icon.square { font-size: 16px; }
+button.icon:hover { background-color: var(--hover); border-color: transparent; color: var(--text); }
+button.icon:disabled, button.icon:disabled:hover { background-color: transparent; border-color: transparent; color: var(--text-3); }
+
+/* Two buttons offered as a pair (Connect / Skip for now) share a width. */
+button.pair { min-width: 96px; }
 
 input[type="text"], input[type="password"], textarea, select {
   background-color: var(--field);
@@ -376,6 +384,8 @@ label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
 .card.empty .dim { opacity: 0.4; }
 
 .pill {
+  display: flex;
+  align-items: center;
   height: 18px;
   padding: 0 7px;
   border-radius: 9px;
