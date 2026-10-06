@@ -74,38 +74,27 @@ the Mac App Store version does not load user scripts.
 3. Quit and reopen DaVinci Resolve, open a project, and choose
    **Workspace → Scripts → Higgs VoiceOver**.
 
-**By hand instead:** download `Higgs-VoiceOver-<version>-DaVinci-Resolve-macOS.lua`
-from the [latest release](../../releases/latest), rename it to **`Higgs VoiceOver.lua`**
-(Resolve shows the file name as the menu entry), copy it into
-`~/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility/`,
-and restart Resolve.
-
 ### Updating
 
 Higgs VoiceOver checks for new releases once a day (you can turn this off in
-Settings). **Settings → Check for updates → Update now** installs the new
-version; close and reopen the window to use it.
+Settings) and tells you when one is out. Download the new installer from the
+[latest release](../../releases/latest), run it, and reopen the window.
 
 ### Uninstalling
 
 Delete `Higgs VoiceOver.lua` from
 `/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility/`
-(where the installer puts it) or from the per-user folder above if you
-installed by hand.
+(where the installer puts it).
 Your settings stay in the data folder below until you delete that too.
 
 ## Install in Premiere Pro
 
 1. Download `Higgs-VoiceOver-<version>-Premiere-Pro-macOS.pkg` from the
-   newest **Premiere Pro** release on the [releases page](../../releases).
+   [latest release](../../releases/latest).
 2. Open it and follow the installer. It asks for your password because it
    installs for every user on the Mac.
 3. Quit and reopen Premiere Pro, open a project, and choose
    **Window → Extensions → Higgs VoiceOver**.
-
-**With an extension installer instead:** the same release has
-`Higgs-VoiceOver-<version>-Premiere-Pro.zxp`, a signed extension package that
-Adobe's `UnifiedPluginInstallerAgent` or a ZXP installer app can install.
 
 ### Updating
 

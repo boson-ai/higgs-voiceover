@@ -19,7 +19,6 @@ reply within a week.
 - **Logs** record what the app did. They never contain the API key or the text
   you voiced; project, voice and file names are marked so they can be removed
   before a log is ever shared.
-- **Updates** are downloaded from this repository's GitHub releases. In
-  Resolve they must compile before they replace the installed script; in
-  Premiere Pro the signed installer is downloaded in your browser for you to
-  open.
+- **Updates** come from this repository's GitHub releases, as installers
+  signed with an Apple Developer ID and notarized by Apple. The app
+  checks for them and points you to the download; you run the installer.

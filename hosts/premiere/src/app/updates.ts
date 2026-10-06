@@ -1,10 +1,9 @@
 // Is there a newer Premiere build on GitHub?
 //
-// The repository's "latest" release belongs to whichever host shipped last
-// (Resolve 1.0.0 clients read it), so this looks through recent releases for
-// the newest one that carries a Premiere package. Premiere releases are
-// published with "make latest" off for that reason. Nothing is sent but the
-// request itself.
+// Each release (vX.Y.Z) carries an installer for every editor, all at the
+// same version. This looks through recent releases for the newest one that
+// carries a package this build can install, so a release without one is
+// skipped rather than offered. Nothing is sent but the request itself.
 
 import type { Http } from "../host/host.ts";
 
