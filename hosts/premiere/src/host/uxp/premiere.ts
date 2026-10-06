@@ -23,7 +23,7 @@
 //     reports), so long runs are committed in batches.
 
 import type { premierepro, Project, FolderItem, ProjectItem, Sequence, AudioTrack } from "@adobe/premierepro";
-import type { PlaceResult, Timeline } from "../host.ts";
+import type { PlaceResult, Timeline, TrackTarget } from "../host.ts";
 import { startAfter, type Span } from "../rules.ts";
 
 const ppro = require("premierepro") as premierepro;
@@ -133,7 +133,17 @@ export const timeline: Timeline = {
     const got = await importInto(project, bin, paths);
     return typeof got === "string" ? { ok: false, error: got } : { ok: true };
   },
-  async place(takes, trackName) {
+  async audioTracks() {
+    const p = await activeProject();
+    const seq = p && (await activeSequence(p));
+    if (!seq) return [];
+    const out: string[] = [];
+    const n = await seq.getAudioTrackCount();
+    for (let i = 0; i < n; i++) out.push((await seq.getAudioTrack(i))?.name ?? `Audio ${i + 1}`);
+    return out;
+  },
+  async place(takes, target: TrackTarget) {
+    const trackName = target.name;
     const fail = (error: string, fps = 0): PlaceResult => ({ ok: false, placed: 0, starts: [], ends: [], pushed: false, fps, error });
     const project = await activeProject();
     if (!project) return fail("No project is open.");
@@ -149,7 +159,13 @@ export const timeline: Timeline = {
     if (typeof items === "string") return fail(items, fps);
 
     // Everything is read before the edit: nothing may be awaited inside it.
-    const found = await findTrack(seq, trackName);
+    let found: TrackRef & { count: number };
+    if (target.index !== null) {
+      const count = await seq.getAudioTrackCount();
+      if (target.index >= count) return fail(`This sequence has no A${target.index + 1} track. Choose another track in Settings.`, fps);
+      found = { index: target.index, track: await seq.getAudioTrack(target.index), count };
+    } else found = await findTrack(seq, trackName);
+    const label = `A${found.index + 1}`;
     const playhead = (await seq.getPlayerPosition()).alignToFrame(rate).seconds;
     const start = startAfter(playhead, await spans(found.track));
     const plan: { item: ProjectItem; at: number; seconds: number }[] = [];
@@ -194,12 +210,12 @@ export const timeline: Timeline = {
       const hit = landed.find((s) => Math.abs(s.start - p.at) < frame / 2);
       if (!hit) {
         const placed = starts.length;
-        const why = `Premiere did not place the clip on “${trackName}”. The track may be locked.`;
-        return { ok: false, placed, starts, ends, pushed: start > playhead + frame / 2, fps, error: why };
+        const why = `Premiere did not place the clip on ${label}. The track may be locked.`;
+        return { ok: false, placed, starts, ends, pushed: start > playhead + frame / 2, fps, track: label, error: why };
       }
       starts.push(hit.start);
       ends.push(hit.end);
     }
-    return { ok: true, placed: plan.length, starts, ends, pushed: start > playhead + frame / 2, fps };
+    return { ok: true, placed: plan.length, starts, ends, pushed: start > playhead + frame / 2, fps, track: label };
   },
 };

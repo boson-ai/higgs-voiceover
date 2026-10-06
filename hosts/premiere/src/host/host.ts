@@ -84,9 +84,22 @@ export interface Take {
   pause: number;
 }
 
+/**
+ * Where clips go: an audio track by number (Premiere's A1, A2…), or the
+ * plugin's own track, found by name and added the first time.
+ */
+export interface TrackTarget {
+  /** 0-based audio track index (A1 = 0), or null for the plugin's own track. */
+  index: number | null;
+  /** The own track's name ("Higgs VO"). */
+  name: string;
+}
+
 export interface PlaceResult {
   ok: boolean;
   placed: number;
+  /** The track as Premiere labels it ("A4"), once known. */
+  track?: string;
   /** Sequence time of each placed clip, as Premiere reports it, in seconds. */
   starts: number[];
   ends: number[];
@@ -106,8 +119,10 @@ export interface Timeline {
   binName(): Promise<string>;
   /** Import files into the bin (made if missing); files already there are not imported twice. */
   importToBin(paths: string[]): Promise<{ ok: boolean; error?: string }>;
-  /** Place the takes back to back on the named audio track at the playhead, or after what is there. */
-  place(paths: { path: string; seconds: number }[], trackName: string): Promise<PlaceResult>;
+  /** The open sequence's audio track names, A1 first; [] without a sequence. */
+  audioTracks(): Promise<string[]>;
+  /** Place the takes back to back on the target track at the playhead, or after what is there. */
+  place(paths: { path: string; seconds: number }[], target: TrackTarget): Promise<PlaceResult>;
   /**
    * Native captions from an .srt, its time zero at `atSeconds` in the
    * sequence. Only where the host can (CEP: ExtendScript createCaptionTrack);

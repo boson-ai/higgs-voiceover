@@ -1,5 +1,5 @@
 /*
- * Higgs VoiceOver — the CEP build's side inside Premiere (ExtendScript, ES3).
+ * Higgs VoiceOver - the CEP build's side inside Premiere (ExtendScript, ES3).
  *
  * The panel calls HiggsVO.<name>(<JSON args>) through evalScript and gets
  * JSON back. Everything here is what UXP's premierepro module does for the
@@ -127,8 +127,15 @@ var HiggsVO = (function () {
         importToBin: function (a) {
             if (!app.project) return hvJson({ ok: false, error: "No project is open." });
             var bin = ensureBin(a.bin);
-            if (!bin) return hvJson({ ok: false, error: "Premiere would not make the “" + a.bin + "” bin." });
+            if (!bin) return hvJson({ ok: false, error: "Premiere would not make the \u201c" + a.bin + "\u201d bin." });
             return hvJson(importInto(bin, a.paths) ? { ok: true } : { ok: false, error: "Premiere would not import the clip." });
+        },
+
+        /** The open sequence's audio track names, A1 first. */
+        tracks: function () {
+            var seq = app.project && app.project.activeSequence, out = [];
+            if (seq) for (var i = 0; i < seq.audioTracks.numTracks; i++) out.push(seq.audioTracks[i].name);
+            return hvJson(out);
         },
 
         place: function (a) {
@@ -142,11 +149,21 @@ var HiggsVO = (function () {
             for (var i = 0; i < a.takes.length; i++) paths.push(a.takes[i].path);
             if (!bin || !importInto(bin, paths)) return fail("Premiere would not import the clip.", fps);
 
-            var track = findTrack(seq, a.track) || addTrack(seq, a.track);
-            if (!track) return fail("Premiere would not add an audio track for “" + a.track + "”.", fps);
-            if (track.isLocked && track.isLocked()) return fail("The “" + a.track + "” track is locked. Unlock it and place again.", fps);
+            // A track by number (A1 = index 0), or the plugin's own track by name.
+            var track, label;
+            if (a.index !== null && a.index !== undefined) {
+                if (a.index >= seq.audioTracks.numTracks) return fail("This sequence has no A" + (a.index + 1) + " track. Choose another track in Settings.", fps);
+                track = seq.audioTracks[a.index];
+            } else {
+                track = findTrack(seq, a.track) || addTrack(seq, a.track);
+                if (!track) return fail("Premiere would not add an audio track for \u201c" + a.track + "\u201d.", fps);
+                seq = app.project.activeSequence;
+            }
+            for (var n = 0; n < seq.audioTracks.numTracks; n++) if (seq.audioTracks[n].id === track.id) label = "A" + (n + 1);
+            label = label || a.track;
+            if (track.isLocked && track.isLocked()) return fail(label + " is locked. Unlock it and place again.", fps);
 
-            // The playhead, or after clips on the track that reach past it — nothing is overwritten.
+            // The playhead, or after clips on the track that reach past it - nothing is overwritten.
             var playhead = Math.round(seq.getPlayerPosition().seconds / frame) * frame;
             var start = playhead, existing = clips(track);
             for (var k = 0; k < existing.length; k++) if (existing[k].end > start) start = existing[k].end;
@@ -169,12 +186,12 @@ var HiggsVO = (function () {
                 for (var l = 0; l < landed.length; l++) if (Math.abs(landed[l].start - plan[p].at) < frame / 2) hit = landed[l];
                 if (!hit) {
                     return hvJson({ ok: false, placed: starts.length, starts: starts, ends: ends, pushed: start > playhead + frame / 2, fps: fps,
-                                    error: "Premiere did not place the clip on “" + a.track + "”." });
+                                    track: label, error: "Premiere did not place the clip on " + label + "." });
                 }
                 starts.push(hit.start);
                 ends.push(hit.end);
             }
-            return hvJson({ ok: true, placed: plan.length, starts: starts, ends: ends, pushed: start > playhead + frame / 2, fps: fps });
+            return hvJson({ ok: true, placed: plan.length, starts: starts, ends: ends, pushed: start > playhead + frame / 2, fps: fps, track: label });
         },
 
         /** Native captions from an .srt, its time zero at `at` seconds in the sequence. */

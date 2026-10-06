@@ -42,7 +42,9 @@ export async function checkForUpdate(http: Http, current: string): Promise<Updat
   const res = await http.request({
     method: "GET",
     url: `https://api.github.com/repos/${UPDATE_REPO}/releases?per_page=30`,
-    headers: { Accept: "application/vnd.github+json" },
+    // GitHub refuses API requests without a User-Agent (403); a browser adds
+    // one, Node - which the CEP build's requests go through - does not.
+    headers: { Accept: "application/vnd.github+json", "User-Agent": `HiggsVoiceOver/${current}` },
     timeoutMs: 20_000,
   });
   // In GitHub's words, short: the row has room for a few words.

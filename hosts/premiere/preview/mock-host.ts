@@ -6,7 +6,7 @@
 // the browser's, fonts are the browser's, and UXP's CSS limits are enforced
 // by scripts/lint-css.mjs rather than by rendering here.
 
-import type { Host, HttpRequest, HttpResponse, PlaceResult, Recorder, Take } from "../src/host/host.ts";
+import type { Host, HttpRequest, HttpResponse, PlaceResult, Recorder, Take, TrackTarget } from "../src/host/host.ts";
 import { createMediaPlayer } from "../src/host/player.ts";
 
 const enc = (s: string) => new TextEncoder().encode(s);
@@ -76,7 +76,8 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
   const secrets = new Map<string, string>(o.key ? [["boson_api_key", o.key]] : []);
   const placed: PlaceResult[] = [];
   const bin = new Set<string>();
-  const track: { start: number; end: number }[] = [];
+  const tracks: { name: string; spans: { start: number; end: number }[] }[] =
+    ["Audio 1", "Audio 2", "Audio 3"].map((name) => ({ name, spans: [] }));
   let theme = o.theme ?? "darkest";
   const themeListeners: ((t: string) => void)[] = [];
   let speechCalls = 0;
@@ -160,13 +161,18 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
       hasSequence: async () => o.sequence !== false,
       binName: async () => "Higgs VoiceOver",
       importToBin: async (paths) => { paths.forEach((p) => bin.add(p)); return { ok: true }; },
-      place: async (takes: { path: string; seconds: number }[]) => {
+      audioTracks: async () => (o.sequence === false ? [] : tracks.map((t) => t.name)),
+      place: async (takes: { path: string; seconds: number }[], target: TrackTarget) => {
+        let i = target.index ?? tracks.findIndex((t) => t.name === target.name);
+        if (i === -1) { tracks.push({ name: target.name, spans: [] }); i = tracks.length - 1; }
+        const track = tracks[i];
+        if (!track) return { ok: false, placed: 0, starts: [], ends: [], pushed: false, fps: 25, error: `This sequence has no A${i + 1} track. Choose another track in Settings.` };
         const playhead = 12;
-        let at = Math.max(playhead, ...track.map((s) => s.end));
+        let at = Math.max(playhead, ...track.spans.map((s) => s.end));
         const pushed = at > playhead;
         const starts: number[] = [], ends: number[] = [];
-        for (const t of takes) { starts.push(at); ends.push(at + t.seconds); track.push({ start: at, end: at + t.seconds }); at += t.seconds; }
-        const r: PlaceResult = { ok: true, placed: takes.length, starts, ends, pushed, fps: 25 };
+        for (const t of takes) { starts.push(at); ends.push(at + t.seconds); track.spans.push({ start: at, end: at + t.seconds }); at += t.seconds; }
+        const r: PlaceResult = { ok: true, placed: takes.length, starts, ends, pushed, fps: 25, track: `A${i + 1}` };
         placed.push(r);
         return r;
       },

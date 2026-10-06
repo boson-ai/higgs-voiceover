@@ -29,8 +29,9 @@ export const timeline: Timeline = {
   async importToBin(paths) {
     return (await jsx<{ ok: boolean; error?: string }>("importToBin", { paths, bin: BIN_NAME })) ?? { ok: false, error: "Premiere did not answer." };
   },
-  async place(takes, trackName) {
-    return (await jsx<PlaceResult>("place", { takes, track: trackName, bin: BIN_NAME })) ?? fallback("Premiere did not answer.");
+  async audioTracks() { return (await jsx<string[]>("tracks")) ?? []; },
+  async place(takes, target) {
+    return (await jsx<PlaceResult>("place", { takes, track: target.name, index: target.index, bin: BIN_NAME })) ?? fallback("Premiere did not answer.");
   },
   async addCaptions(srt, at) {
     return (await jsx<{ ok: boolean; error?: string }>("captions", { srt, at, bin: BIN_NAME })) ?? { ok: false, error: "Premiere did not answer." };

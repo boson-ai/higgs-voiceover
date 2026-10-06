@@ -6,7 +6,7 @@
 // "working on it"; still missing in 26.5 and the 27 beta), so the UXP build
 // imports the file into the bin for the user to drag in.
 
-import type { Host, Take } from "../host/host.ts";
+import type { Host, Take, TrackTarget } from "../host/host.ts";
 import type { Log } from "./log.ts";
 import * as Subs from "../core/subtitles.ts";
 
@@ -18,7 +18,7 @@ export interface PlaceOutcome {
 }
 
 export interface PlaceOptions {
-  trackName: string;
+  target: TrackTarget;
   subtitles: boolean;
   split: string;
   mode: "auto" | "all" | "one";
@@ -78,7 +78,7 @@ export async function placeTakes(host: Host, log: Log, takes: Take[], o: PlaceOp
     };
   }
 
-  const res = await host.timeline.place(takes.map((t) => ({ path: t.path, seconds: t.seconds })), o.trackName);
+  const res = await host.timeline.place(takes.map((t) => ({ path: t.path, seconds: t.seconds })), o.target);
   if (!res.ok) {
     metric(false, res.placed, res.error);
     const before = res.placed > 0 ? `Placed ${res.placed}, then failed: ` : "";
@@ -86,13 +86,15 @@ export async function placeTakes(host: Host, log: Log, takes: Take[], o: PlaceOp
   }
   metric(true, res.placed);
   const where = res.pushed ? "after the clip at the playhead" : "at the playhead";
-  const what = res.placed === 1 ? `Placed on “${o.trackName}” ${where}`
-                                : `Placed ${res.placed} clips on “${o.trackName}”, starting ${where}`;
+  // Tracks are named the way Premiere labels them: A1, A2…
+  const track = res.track ?? (o.target.index !== null ? `A${o.target.index + 1}` : `“${o.target.name}”`);
+  const what = res.placed === 1 ? `Placed on ${track} ${where}`
+                                : `Placed ${res.placed} clips on ${track}, starting ${where}`;
   if (!o.subtitles) return { ok: true, kind: "ok", message: what + "." };
 
   const subs = subtitleFile(takes, res.starts, res.ends, res.fps, o.split);
-  const done = (added: number, error?: string) =>
-    log.metric("subtitles.place", { cues: subs.cues, added, ok: error ? 0 : 1, split: o.split, untimed: subs.whole, error, route: "bin" });
+  const done = (added: number, error?: string, route = "bin") =>
+    log.metric("subtitles.place", { cues: subs.cues, added, ok: error ? 0 : 1, split: o.split, untimed: subs.whole, error, route });
   if (subs.cues === 0) {
     done(0, "no text");
     return { ok: true, kind: "error", message: `${what}, but no subtitles: these lines have no text to show.` };
@@ -108,7 +110,7 @@ export async function placeTakes(host: Host, log: Log, takes: Take[], o: PlaceOp
   if (host.timeline.addCaptions) {
     const made = await host.timeline.addCaptions(path, res.starts[0]);
     if (made.ok) {
-      done(subs.cues);
+      done(subs.cues, undefined, "captions");
       const whole = subs.whole > 0 ? ` — ${subs.whole === 1 ? "1 line" : subs.whole + " lines"} without word timing, shown whole` : "";
       return { ok: true, kind: "ok", message: `${what}, with subtitles${whole}.` };
     }

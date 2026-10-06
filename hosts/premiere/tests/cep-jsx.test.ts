@@ -23,10 +23,11 @@ function premiere(o: { playhead?: number; tracks?: { name: string; clips?: [numb
   const rootChildren: unknown[] = [];
   const captions: { item: string; at: number; format: number }[] = [];
   const captionTracks: unknown[] = [];
+  let nextId = 0;
   function track(name: string, spans: [number, number][] = [], locked = false) {
     const clips: Clip[] = spans.map(([s, e]) => ({ start: { seconds: s }, end: { seconds: e } }));
     return {
-      name, clips: coll(clips),
+      name, id: 100 + nextId++, clips: coll(clips),
       isLocked: () => locked,
       overwriteClip(item: { path: string }, t: number) {
         if (locked) return false;
@@ -94,6 +95,19 @@ test("a missing track is added and named, and the clips go back to back from the
   assert.deepEqual(r.ends, [12, 13.5]);
   assert.equal(r.pushed, false);
   assert.equal(r.fps, 25);
+  assert.equal(r.track, "A2");
+});
+
+test("a track chosen by number is used as it is, and one the sequence lacks is refused", () => {
+  const p = premiere({ playhead: 4, tracks: [{ name: "Audio 1" }, { name: "Audio 2", clips: [[2, 6]] }], durations: { "/m/a.wav": 1 } });
+  const r = p.call("place", { takes: [{ path: "/m/a.wav", seconds: 1 }], track: "Higgs VO", index: 1, bin: "Higgs VoiceOver" });
+  assert.equal(r.ok, true);
+  assert.equal(r.track, "A2");
+  assert.deepEqual(r.starts, [6]);
+  assert.equal(p.tracks.length, 2);
+  const none = p.call("place", { takes: [{ path: "/m/a.wav", seconds: 1 }], track: "Higgs VO", index: 5, bin: "Higgs VoiceOver" });
+  assert.equal(none.error, "This sequence has no A6 track. Choose another track in Settings.");
+  assert.deepEqual(p.call("tracks"), ["Audio 1", "Audio 2"]);
 });
 
 test("clips reaching past the playhead push the run after them; nothing is overwritten", () => {
@@ -108,7 +122,7 @@ test("a locked track is refused with what to do", () => {
   const p = premiere({ tracks: [{ name: "Higgs VO", locked: true }] });
   const r = p.call("place", { takes: [{ path: "/m/a.wav", seconds: 1 }], track: "Higgs VO", bin: "Higgs VoiceOver" });
   assert.equal(r.ok, false);
-  assert.equal(r.error, "The “Higgs VO” track is locked. Unlock it and place again.");
+  assert.equal(r.error, "A1 is locked. Unlock it and place again.");
 });
 
 test("no sequence: say so", () => {

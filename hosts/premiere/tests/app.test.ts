@@ -10,7 +10,9 @@ import { Client } from "../src/app/client.ts";
 import { placeTakes, subtitleFile } from "../src/app/placing.ts";
 import { checkForUpdate, isNewer, isPremiereAsset } from "../src/app/updates.ts";
 import { startAfter } from "../src/host/rules.ts";
-import type { HttpRequest, HttpResponse, Take } from "../src/host/host.ts";
+import type { HttpRequest, HttpResponse, Take, TrackTarget } from "../src/host/host.ts";
+
+const OWN: TrackTarget = { index: null, name: "Higgs VO" };
 
 const video = {
   addEventListener() {}, pause() {}, play() { return Promise.resolve(); },
@@ -41,27 +43,36 @@ test("a run starts at the playhead, or after clips that reach past it", () => {
 
 test("no sequence: say so, and that the clips are already in the bin", async () => {
   const { host, log } = await setup({ sequence: false });
-  const one = await placeTakes(host, log, [take("Hello there.", 1)], { trackName: "Higgs VO", subtitles: false, split: "short", mode: "all" });
+  const one = await placeTakes(host, log, [take("Hello there.", 1)], { target: OWN, subtitles: false, split: "short", mode: "all" });
   assert.equal(one.ok, false);
   assert.equal(one.message, "Open a sequence to place this clip. It's already in your bin.");
-  const two = await placeTakes(host, log, [take("A.", 1), take("B.", 1)], { trackName: "Higgs VO", subtitles: false, split: "short", mode: "all" });
+  const two = await placeTakes(host, log, [take("A.", 1), take("B.", 1)], { target: OWN, subtitles: false, split: "short", mode: "all" });
   assert.equal(two.message, "Open a sequence to place these clips. They're already in your bin.");
 });
 
 test("placed messages name the track and where the run went", async () => {
   const { host, log } = await setup();
-  const first = await placeTakes(host, log, [take("Hello there.", 2)], { trackName: "Higgs VO", subtitles: false, split: "short", mode: "one" });
-  assert.equal(first.message, "Placed on “Higgs VO” at the playhead.");
-  const next = await placeTakes(host, log, [take("A.", 1), take("B.", 1)], { trackName: "Higgs VO", subtitles: false, split: "short", mode: "all" });
-  assert.equal(next.message, "Placed 2 clips on “Higgs VO”, starting after the clip at the playhead.");
+  const first = await placeTakes(host, log, [take("Hello there.", 2)], { target: OWN, subtitles: false, split: "short", mode: "one" });
+  assert.equal(first.message, "Placed on A4 at the playhead.");
+  const next = await placeTakes(host, log, [take("A.", 1), take("B.", 1)], { target: OWN, subtitles: false, split: "short", mode: "all" });
+  assert.equal(next.message, "Placed 2 clips on A4, starting after the clip at the playhead.");
+});
+
+test("a chosen track is named the Premiere way, and a missing one is refused", async () => {
+  const { host, log } = await setup();
+  const a2 = await placeTakes(host, log, [take("Hello there.", 2)], { target: { index: 1, name: "Higgs VO" }, subtitles: false, split: "short", mode: "one" });
+  assert.equal(a2.message, "Placed on A2 at the playhead.");
+  const a9 = await placeTakes(host, log, [take("Hello there.", 2)], { target: { index: 8, name: "Higgs VO" }, subtitles: false, split: "short", mode: "one" });
+  assert.equal(a9.ok, false);
+  assert.equal(a9.message, "This sequence has no A9 track. Choose another track in Settings.");
 });
 
 test("subtitles are written from the first clip's start and imported into the bin", async () => {
   const { host, log } = await setup();
   const words = [{ word: "Hello", start: 0.5, end: 0.9 }, { word: "there", start: 1.0, end: 1.4 }];
-  const out = await placeTakes(host, log, [take("Hello there.", 2, words)], { trackName: "Higgs VO", subtitles: true, split: "short", mode: "auto" });
+  const out = await placeTakes(host, log, [take("Hello there.", 2, words)], { target: OWN, subtitles: true, split: "short", mode: "auto" });
   assert.equal(out.ok, true);
-  assert.match(out.message, /^Placed on “Higgs VO” at the playhead\. Subtitles are in the bin — drag them to the start of the clip\.$/);
+  assert.match(out.message, /^Placed on A4 at the playhead\. Subtitles are in the bin — drag them to the start of the clip\.$/);
   const srt = [...host.fs.entries()].find(([k]) => k.endsWith(".srt"));
   assert.ok(srt, "an .srt was written");
   // The voice starts half a second into the clip, and so does the subtitle.

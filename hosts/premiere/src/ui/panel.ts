@@ -580,7 +580,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     // Automatic placing follows the box beside Generate; the Place buttons
     // follow the one in the audio preview.
     const subtitles = mode === "auto" ? cfg().auto_subtitles === true : cfg().manual_subtitles === true;
-    const out = await placeTakes(host, log, takes, { trackName: cfg().vo_track_name, subtitles, split: cfg().subtitle_split, mode });
+    const out = await placeTakes(host, log, takes, { target: trackTarget(), subtitles, split: cfg().subtitle_split, mode });
     note(out.message, out.kind);
   }
   on("place-all", "click", () => { if (st.takes.length) void place(st.takes, "all"); });
@@ -625,6 +625,35 @@ export function startPanel({ host, log, store, client }: Deps): void {
     if (st.dirtyAt && Date.now() - st.dirtyAt > 2000) void saveDraft();
   }, 1000);
 
+  // ------------------------------------------------------------- tracks
+
+  // Where clips go, in Premiere's terms: A1, A2… or a track of the plugin's
+  // own ("Higgs VO"), added the first time and reused after (the default, so
+  // nothing lands among the user's own audio unasked).
+  const OWN = "own";
+  const trackChoice = () => String(cfg().track_target ?? OWN);
+  function trackTarget() {
+    const m = /^A(\d+)$/.exec(trackChoice());
+    return { index: m ? Number(m[1]) - 1 : null, name: cfg().vo_track_name || Settings.DEFAULTS.vo_track_name };
+  }
+
+  /** Fill the track menu from the open sequence; a saved choice stays listed even if this sequence lacks it. */
+  async function fillTracks(selected: string) {
+    const names = await host.timeline.audioTracks();
+    const own = cfg().vo_track_name || Settings.DEFAULTS.vo_track_name;
+    const sel = select("set-track");
+    sel.textContent = "";
+    const add = (value: string, label: string) => { const o = el("option", undefined, label) as HTMLOptionElement; o.value = value; sel.appendChild(o); };
+    add(OWN, `Its own track (“${own}”)`);
+    const count = Math.max(names.length, /^A(\d+)$/.test(selected) ? Number(selected.slice(1)) : 0);
+    for (let i = 0; i < count; i++) {
+      const name = names[i];
+      // Premiere names tracks "Audio 1"…; a renamed track shows its name too.
+      add(`A${i + 1}`, name && name !== `Audio ${i + 1}` && name !== own ? `A${i + 1} · ${name}` : `A${i + 1}`);
+    }
+    setChoice("set-track", selected);
+  }
+
   // ------------------------------------------------------------- settings
 
   const SPLITS: Record<string, string> = {
@@ -633,7 +662,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
   };
 
   interface Values {
-    key: string; output_dir: string; vo_track_name: string; output_format: string;
+    key: string; output_dir: string; track_target: string; output_format: string;
     pause_enabled: boolean; pause_ms: number; check_updates: boolean; subtitle_split: string;
     words: boolean; date: boolean; time: boolean;
   }
@@ -646,7 +675,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     return {
       key,
       output_dir: c.output_dir || store.defaultOutputDir(),
-      vo_track_name: c.vo_track_name,
+      track_target: String(c.track_target ?? OWN),
       output_format: c.output_format,
       pause_enabled: c.pause_enabled !== false,
       pause_ms: Number(c.pause_ms) || 400,
@@ -661,7 +690,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     return {
       key: input("set-key").value.trim(),
       output_dir: input("set-out-dir").value.trim() || store.defaultOutputDir(),
-      vo_track_name: input("set-track").value.trim() || Settings.DEFAULTS.vo_track_name,
+      track_target: select("set-track").value || OWN,
       output_format: select("set-format").value || "wav",
       pause_enabled: input("set-pause").checked,
       pause_ms: Math.max(0, Math.min(5000, Number.isFinite(ms) && input("set-pause-ms").value.trim() !== "" ? ms : 400)),
@@ -677,7 +706,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
   function fillSettings(v: Values, withKey: boolean) {
     if (withKey) input("set-key").value = v.key;
     input("set-out-dir").value = v.output_dir;
-    input("set-track").value = v.vo_track_name;
+    void fillTracks(v.track_target).then(refreshSettings);
     setChoice("set-format", v.output_format);
     input("set-pause").checked = v.pause_enabled;
     input("set-pause-ms").value = String(v.pause_ms);
@@ -709,8 +738,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     if (dirty) { savedAt = 0; say("set-status", "Unsaved changes"); }
     else if (!savedAt || Date.now() - savedAt > 2000) say("set-status", "");
   }
-  for (const id of ["set-key", "set-out-dir", "set-track", "set-pause-ms"]) on(id, "input", refreshSettings);
-  for (const id of ["set-format", "set-split", "set-pause", "set-auto-update", "set-name-words", "set-name-date", "set-name-time"]) on(id, "change", refreshSettings);
+  for (const id of ["set-key", "set-out-dir", "set-pause-ms"]) on(id, "input", refreshSettings);
+  for (const id of ["set-format", "set-split", "set-track", "set-pause", "set-auto-update", "set-name-words", "set-name-date", "set-name-time"]) on(id, "change", refreshSettings);
   on("set-show", "change", () => { input("set-key").type = input("set-show").checked ? "text" : "password"; });
   on("set-get-key", "click", openKeyPage);
   on("set-test", "click", () => void testKey(input("set-key").value.trim(), "set-key-result", "settings"));
@@ -724,7 +753,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
   on("set-save", "click", async () => {
     const v = fromFields();
     const c = cfg();
-    c.output_dir = v.output_dir; c.vo_track_name = v.vo_track_name; c.output_format = v.output_format;
+    c.output_dir = v.output_dir; c.track_target = v.track_target; c.output_format = v.output_format;
     c.pause_enabled = v.pause_enabled; c.pause_ms = v.pause_ms; c.check_updates = v.check_updates;
     c.subtitle_split = v.subtitle_split;
     c.clip_name = { ...(c.clip_name ?? {}), words: v.words, date: v.date, time: v.time };
