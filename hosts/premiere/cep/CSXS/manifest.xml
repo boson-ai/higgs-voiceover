@@ -37,7 +37,8 @@
           <Type>Panel</Type>
           <Menu>Higgs VoiceOver</Menu>
           <Geometry>
-            <Size><Height>620</Height><Width>880</Width></Size>
+            <!-- Opens tall enough for the whole Settings page (its Save row ends ~790 px down), wide enough that no Generate row wraps). -->
+            <Size><Height>800</Height><Width>1000</Width></Size>
             <MinSize><Height>420</Height><Width>360</Width></MinSize>
           </Geometry>
           <Icons>
