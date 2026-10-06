@@ -580,7 +580,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     // Automatic placing follows the box beside Generate; the Place buttons
     // follow the one in the audio preview.
     const subtitles = mode === "auto" ? cfg().auto_subtitles === true : cfg().manual_subtitles === true;
-    const out = await placeTakes(host, log, takes, { target: trackTarget(), subtitles, split: cfg().subtitle_split, mode });
+    const out = await placeTakes(host, log, takes, { target: await trackTarget(), subtitles, split: cfg().subtitle_split, mode });
     note(out.message, out.kind);
   }
   on("place-all", "click", () => { if (st.takes.length) void place(st.takes, "all"); });
@@ -627,31 +627,33 @@ export function startPanel({ host, log, store, client }: Deps): void {
 
   // ------------------------------------------------------------- tracks
 
-  // Where clips go, in Premiere's terms: A1, A2… or a track of the plugin's
-  // own ("Higgs VO"), added the first time and reused after (the default, so
-  // nothing lands among the user's own audio unasked).
-  const OWN = "own";
-  const trackChoice = () => String(cfg().track_target ?? OWN);
-  function trackTarget() {
+  // Where clips go, in Premiere's terms: one of the sequence's audio tracks,
+  // A1, A2… By default the last one — "" in the config means "the last track
+  // of whichever sequence is open", so the default follows the sequence.
+  const trackChoice = () => String(cfg().track_target ?? "");
+  async function trackTarget() {
     const m = /^A(\d+)$/.exec(trackChoice());
-    return { index: m ? Number(m[1]) - 1 : null, name: cfg().vo_track_name || Settings.DEFAULTS.vo_track_name };
+    const index = m ? Number(m[1]) - 1 : Math.max(0, (await host.timeline.audioTracks()).length - 1);
+    return { index, name: cfg().vo_track_name || Settings.DEFAULTS.vo_track_name };
   }
 
+  let lastTrack = "";   // the menu's last entry, which "" stands for
   /** Fill the track menu from the open sequence; a saved choice stays listed even if this sequence lacks it. */
   async function fillTracks(selected: string) {
     const names = await host.timeline.audioTracks();
-    const own = cfg().vo_track_name || Settings.DEFAULTS.vo_track_name;
     const sel = select("set-track");
     sel.textContent = "";
-    const add = (value: string, label: string) => { const o = el("option", undefined, label) as HTMLOptionElement; o.value = value; sel.appendChild(o); };
-    add(OWN, `Its own track (“${own}”)`);
-    const count = Math.max(names.length, /^A(\d+)$/.test(selected) ? Number(selected.slice(1)) : 0);
+    const count = Math.max(names.length, /^A(\d+)$/.test(selected) ? Number(selected.slice(1)) : 0, 1);
     for (let i = 0; i < count; i++) {
       const name = names[i];
       // Premiere names tracks "Audio 1"…; a renamed track shows its name too.
-      add(`A${i + 1}`, name && name !== `Audio ${i + 1}` && name !== own ? `A${i + 1} · ${name}` : `A${i + 1}`);
+      const label = name && name !== `Audio ${i + 1}` ? `A${i + 1} · ${name}` : `A${i + 1}`;
+      const o = el("option", undefined, label) as HTMLOptionElement;
+      o.value = `A${i + 1}`;
+      sel.appendChild(o);
     }
-    setChoice("set-track", selected);
+    lastTrack = `A${Math.max(1, names.length)}`;
+    setChoice("set-track", selected || lastTrack);
   }
 
   // ------------------------------------------------------------- settings
@@ -675,7 +677,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     return {
       key,
       output_dir: c.output_dir || store.defaultOutputDir(),
-      track_target: String(c.track_target ?? OWN),
+      track_target: String(c.track_target ?? ""),
       output_format: c.output_format,
       pause_enabled: c.pause_enabled !== false,
       pause_ms: Number(c.pause_ms) || 400,
@@ -690,7 +692,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     return {
       key: input("set-key").value.trim(),
       output_dir: input("set-out-dir").value.trim() || store.defaultOutputDir(),
-      track_target: select("set-track").value || OWN,
+      // The last track while nothing else is saved stays "follow the last track".
+      track_target: !cfg().track_target && select("set-track").value === lastTrack ? "" : select("set-track").value,
       output_format: select("set-format").value || "wav",
       pause_enabled: input("set-pause").checked,
       pause_ms: Math.max(0, Math.min(5000, Number.isFinite(ms) && input("set-pause-ms").value.trim() !== "" ? ms : 400)),

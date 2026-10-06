@@ -237,6 +237,11 @@ button.primary:hover { background-color: var(--accent-hover); border-color: var(
 button.primary:disabled, button.primary:disabled:hover { background-color: var(--accent-dim); border-color: var(--accent-dim); color: var(--accent-dim-text); }
 button.wide-primary { min-width: 120px; }
 
+/* Delete: a secondary button whose label turns red only while it can act. */
+button.danger { color: var(--error); }
+button.danger:hover { color: var(--error); background-color: var(--error-tint); border-color: var(--border-strong); }
+button.danger:disabled, button.danger:disabled:hover { color: var(--text-3); background-color: transparent; border-color: var(--border); }
+
 /* Link: green text, no box. */
 button.link { height: 20px; padding: 0; border-width: 0; border-color: transparent; color: var(--accent-text); }
 button.link:hover { background-color: transparent; border-color: transparent; color: var(--text); }
