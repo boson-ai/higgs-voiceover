@@ -14,7 +14,7 @@ labels: bug
 
 **Versions**
 - Higgs VoiceOver: (Settings → Support)
-- DaVinci Resolve: (e.g. Studio 20.3)
+- Editor: (e.g. DaVinci Resolve Studio 20.3, Premiere Pro 26.5)
 - macOS: (e.g. 15.6)
 
 **Log**

@@ -1,9 +1,33 @@
 # Changelog
 
 All notable changes to Higgs VoiceOver. Versions follow `MAJOR.MINOR.PATCH`;
-`0.x` releases are betas.
+`0.x` releases are betas. Each editor has its own version: Resolve releases are
+tagged `vX.Y.Z`, Premiere Pro releases `premiere-vX.Y.Z`.
 
-## 1.0.0 — unreleased
+## Premiere Pro 1.0.0 — 2026-10-06
+
+The first Premiere Pro release: the Resolve feature set in a dockable panel
+(**Window → Extensions → Higgs VoiceOver**), for Premiere Pro 2022 and later.
+
+- **Generate**, **tags**, **audio preview** and **Settings** as in Resolve
+  1.0.0, styled to sit beside Premiere's own panels and following its light or
+  dark theme.
+- **Place on timeline**: clips go at the playhead on the audio track you pick
+  (A1, A2, … — the last one by default), back to back with no gaps; a locked
+  or missing track is reported, not written over. Clips are also imported
+  into a "Higgs VoiceOver" bin.
+- **Subtitles** land as a native Premiere captions track, word-timed as in
+  Resolve.
+- **Add a voice**: record in the panel with a microphone picker and a shortcut
+  to the system's sound settings, or use an audio file; the transcript box
+  appears only when you want one; consent required.
+- **Updates**: checked once a day against this repository's Premiere Pro
+  releases; **Update now** downloads the installer.
+- Its own data folder (`HiggsVO-Premiere`), so it and the Resolve version can
+  be installed side by side.
+- Signed extension (`.zxp`) and a signed, notarized macOS installer.
+
+## DaVinci Resolve 1.0.0 — 2026-09-24
 
 The first public release.
 
@@ -40,7 +64,7 @@ The first public release.
   your key or your text.
 - Signed and notarized macOS installer.
 
-## 0.1.0 — private beta
+## DaVinci Resolve 0.1.0 — private beta
 
 - **Generate**: type or paste text; each line becomes its own clip, generated
   in order. Voice list, tag list with search and type filter, tags coloured by
