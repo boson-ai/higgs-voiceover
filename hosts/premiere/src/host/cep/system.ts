@@ -12,11 +12,28 @@ const childProcess = require("child_process") as typeof import("node:child_proce
 
 const windows = process.platform === "win32";
 
-/** Settings, logs and drafts: the same "HiggsVO" folder the Resolve build uses, in a Premiere subfolder. */
+/**
+ * Settings, key, logs and drafts: a folder of the Premiere build's own,
+ * beside the Resolve build's "HiggsVO", so either can be reset or removed
+ * without touching the other. Only the user can read it (the key is in it).
+ */
+const appSupport = windows ? (process.env.APPDATA ?? nodePath.join(os.homedir(), "AppData", "Roaming"))
+                           : nodePath.join(os.homedir(), "Library", "Application Support");
+const DATA_DIR = nodePath.join(appSupport, "HiggsVO-Premiere");
+// 0.1.0 test builds kept it inside the Resolve build's folder; move it once.
+const OLD_DATA_DIR = nodePath.join(appSupport, "HiggsVO", "Premiere");
+
 function dataDir(): string {
-  const base = windows ? (process.env.APPDATA ?? nodePath.join(os.homedir(), "AppData", "Roaming"))
-                       : nodePath.join(os.homedir(), "Library", "Application Support");
-  return nodePath.join(base, "HiggsVO", "Premiere");
+  return DATA_DIR;
+}
+
+/** Move an earlier data folder into place and make the folder private. Run once at start. */
+export function prepareDataDir(): void {
+  try {
+    if (!fs.existsSync(DATA_DIR) && fs.existsSync(OLD_DATA_DIR)) fs.renameSync(OLD_DATA_DIR, DATA_DIR);
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (!windows) fs.chmodSync(DATA_DIR, 0o700);
+  } catch { /* the folder is made again on first write */ }
 }
 
 export function createFiles(): Files {
