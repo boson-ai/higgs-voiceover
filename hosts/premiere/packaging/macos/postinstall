@@ -1,0 +1,12 @@
+#!/bin/bash
+# Runs as root after the extension lands in the system-wide CEP folder.
+# A copy of the same extension in the user's own CEP folder (an earlier
+# per-user install) would load instead of, or beside, this one; remove it.
+# The user's settings and voices are elsewhere and are left alone.
+set -u
+USER_NAME=$(stat -f%Su /dev/console 2>/dev/null || true)
+if [ -n "$USER_NAME" ] && [ "$USER_NAME" != "root" ]; then
+  HOME_DIR=$(dscl . -read "/Users/$USER_NAME" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
+  rm -rf "$HOME_DIR/Library/Application Support/Adobe/CEP/extensions/ai.boson.higgs-voiceover.cep"
+fi
+exit 0

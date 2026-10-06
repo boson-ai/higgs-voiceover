@@ -1,8 +1,8 @@
 {
   "name": "higgs-voiceover-premiere",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "Higgs VoiceOver for Adobe Premiere Pro (UXP panel)",
+  "description": "Higgs VoiceOver for Adobe Premiere Pro (CEP and UXP builds)",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
@@ -15,7 +15,8 @@
     "package": "node scripts/package.mjs",
     "preview": "node scripts/build.mjs --preview && node scripts/serve.mjs",
     "build:cep": "node scripts/build.mjs --cep",
-    "install:cep": "node scripts/install-cep.mjs"
+    "install:cep": "node scripts/install-cep.mjs",
+    "package:cep": "node scripts/package-cep.mjs"
   },
   "devDependencies": {
     "@adobe/premierepro": "26.5.1",

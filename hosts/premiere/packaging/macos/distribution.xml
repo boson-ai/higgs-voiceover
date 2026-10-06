@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+  <title>Higgs VoiceOver for Premiere Pro</title>
+  <welcome file="welcome.html" mime-type="text/html"/>
+  <conclusion file="conclusion.html" mime-type="text/html"/>
+  <options customize="never" require-scripts="false" hostArchitectures="arm64,x86_64"/>
+  <domains enable_localSystem="true" enable_anywhere="false" enable_currentUserHome="false"/>
+  <installation-check script="adobe_present()"/>
+  <script><![CDATA[
+    function adobe_present() {
+      // Creative Cloud apps create this folder; without it there is no
+      // Premiere Pro to load the panel.
+      if (system.files.fileExistsAtPath('/Library/Application Support/Adobe')) return true;
+      my.result.title = 'Adobe Premiere Pro is not installed';
+      my.result.message = 'Install Premiere Pro from Creative Cloud first, then run this installer again.';
+      my.result.type = 'Fatal';
+      return false;
+    }
+  ]]></script>
+  <choices-outline><line choice="default"/></choices-outline>
+  <choice id="default" title="Higgs VoiceOver"><pkg-ref id="ai.boson.higgs-voiceover.premiere"/></choice>
+  <pkg-ref id="ai.boson.higgs-voiceover.premiere" version="__VERSION__" onConclusion="none">component.pkg</pkg-ref>
+</installer-gui-script>
