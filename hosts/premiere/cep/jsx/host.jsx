@@ -176,7 +176,12 @@ var HiggsVO = (function () {
                 try { seconds = item.getOutPoint().seconds - item.getInPoint().seconds || seconds; } catch (e1) { /* keep ours */ }
                 plan.push({ item: item, at: at });
                 track.overwriteClip(item, at);
-                at = Math.ceil((at + seconds) / frame - 1e-6) * frame;
+                // The next clip starts where Premiere says this one ended: it
+                // rounds a clip's length to whole frames, so a computed end can
+                // leave a one-frame gap.
+                var placedEnd = null, now = clips(track);
+                for (var q = 0; q < now.length; q++) if (Math.abs(now[q].start - at) < frame / 2) placedEnd = now[q].end;
+                at = placedEnd !== null ? placedEnd : Math.ceil((at + seconds) / frame - 1e-6) * frame;
             }
 
             // Trust the timeline, not the calls.

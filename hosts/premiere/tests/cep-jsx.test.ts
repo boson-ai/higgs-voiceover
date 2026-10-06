@@ -31,7 +31,9 @@ function premiere(o: { playhead?: number; tracks?: { name: string; clips?: [numb
       isLocked: () => locked,
       overwriteClip(item: { path: string }, t: number) {
         if (locked) return false;
-        clips.push({ start: { seconds: t }, end: { seconds: t + (durations[item.path] ?? 1) } });
+        // Premiere rounds a clip's length down to whole frames (25 fps here).
+        const len = Math.floor((durations[item.path] ?? 1) * 25 + 1e-6) / 25;
+        clips.push({ start: { seconds: t }, end: { seconds: t + len } });
         return true;
       },
     };
@@ -92,7 +94,7 @@ test("a missing track is added and named, and the clips go back to back from the
   assert.equal(p.tracks.length, 2);
   assert.equal(p.tracks[1].name, "Higgs VO");
   assert.deepEqual(r.starts, [10, 12]);
-  assert.deepEqual(r.ends, [12, 13.5]);
+  assert.deepEqual(r.ends, [12, 13.48]);   // 1.5 s is 37.5 frames; Premiere keeps 37
   assert.equal(r.pushed, false);
   assert.equal(r.fps, 25);
   assert.equal(r.track, "A2");
@@ -108,6 +110,13 @@ test("a track chosen by number is used as it is, and one the sequence lacks is r
   const none = p.call("place", { takes: [{ path: "/m/a.wav", seconds: 1 }], track: "Higgs VO", index: 5, bin: "Higgs VoiceOver" });
   assert.equal(none.error, "This sequence has no A6 track. Choose another track in Settings.");
   assert.deepEqual(p.call("tracks"), ["Audio 1", "Audio 2"]);
+});
+
+test("each clip starts exactly where Premiere ended the one before (no frame gaps)", () => {
+  const p = premiere({ playhead: 0, durations: { "/m/a.wav": 1.861, "/m/b.wav": 1.571, "/m/c.wav": 2.003 } });
+  const r = p.call("place", { takes: [{ path: "/m/a.wav", seconds: 1.861 }, { path: "/m/b.wav", seconds: 1.571 }, { path: "/m/c.wav", seconds: 2.003 }], track: "Higgs VO", bin: "Higgs VoiceOver" });
+  assert.equal(r.ok, true);
+  for (let i = 1; i < r.starts.length; i++) assert.ok(Math.abs(r.starts[i] - r.ends[i - 1]) < 1e-9, `gap before clip ${i + 1}: ${r.ends[i - 1]} → ${r.starts[i]}`);
 });
 
 test("clips reaching past the playhead push the run after them; nothing is overwritten", () => {
