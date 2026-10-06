@@ -14,7 +14,8 @@
     "check": "npm run typecheck && npm test && npm run lint:css && npm run build && node scripts/check-bundle.mjs && npm run build:cep",
     "package": "node scripts/package.mjs",
     "preview": "node scripts/build.mjs --preview && node scripts/serve.mjs",
-    "build:cep": "node scripts/build.mjs --cep"
+    "build:cep": "node scripts/build.mjs --cep",
+    "install:cep": "node scripts/install-cep.mjs"
   },
   "devDependencies": {
     "@adobe/premierepro": "26.5.1",
