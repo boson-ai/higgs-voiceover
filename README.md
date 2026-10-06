@@ -9,8 +9,10 @@ voice-over — with its subtitles — on your timeline without leaving your edit
 > **For DaVinci Resolve Studio and Adobe Premiere Pro, on macOS.** Final Cut
 > Pro and Windows are on the way.
 >
-> - **Resolve:** **Workspace → Scripts → Higgs VoiceOver** (a project must be
->   open). [Install](#install-in-davinci-resolve)
+> Open it from the menu bar at the top of your screen, with a project open:
+>
+> - **Resolve:** **Workspace → Scripts → Higgs VoiceOver**.
+>   [Install](#install-in-davinci-resolve)
 > - **Premiere Pro:** **Window → Extensions → Higgs VoiceOver** — a panel that
 >   docks like any other. [Install](#install-in-premiere-pro)
 
@@ -71,8 +73,8 @@ the Mac App Store version does not load user scripts.
    [latest release](../../releases/latest).
 2. Open it and follow the installer. It asks for your password because it
    installs for every user on the Mac.
-3. Quit and reopen DaVinci Resolve, open a project, and choose
-   **Workspace → Scripts → Higgs VoiceOver**.
+3. Quit and reopen DaVinci Resolve and open a project. In the menu bar at
+   the top of the screen, choose **Workspace → Scripts → Higgs VoiceOver**.
 
 ### Updating
 
@@ -93,8 +95,8 @@ Your settings stay in the data folder below until you delete that too.
    [latest release](../../releases/latest).
 2. Open it and follow the installer. It asks for your password because it
    installs for every user on the Mac.
-3. Quit and reopen Premiere Pro, open a project, and choose
-   **Window → Extensions → Higgs VoiceOver**.
+3. Quit and reopen Premiere Pro and open a project. In the menu bar at the
+   top of the screen, choose **Window → Extensions → Higgs VoiceOver**.
 
 ### Updating
 
@@ -110,7 +112,7 @@ Your settings stay in the data folder below until you delete that too.
 
 ## First run
 
-Open it from the Scripts menu (Resolve) or the Extensions menu (Premiere Pro), paste your API key and choose **Connect** — or
+Open it from the menu bar (see Install above), paste your API key and choose **Connect** — or
 **Skip for now** to look around first (you'll need a key before you can
 generate). Then:
 
@@ -143,8 +145,9 @@ generate). Then:
 
 ## Troubleshooting
 
-- **The menu item is missing** — restart Resolve after installing; make sure
-  it is Resolve Studio from blackmagicdesign.com, not the Mac App Store.
+- **Higgs VoiceOver is missing from Workspace → Scripts** — restart Resolve
+  after installing; make sure it is Resolve Studio from blackmagicdesign.com,
+  not the Mac App Store.
 - **Higgs VoiceOver is missing from Window → Extensions** — quit and reopen
   Premiere Pro after installing.
 - **"Boson didn't accept that key"** — copy the whole key again from your

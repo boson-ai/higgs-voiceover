@@ -9,7 +9,7 @@ All notable changes to Higgs VoiceOver. Versions follow `MAJOR.MINOR.PATCH`;
 ### Premiere Pro — added 2026-10-06
 
 The first Premiere Pro release, added to 1.0.0: the Resolve feature set in a dockable panel
-(**Window → Extensions → Higgs VoiceOver**), for Premiere Pro 2022 and later.
+(menu bar: **Window → Extensions → Higgs VoiceOver**), for Premiere Pro 2022 and later.
 
 - **Generate**, **tags**, **audio preview** and **Settings** as in Resolve
   1.0.0, styled to sit beside Premiere's own panels and following its light or
