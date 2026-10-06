@@ -11,7 +11,7 @@ import { startPanel } from "./ui/panel.ts";
 declare const __VERSION__: string;
 
 async function boot() {
-  const host = createCepHost(__VERSION__, document.getElementById("media") as HTMLVideoElement);
+  const host = createCepHost(__VERSION__, document.getElementById("media") as HTMLVideoElement, document.getElementById("media-samples") as HTMLVideoElement);
   const log = await startLog(host.files, __VERSION__);
   log.info("start", { version: __VERSION__, build: "cep", app: `${host.info.appName} ${host.info.appVersion}`, os: host.info.os });
   const store = await openStore(host.files, host.secrets);

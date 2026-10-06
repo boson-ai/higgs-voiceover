@@ -292,6 +292,8 @@ label.check input { margin: 0 6px 0 0; }
 /* A long statement (the consent) wraps beside its box. */
 label.check.wrap { white-space: normal; align-items: flex-start; }
 label.check.wrap input { margin-top: 1px; flex-shrink: 0; }
+/* A box that must be ticked says so: a red asterisk and "(required)". */
+.req { color: var(--error); font-weight: 600; }
 
 /* ------------------------------------------------------------- lists */
 

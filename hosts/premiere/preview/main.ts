@@ -27,6 +27,7 @@ async function main() {
     theme: q.get("theme") ?? "darkest",
     sequence: q.get("sequence") !== "none",
     cep: q.get("host") !== "uxp",
+    samplesMedia: document.getElementById("media-samples") as HTMLVideoElement,
   });
   const log = await startLog(host.files, "0.1.0-preview");
   const store = await openStore(host.files, host.secrets);

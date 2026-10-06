@@ -41,6 +41,8 @@ export interface MockOptions {
   failSpeech?: number;
   /** Act as the CEP build: a microphone and native captions. */
   cep?: boolean;
+  /** The element for the second player (voice samples); the first one if absent. */
+  samplesMedia?: HTMLVideoElement;
 }
 
 /** A stand-in microphone: a voice-like tone, so the dialog can be tried without a real input. */
@@ -80,6 +82,10 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
   let speechCalls = 0;
 
   const join = (...p: string[]) => p.filter(Boolean).join("/").replace(/\/+/g, "/");
+  const urlFor = (path: string) => {
+      if (!urls.has(path)) urls.set(path, URL.createObjectURL(new Blob([(fs.get(path) ?? new Uint8Array(0)) as BlobPart], { type: "audio/wav" })));
+      return urls.get(path)!;
+  };
 
   async function http(req: HttpRequest): Promise<HttpResponse> {
     await new Promise((r) => setTimeout(r, req.url.includes("/audio/speech") ? 700 : 300));
@@ -146,10 +152,8 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
       openFolder: async (p) => { console.log("[preview] show folder", p); return true; },
       openSoundSettings: async () => { console.log("[preview] sound settings"); return true; },
     },
-    player: createMediaPlayer(media, (path) => {
-      if (!urls.has(path)) urls.set(path, URL.createObjectURL(new Blob([(fs.get(path) ?? new Uint8Array(0)) as BlobPart], { type: "audio/wav" })));
-      return urls.get(path)!;
-    }),
+    player: createMediaPlayer(media, urlFor),
+    samples: createMediaPlayer(o.samplesMedia ?? media, urlFor),
     timeline: {
       projectName: async () => o.project ?? "Kitchen Tour",
       projectId: async () => "preview-project",

@@ -193,7 +193,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
 
   // A sample of a voice: generated once, then kept. One thing plays at a time.
   on("voice-preview", "click", async () => {
-    if (st.previewing) { host.player.stop(); return; }
+    if (st.previewing) { host.samples.stop(); return; }
     const v = voiceEntries().find((e) => e.id === st.pickedVoice);
     if (!v) { note("Pick a voice in the list first."); return; }
     const path = files.join(files.dataDir, "previews", Text.sanitize(v.id) + ".wav");
@@ -205,9 +205,11 @@ export function startPanel({ host, log, store, client }: Deps): void {
       await files.write(path, res.audio);
     }
     const sample = await files.read(path);
-    host.player.load(path, (sample && Wav.wavSeconds(sample)) ?? 3);
+    // One sound at a time: the preview card pauses while a sample plays.
+    host.player.pause();
+    host.samples.load(path, (sample && Wav.wavSeconds(sample)) ?? 3);
     st.previewing = v.id;
-    host.player.play();
+    host.samples.play();
     renderVoices();
   });
 
@@ -448,6 +450,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     const dir = store.outputDir(st.project.name);
     await files.mkdirs(dir);
     host.player.stop();
+    host.samples.stop();
     const takes: Take[] = [];
     const t0 = Date.now();
     log.info("generate", { lines: ls.length, chars, voice: Boson.isPreset(voice) ? voice : "cloned", timestamps: timed ? 1 : 0 });
@@ -522,7 +525,6 @@ export function startPanel({ host, log, store, client }: Deps): void {
   const take = () => st.takes[st.index];
 
   function loadTake() {
-    st.previewing = null;
     const t = take();
     if (t) host.player.load(t.path, t.seconds);
     else host.player.stop();
@@ -540,8 +542,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     say("take-name", t ? files.basename(t.path) : "Nothing to preview yet — Generate to hear your lines.");
     enable("take-prev", st.index > 0);
     enable("take-next", st.index < n - 1);
-    enable("play", !!t || !!st.previewing);
-    enable("pause-stop", !!t || !!st.previewing);
+    enable("play", !!t);
+    enable("pause-stop", !!t);
     const p = host.player;
     const playing = p.state === "playing";
     $("play-glyph").className = playing ? "g g-pause" : "g g-play";
@@ -553,14 +555,15 @@ export function startPanel({ host, log, store, client }: Deps): void {
   }
 
   // A voice sample borrows the player; when it ends the take on show comes back.
-  host.player.onChange(() => {
-    if (st.previewing && host.player.state === "stopped") { renderVoices(); loadTake(); return; }
-    refreshPlayer();
+  host.player.onChange(refreshPlayer);
+  // A sample ending (or stopped) puts the Preview button back.
+  host.samples.onChange(() => {
+    if (st.previewing && host.samples.state !== "playing") { st.previewing = null; renderVoices(); }
   });
   on("play", "click", () => {
     const p = host.player;
     log.metric("preview.play", { action: p.state === "playing" ? "pause" : "play", take: st.index + 1 });
-    if (p.state === "playing") p.pause(); else p.play();
+    if (p.state === "playing") p.pause(); else { host.samples.stop(); p.play(); }
   });
   on("pause-stop", "click", () => host.player.stop());
   on("take-prev", "click", () => { if (st.index > 0) { st.index--; loadTake(); } });
@@ -819,7 +822,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
   const takeStale = () => !!av.take && av.take.transcript !== "" && av.take.transcript !== transcript();
 
   function openAddVoice() {
-    host.player.stop();
+    host.samples.stop();
+    host.player.pause();
     Object.assign(av, { source: recorder ? "record" : "file", path: "", state: "idle", take: null, previous: null, verdict: null, creating: false, playing: false });
     input("av-name").value = "";
     input("av-has-text").checked = false;
@@ -891,7 +895,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     $("av-rec").title = av.state === "counting" ? "Cancel" : "";
     enable("av-play", !!av.take && !recording);
     enable("av-stop", !!av.take && av.playing);
-    $("av-play-glyph").className = av.playing && host.player.state === "playing" ? "g g-pause" : "g g-play";
+    $("av-play-glyph").className = av.playing && host.samples.state === "playing" ? "g g-pause" : "g g-play";
 
     // One bar: how far a recording has run, then where playback is in the take.
     const fill = $("av-bar-fill");
@@ -904,7 +908,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
       say("av-t-total", "−" + Text.formatClock(Math.max(0, REC_LIMIT - s)));
     } else {
       const total = av.take?.seconds ?? REC_LIMIT;
-      const at = av.playing ? host.player.position : 0;
+      const at = av.playing ? host.samples.position : 0;
       fill.style.width = `${av.take ? Math.round(Math.min(1, at / Math.max(0.01, total)) * barW) : 0}px`;
       say("av-t-now", Text.formatClock(at));
       say("av-t-total", Text.formatClock(total));
@@ -941,7 +945,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
 
   async function recStart() {
     if (!recorder) return;
-    host.player.stop(); av.playing = false;
+    host.samples.stop(); av.playing = false;
     const opened = await recorder.open();
     if (!opened.ok) {
       log.warn("record failed to open", { error: opened.error });
@@ -1000,22 +1004,22 @@ export function startPanel({ host, log, store, client }: Deps): void {
   on("av-rec", "click", () => { if (av.state === "idle") void recStart(); else void recStop(); });
   on("av-play", "click", () => {
     if (!av.take) return;
-    if (av.playing && host.player.state === "playing") { host.player.pause(); refreshAddVoice(); return; }
-    if (!av.playing) host.player.load(av.take.path, av.take.seconds);
+    if (av.playing && host.samples.state === "playing") { host.samples.pause(); refreshAddVoice(); return; }
+    if (!av.playing) host.samples.load(av.take.path, av.take.seconds);
     av.playing = true;
-    host.player.play();
+    host.samples.play();
     refreshAddVoice();
   });
-  on("av-stop", "click", () => { host.player.stop(); av.playing = false; refreshAddVoice(); });
-  host.player.onChange(() => {
+  on("av-stop", "click", () => { host.samples.stop(); av.playing = false; refreshAddVoice(); });
+  host.samples.onChange(() => {
     if (!dlg.open || !av.playing) return;
-    if (host.player.state === "stopped") av.playing = false;
+    if (host.samples.state === "stopped") av.playing = false;
     refreshAddVoice();
   });
   // Switching tabs mid-take stops and keeps; nothing carries over between tabs.
   const switchTo = (source: "record" | "file") => () => {
     if (av.state !== "idle") void recStop();
-    host.player.stop(); av.playing = false;
+    host.samples.stop(); av.playing = false;
     av.source = source;
     refreshAddVoice();
   };
@@ -1039,9 +1043,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     stopTimer();
     if (av.state !== "idle") recorder?.cancel();
     av.state = "idle";
-    host.player.stop();
+    host.samples.stop();
     dlg.close();
-    loadTake();
   });
   on("av-create", "click", async () => {
     const name = input("av-name").value.trim();
@@ -1056,9 +1059,8 @@ export function startPanel({ host, log, store, client }: Deps): void {
     if (!res.ok || !res.id) { say("av-result", res.error ?? "Couldn't create the voice.", "error"); refreshAddVoice(); return; }
     cfg().voices = [...(cfg().voices ?? []).filter((v) => v.id !== res.id), { id: res.id, name, created: Math.floor(Date.now() / 1000) }];
     await store.save();
-    host.player.stop();
+    host.samples.stop();
     dlg.close();
-    loadTake();
     st.pickedVoice = res.id;
     renderVoices();
     note(`Created “${name}”. It's in your voice list.`, "ok");

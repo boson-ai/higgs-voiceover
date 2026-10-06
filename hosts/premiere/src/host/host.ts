@@ -154,7 +154,11 @@ export interface Host {
   http: Http;
   secrets: Secrets;
   shell: Shell;
+  /** The Audio preview card's player: generated takes only. */
   player: Player;
+  /** A second player for everything else — voice samples, recorded takes —
+   * so the preview card never shows what it did not generate. */
+  samples: Player;
   timeline: Timeline;
   info: HostInfo;
   recorder?: Recorder;

@@ -258,7 +258,7 @@
       <input type="text" id="av-name" class="gap-s" autofocus placeholder="e.g. Alex — narration">
       <label class="check gap-m"><input type="checkbox" id="av-has-text">Include transcript (optional)</label>
       <textarea id="av-text" class="gap-s" hidden placeholder="What is said, word for word. Speak clearly, in the language you want this voice to generate."></textarea>
-      <label class="check wrap gap-m"><input type="checkbox" id="av-consent">This is my own voice, or I have the speaker's permission to make a synthetic copy of it.</label>
+      <label class="check wrap gap-m"><input type="checkbox" id="av-consent"><span>This is my own voice, or I have the speaker's permission to make a synthetic copy of it. <span class="req">*</span> <span class="secondary">(required)</span></span></label>
       <div class="actions">
         <span class="meta spacer" id="av-result"></span>
         <button id="av-cancel">Cancel</button>
@@ -268,6 +268,7 @@
   </dialog>
 
   <video id="media" hidden></video>
+  <video id="media-samples" hidden></video>
 </div>
 </body>
 </html>
