@@ -156,6 +156,8 @@ export interface Recorder {
 }
 
 export interface HostInfo {
+  /** Release package types this build installs from, best first ("pkg", "zxp", "ccx"). */
+  readonly packages: readonly string[];
   readonly appName: string;
   readonly appVersion: string;
   readonly pluginVersion: string;

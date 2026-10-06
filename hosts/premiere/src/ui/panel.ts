@@ -783,7 +783,7 @@ export function startPanel({ host, log, store, client }: Deps): void {
     upd.checking = true;
     say("set-update-status", "Checking…");
     log.info("update check" + (quiet ? " (automatic)" : ""));
-    const r = await checkForUpdate(host.http, host.info.pluginVersion);
+    const r = await checkForUpdate(host.http, host.info.pluginVersion, host.info.packages);
     upd.checking = false;
     cfg().last_update_check = Math.floor(Date.now() / 1000);
     if (!r.ok) {

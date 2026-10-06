@@ -97,6 +97,19 @@ test("Premiere packages are told apart from other hosts' files", () => {
   assert.ok(!isNewer("1.0.0", "1.0.0"));
 });
 
+test("the CEP build takes the macOS installer first, then the .zxp, never a .ccx", async () => {
+  const releases = [{ tag_name: "premiere-v1.0.0", html_url: "page", assets: [
+    { name: "Higgs-VoiceOver-1.0.0-Premiere-Pro.zxp", browser_download_url: "zxp" },
+    { name: "Higgs-VoiceOver-1.0.0-Premiere-Pro-macOS.pkg", browser_download_url: "pkg" },
+    { name: "Higgs-VoiceOver-1.0.0-DaVinci-Resolve-macOS.pkg", browser_download_url: "resolve" },
+  ] }];
+  const http = { request: async (_r: HttpRequest) => reply(200, JSON.stringify(releases)) };
+  assert.equal((await checkForUpdate(http, "0.1.0", ["pkg", "zxp"])).asset, "pkg");
+  assert.equal((await checkForUpdate(http, "0.1.0", ["zxp"])).asset, "zxp");
+  assert.equal((await checkForUpdate(http, "0.1.0", ["ccx"])).latest, null);
+  assert.ok(!isPremiereAsset("Higgs-VoiceOver-1.0.0-DaVinci-Resolve-macOS.pkg", ["pkg"]));
+});
+
 test("the update check finds the newest Premiere release, skipping other hosts and pre-releases", async () => {
   const releases = [
     { tag_name: "v1.2.0", assets: [{ name: "Higgs-VoiceOver-1.2.0-DaVinci-Resolve-macOS.pkg", browser_download_url: "r" }] },

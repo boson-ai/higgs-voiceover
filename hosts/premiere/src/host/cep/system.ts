@@ -160,6 +160,8 @@ export function hostInfo(pluginVersion: string): HostInfo {
   const listeners: ((t: string) => void)[] = [];
   window.__adobe_cep__?.addEventListener("com.adobe.csxs.events.ThemeColorChanged", () => listeners.forEach((cb) => cb(theme())));
   return {
+    // The macOS installer first; the .zxp (UPIA or an extension manager) everywhere.
+    packages: windows ? ["zxp"] : ["pkg", "zxp"],
     appName: "Premiere Pro",
     appVersion: env().appVersion ?? "",
     pluginVersion,

@@ -80,6 +80,7 @@ export function hostInfo(pluginVersion: string): HostInfo {
   const listeners: ((t: string) => void)[] = [];
   document.theme?.onUpdated.addListener((t) => listeners.forEach((cb) => cb(t)));
   return {
+    packages: ["ccx"],
     appName: uxp.host.name,
     appVersion: uxp.host.version,
     pluginVersion,

@@ -96,7 +96,7 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
     };
     if (req.url.includes("api.github.com")) {
       const v = o.latest ?? "0.1.0";
-      return reply(200, JSON.stringify([{ tag_name: `premiere-v${v}`, html_url: "https://github.com/boson-ai/higgs-voiceover/releases", assets: [{ name: `Higgs-VoiceOver-${v}-Premiere-Pro.ccx`, browser_download_url: "https://example.invalid/x.ccx" }] }]));
+      return reply(200, JSON.stringify([{ tag_name: `premiere-v${v}`, html_url: "https://github.com/boson-ai/higgs-voiceover/releases", assets: [{ name: `Higgs-VoiceOver-${v}-Premiere-Pro.ccx`, browser_download_url: "https://example.invalid/x.ccx" }, { name: `Higgs-VoiceOver-${v}-Premiere-Pro-macOS.pkg`, browser_download_url: "https://example.invalid/x.pkg" }] }]));
     }
     const auth = req.headers?.Authorization ?? "";
     if (!auth.endsWith(secrets.get("boson_api_key") ?? "∅") && !auth.includes("bai-preview")) return reply(401, JSON.stringify({ error: { message: "invalid api key" } }));
@@ -180,6 +180,7 @@ export function createMockHost(media: HTMLVideoElement, o: MockOptions = {}): Ho
     },
     ...(o.cep ? { recorder: mockRecorder(), richText: true } : {}),
     info: {
+      packages: o.cep ? ["pkg", "zxp"] : ["ccx"],
       appName: o.cep ? "Premiere Pro (preview, CEP)" : "Premiere Pro (preview, UXP)",
       appVersion: "26.5",
       pluginVersion: "0.1.0",

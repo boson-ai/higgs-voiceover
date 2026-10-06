@@ -19,10 +19,15 @@ export interface UpdateCheck {
   error?: string;
 }
 
-/** Release files are named for the app and host ("Higgs-VoiceOver-1.1.0-Premiere-Pro.ccx"); GitHub may rewrite spaces. */
-export function isPremiereAsset(name: string): boolean {
+/**
+ * Release files are named for the app, host and OS
+ * ("Higgs-VoiceOver-1.0.0-Premiere-Pro-macOS.pkg"); GitHub may rewrite spaces.
+ * `kinds` is the package types this build installs from, best first: the CEP
+ * build takes the macOS installer or the .zxp, the UXP build a .ccx.
+ */
+export function isPremiereAsset(name: string, kinds: readonly string[] = ["ccx"]): boolean {
   const key = name.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return key.startsWith("higgsvoiceover") && key.includes("premiere") && key.endsWith("ccx");
+  return key.startsWith("higgsvoiceover") && key.includes("premiere") && kinds.some((k) => key.endsWith(k));
 }
 
 export function versionTuple(v: string): [number, number, number] {
@@ -38,7 +43,7 @@ export function isNewer(candidate: string, current: string): boolean {
 
 interface Release { tag_name?: string; name?: string; html_url?: string; draft?: boolean; prerelease?: boolean; assets?: { name: string; browser_download_url: string }[] }
 
-export async function checkForUpdate(http: Http, current: string): Promise<UpdateCheck> {
+export async function checkForUpdate(http: Http, current: string, kinds: readonly string[] = ["ccx"]): Promise<UpdateCheck> {
   const res = await http.request({
     method: "GET",
     url: `https://api.github.com/repos/${UPDATE_REPO}/releases?per_page=30`,
@@ -57,7 +62,8 @@ export async function checkForUpdate(http: Http, current: string): Promise<Updat
   let best: { version: string; page?: string; asset: string } | null = null;
   for (const r of Array.isArray(releases) ? releases : []) {
     if (r.draft || r.prerelease) continue;
-    const asset = (r.assets ?? []).find((a) => isPremiereAsset(a.name));
+    // The best package this build can install, in the order given.
+    const asset = kinds.map((k) => (r.assets ?? []).find((a) => isPremiereAsset(a.name, [k]))).find(Boolean);
     if (!asset) continue;
     const version = String(r.tag_name ?? r.name ?? "").replace(/^[^\d]*/, "");
     if (!best || isNewer(version, best.version)) best = { version, page: r.html_url, asset: asset.browser_download_url };
